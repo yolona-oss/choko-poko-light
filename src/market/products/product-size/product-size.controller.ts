@@ -14,7 +14,7 @@ import { Response } from 'express';
 import { ProductSizeService } from './product-size.service';
 import { ProductSize } from './product-size.schema';
 
-@Controller('product/size')
+@Controller()
 export class ProductSizeController {
     constructor(private productSizeService: ProductSizeService) {}
 

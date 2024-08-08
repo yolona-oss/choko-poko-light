@@ -15,7 +15,7 @@ import { Product } from './products.schema';
 import { defaultsProductFilterParams, ProductFilterParams, ProductsService } from './products.service';
 import { RecentlyViewd } from './recently-viewd/recently-viewd.schema';
 
-@Controller('products')
+@Controller()
 export class ProductsController {
     constructor(private productsService: ProductsService) {}
 

@@ -1,3 +1,4 @@
+import { RouterModule } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CloudinaryModule } from 'common/cloudinary/cloudinary.module';
@@ -20,6 +21,30 @@ import { RecentlyViewdModule } from './recently-viewd/recently-viewd.module';
             { name: 'Product', schema: ProductSchema },
             { name: 'Category', schema: CategorySchema },
             { name: 'SubCategory', schema: SubCategorySchema }
+        ]),
+        RouterModule.register([
+            {
+                path: 'products',
+                module: ProductsModule,
+                children: [
+                    {
+                        path: 'weight',
+                        module: ProductWeightModule
+                    },
+                    {
+                        path: 'rams',
+                        module: ProductRAMsModule
+                    },
+                    {
+                        path: 'size',
+                        module: ProductSizeModule
+                    },
+                    {
+                        path: 'reviews',
+                        module: ProductReviewsModule
+                    },
+                ]
+            }
         ]),
         ProductRAMsModule,
         ProductReviewsModule,

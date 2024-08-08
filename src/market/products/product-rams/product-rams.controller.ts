@@ -13,7 +13,7 @@ import { Response } from 'express';
 import { ProductRAMsService } from './product-rams.service';
 import { ProductRAMs } from './product-rams.schema';
 
-@Controller('product/rams')
+@Controller()
 export class ProductRamsController {
     constructor(
         private productRAMsService: ProductRAMsService

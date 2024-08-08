@@ -14,73 +14,35 @@ import { Response } from 'express';
 import { ProductWeightService } from './product-weight.service';
 import { ProductWeight } from './product-weight.schema';
 
-@Controller('product/weight')
+@Controller()
 export class ProductWeightController {
     constructor(private productWeightSerivce: ProductWeightService) {}
 
     @Get('/')
     async getAllProductWeights(@Res() response: Response) {
-        try {
-            const execRes = await this.productWeightSerivce.getAllEntities()
-            if (execRes) {
-                response.status(200).json(execRes)
-            } else {
-                throw new NotFoundException("Cannot retrive wight")
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productWeightSerivce.getAllEntities()
+        response.status(200).json(execRes)
     }
 
     @Get('/:id')
     async getProductWeightById(@Param('id') id: string, @Res() response: Response) {
-        try {
-            const execRes = await this.productWeightSerivce.getEntityById(id)
-            if (execRes) {
-                response.status(200).json(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productWeightSerivce.getEntityById(id)
+        response.status(200).json(execRes)
     }
 
     @Post('/create')
     async createProductWeight(@Body() data: ProductWeight, @Res() response: Response) {
-        try {
-            const execRes = await this.productWeightSerivce.createEntity(data)
-            if (execRes) {
-                response.status(200).json(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productWeightSerivce.createEntity(data)
+        response.status(200).json(execRes)
     }
 
     @Delete('/:id')
     async deleteProductWeightById(@Param('id') id: string, @Res() response: Response) {
-        try {
-            const execRes = await this.productWeightSerivce.removeEntityById(id)
-            if (execRes) {
-                response.status(200).json({
-                    message: 'Item deleted',
-                    success: false
-                })
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productWeightSerivce.removeEntityById(id)
+        response.status(200).json({
+            message: 'Item deleted',
+            success: false
+        })
     }
 
     @Put('/:id')
@@ -89,17 +51,7 @@ export class ProductWeightController {
         @Body() data: Partial<ProductWeight>,
         @Res() response: Response
     ) {
-        try {
-            const execRes = await this.productWeightSerivce.updateEntityById(id, data)
-            if (execRes) {
-                response.status(200).send(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productWeightSerivce.updateEntityById(id, data)
+        response.status(200).send(execRes)
     }
 }

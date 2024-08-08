@@ -14,7 +14,7 @@ import { Response } from 'express';
 import { ProductReviewsService } from './product-reviews.service';
 import { ProductReviews } from './product-reviews.schema';
 
-@Controller('product/reviews')
+@Controller()
 export class ProductReviewsController {
     constructor(private productReviewsService: ProductReviewsService) {}
 
