@@ -94,6 +94,28 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     }
 
     /***
+     *
+     * @param filename - file name like "foobaar.jpg"
+     *
+     * @returns method returns string: url of uploaded image or false if file not uploaded
+     */
+    async isImageUploaded(filename: string) {
+        const docs = await super.getAllDocuments()
+        if (!docs) {
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        }
+
+        for (const doc of docs) {
+            for (const image of doc.images) {
+                if (extractFileName(image, false) == extractFileName(filename, false)) {
+                    return image
+                }
+            }
+        }
+        return false
+    }
+
+    /***
      * @deprecated Use ImageUploadService::uploadImages instead
      */
     override async createDocument(data: Omit<ImagesDocument, keyof Document>) {

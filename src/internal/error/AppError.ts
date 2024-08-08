@@ -59,7 +59,7 @@ const errors: Record<AppErrorTypeEnum, IErrorMessage> = {
     },
     [AppErrorTypeEnum.DB_INVALID_RANGE]: {
         type: AppErrorTypeEnum.DB_INVALID_RANGE,
-        httpStatus: HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE, // TODO change
+        httpStatus: HttpStatus.BAD_REQUEST, // TODO change
         errorMessage: 'Not in ranger.',
         userMessage: 'Not in ranger.'
     }

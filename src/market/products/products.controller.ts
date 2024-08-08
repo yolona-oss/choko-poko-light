@@ -12,8 +12,9 @@ import {
 import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
 import { Response } from 'express'
 import { ProductEntity } from './products.schema';
-import { defaultsProductFilterParams, ProductFilterParams, ProductsService } from './products.service';
+import { ProductsService } from './products.service';
 import { RecentlyViewedEntity } from './recently-viewd/recently-viewd.schema';
+import { ProductFilterParams, defaultsProductFilterParams } from './interfaces/ProductFilterParams';
 
 @Controller()
 export class ProductsController {
@@ -26,7 +27,6 @@ export class ProductsController {
             ...query
         }
         const execRes = await this.productsService.getFiltredProducts(defaultedQuery)
-        //console.log(defaultedQuery)
         response.status(200).send(execRes)
     }
 

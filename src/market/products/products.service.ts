@@ -5,33 +5,11 @@ import { ProductEntity, ProductDocument } from './products.schema';
 import { CRUDService } from 'internal/crud-service';
 import { RecentlyViewdService } from './recently-viewd/recently-viewd.service';
 import { CategoryService } from 'market/category/category.service';
-import { SubCategoryService } from 'market/category/sub-category.service';
 import { ImageUploadService } from 'image-upload/image-upload.service';
-import { extractFileName } from 'internal/utils';
-import { CloudinaryService } from 'common/cloudinary/cloudinary.service'
 import { AppError } from 'internal/error/AppError';
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
 import { DEFAULT_IMAGES_ENTITY_COLLECTION_NAME } from 'common/constants';
-
-export interface ProductFilterParams {
-        page?: string,
-        perPage?: string,
-        minPrice?: string,
-        maxPrice?: string, // TODO ask vlad for max of max value
-        subCategoryId?: string, // subCatId
-        categoryId?: string, // catId
-        category?: string, // catId
-        categoryName?: string, // catName
-        rating?: number,
-        location?: string,
-        isFeatured?: boolean
-}
-
-// TODO: use values form providers, that reads from ConfigService
-export const defaultsProductFilterParams: Pick<ProductFilterParams, 'page' | 'perPage'> = {
-    page: "1",
-    perPage: "-1"
-}
+import { ProductFilterParams } from './interfaces/ProductFilterParams';
 
 @Injectable()
 export class ProductsService extends CRUDService<ProductDocument> {
@@ -39,10 +17,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
         @InjectModel('Product')
         readonly productModel: Model<ProductDocument>,
         readonly recentlyViewdService: RecentlyViewdService,
-
         private categoryService: CategoryService,
-        private subCategoryService: SubCategoryService,
-
         private imageUploadService: ImageUploadService,
     ) {
         super(productModel)
@@ -60,136 +35,39 @@ export class ProductsService extends CRUDService<ProductDocument> {
         return items;
     }
 
-    private createFilterQuery(filterOpts: ProductFilterParams) {
-        const {
-            minPrice, maxPrice,
-            subCategoryId,
-            categoryId, categoryName, category,
-            rating,
-            location,
-            isFeatured
-        } = filterOpts
-
-        let query: Record<string, any> = {}
-
-        // TODO: add maxPrice handler
-        // may be use loop for appending query?
-        const queryByPrice         = { price: { $gte: parseInt(<string>minPrice), $lte: parseInt(<string>maxPrice) || 99999999 } }
-        const queryByCategoryId    = { catId: categoryId || category }
-        const queryByCategoryName  = { catName: categoryName }
-        const queryBySubCategoryId = { subCatId: subCategoryId }
-        const queryByRating        = { rating: rating }
-        const queryByLocation      = { location: location }
-        const queryByisFeaturing   = { isFeatured: isFeatured }
-
-        if (minPrice)      { Object.assign(queryByPrice, query) }
-        if (categoryId)    { Object.assign(queryByCategoryId, query) }
-        if (categoryName)  { Object.assign(queryByCategoryName, query) }
-        if (subCategoryId) { Object.assign(queryBySubCategoryId, query) }
-        if (rating)        { Object.assign(queryByRating, query) }
-        if (location)      { Object.assign(queryByLocation, query) }
-        // may be use typeof Boolean?
-        if (isFeatured !== undefined || isFeatured !== null || isFeatured !== "All") { // TODO: create enum
-            Object.assign(queryByisFeaturing, query)
-        }
-
-        console.log(query)
-
-        return query
-    }
-
-    private async processQuantityOfOutput(page?: string, perPage?: string) {
-        const _page = parseInt(<string>page)
-        const _perPage = parseInt(<string>perPage)
-
-        const totalEntries = await this.getDocumentsCount();
-        const totalPages   = +Math.ceil(totalEntries / _perPage);
-
-        return {
-            page: _page,
-            perPage: _perPage,
-            totalEntries: totalEntries,
-            totalPages: totalPages
-        }
-    }
-
-    private async getEntriesByPage(query: Object, page: number, perPage: number) {
-        return await this.productModel
-        .find(query)
-        .populate("category subCat")
-        .skip((page - 1) * perPage)
-        .limit(perPage)
-        .exec()
-    }
-
-    // by cat 
-    // by subCat 
-    // by rating 
-    // by location
-    // by rating
     async getFiltredProducts(filterOpts: ProductFilterParams) {
-        const pagesQuantity = await this.processQuantityOfOutput(filterOpts.page, filterOpts.perPage)
-
-        if (pagesQuantity.page > pagesQuantity.totalPages) {
-            throw "Page not found"
-        }
-
-        const query = this.createFilterQuery(filterOpts)
-
-        // TODO: try use find(query, null, {limit: x, skip: y})
-        let entries = []
-        if (pagesQuantity.page && (pagesQuantity.perPage > 0)) {
-            entries = await this.getEntriesByPage(query, pagesQuantity.page, pagesQuantity.perPage)
-        } else {
-            entries = await this.getAllDocumentsByQuery(query)
-        }
-
-        return {
-            products: entries,
-            totalPages: pagesQuantity.totalPages,
-            page: pagesQuantity.page
-        }
+        return await this.getFiltred(filterOpts,
+                                     async (query) => await this.getAllDocumentsByQuery(query),
+                                     async (query, page, perPage) => await this.getEntriesByPage(query, page, perPage))
     }
 
     async getFiltredRecentlyViewdProducts(filterOpts: ProductFilterParams) {
-        const pagesQuantity = await this.processQuantityOfOutput(filterOpts.page, filterOpts.perPage)
-
-        if (pagesQuantity.page > pagesQuantity.totalPages) {
-            throw "Page not found"
-        }
-
-        const query = this.createFilterQuery(filterOpts)
-
-        // TODO: try use find(query, null, {limit: x, skip: y})
-        let entries = []
-        if (pagesQuantity.page && (pagesQuantity.perPage > 0)) {
-            entries = await this.recentlyViewdService.getEntriesByPage(query, pagesQuantity.page, pagesQuantity.perPage)
-        } else {
-            entries = await this.recentlyViewdService.getAllDocumentsByQuery(query)
-        }
-
-        return {
-            products: entries,
-            totalPages: pagesQuantity.totalPages,
-            page: pagesQuantity.page
-        }
+        return await this.getFiltred(filterOpts,
+                                     async (query) => await this.recentlyViewdService.getAllDocumentsByQuery(query),
+                                     async (query, page, perPage) => await this.recentlyViewdService.getEntriesByPage(query, page, perPage))
     }
 
     async createNewEntry(newProduct: ProductEntity) {
-        const categoryEntry = await this.categoryService.getAllDocuments()
+        const categoryEntry = await this.categoryService.getDocumentById(
+            // @ts-ignore
+            newProduct.category
+        )
 
         if (!categoryEntry) {
-            throw "Invalid category"
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+                errorMessage: 'Invalid category',
+                userMessage: 'Invalid category'
+            })
         }
 
-        const images = new Array<String>
-        const imageUploadEntries = await this.imageUploadService.getAllDocuments()
-        const _images = imageUploadEntries?.map((item: {images: string[], id: string}) => {
-            item.images?.map((image: string) => {
-                images.push(image);
-                //console.log(image)
-            })
-        })
+        for (const image of newProduct.images) {
+            const isUploaded = await this.imageUploadService.isImageUploaded(image)
+            // TODO remove logs
+            console.log("is uploaded: " + isUploaded)
+            if (!isUploaded) {
+                throw new Error("not uploaded")
+            }
+        }
 
         return await super.createDocument(newProduct)
     }
@@ -236,5 +114,104 @@ export class ProductsService extends CRUDService<ProductDocument> {
     override async createDocument(data: Omit<ProductDocument, keyof Document>) {
         throw new Error("Use ProductsService::createNewEntry instead. createEntry not valid")
         return await super.createDocument(data)
+    }
+
+    private async getFiltred(
+        filterOpts: ProductFilterParams,
+        findFn: (query: any) => Promise<Document[]|null>,
+        findByPageFn: (query: any, page: number, perPage: number) => Promise<Document[]|null>
+    ) {
+        const pagesQuantity = await this.processQuantityOfOutput(filterOpts.page, filterOpts.perPage)
+
+        if (pagesQuantity.page > pagesQuantity.totalPages) {
+            throw new AppError(AppErrorTypeEnum.DB_INVALID_RANGE)
+        }
+
+        const query = this.createFilterQuery(filterOpts)
+
+        let docs: Document[]|null
+        if (pagesQuantity.page && pagesQuantity.perPage) {
+            docs = await findByPageFn(query, pagesQuantity.page, pagesQuantity.perPage)
+            //docs = await this.getEntriesByPage(query, pagesQuantity.page, pagesQuantity.perPage)
+        } else {
+            docs = await findFn(query)
+            //docs = await this.getAllDocumentsByQuery(query)
+        }
+
+        return {
+            products: docs || [],
+            totalPages: pagesQuantity.totalPages,
+            page: pagesQuantity.page
+        }
+    }
+
+    private createFilterQuery(filterOpts: ProductFilterParams) {
+        const {
+            minPrice, maxPrice,
+            subCategoryId,
+            categoryId, categoryName, category,
+            rating,
+            location,
+            isFeatured
+        } = filterOpts
+
+        let query: Record<string, any> = {}
+
+        // TODO: add maxPrice handler
+        // may be use loop for appending query?
+        const queryByPrice         = { price: { $gte: parseInt(<string>minPrice), $lte: parseInt(<string>maxPrice) || 99999999 } }
+        const queryByCategoryId    = { category: categoryId || category }
+        const queryByCategoryName  = { catName: categoryName }
+        const queryBySubCategoryId = { subCatId: subCategoryId }
+        const queryByRating        = { rating: rating }
+        const queryByLocation      = { location: location }
+        const queryByisFeaturing   = { isFeatured: isFeatured }
+
+        if (minPrice)      { Object.assign(query, queryByPrice) }
+        if (categoryName)  { Object.assign(query, queryByCategoryName) }
+        if (subCategoryId) { Object.assign(query, queryBySubCategoryId) }
+        if (rating)        { Object.assign(query, queryByRating) }
+        if (location)      { Object.assign(query, queryByLocation) }
+        if (categoryId || category) { Object.assign(query, queryByCategoryId) }
+        // may be use typeof Boolean?
+        if (location !== undefined && location !== null && location !== "All") { // TODO: create enum
+            Object.assign(query, queryByLocation)
+        }
+        if (isFeatured !== undefined && isFeatured !== null) {
+            Object.assign(query, queryByisFeaturing)
+        }
+
+        return query
+    }
+
+    private async processQuantityOfOutput(page?: string, perPage?: string) {
+        const _page = parseInt(page || "1")
+        const totalDocuments = await this.getDocumentsCount();
+        if (!perPage) {
+            return {
+                page: _page,
+                perPage: null,
+                totalDocuments: totalDocuments,
+                totalPages: 1
+            }
+        }
+        const _perPage = parseInt(perPage)
+        const totalPages   = +Math.ceil(totalDocuments / _perPage);
+
+        return {
+            page: _page,
+            perPage: _perPage,
+            totalDocuments: totalDocuments,
+            totalPages: totalPages
+        }
+    }
+
+    private async getEntriesByPage(query: Object, page: number, perPage: number) {
+        return await this.productModel
+        .find(query)
+        .populate("category subCat")
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .exec()
     }
 }
