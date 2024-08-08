@@ -37,7 +37,9 @@ export class CategoryController {
     @Get('/')
     async getAllDocs(@Res() response: Response) {
         const allDocs = await this.categoryService.getAllDocuments()
-        response.json(allDocs)
+        response.json({
+            categoryList: allDocs
+        })
     }
 
     @Get('/id/:id')
@@ -49,7 +51,7 @@ export class CategoryController {
     @Get('/count')
     async getCategoryEntriesCount(@Res() response: Response) {
         const catCount = await this.categoryService.getDocumentsCount()
-        response.json(catCount)
+        response.json({categoryCount: catCount})
     }
 
     @Post('/create')

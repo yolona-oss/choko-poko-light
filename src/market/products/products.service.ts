@@ -223,11 +223,11 @@ export class ProductsService extends CRUDService<ProductDocument> {
     }
 
     override async getDocumentById(id: string) {
-        const entity = await this.productModel.findById(id).populate("category subCat").exec()
-        if (!entity) {
+        const doc = await this.productModel.findById(id).populate("category subCat").exec()
+        if (!doc) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }
-        return entity
+        return doc
     }
 
     /**

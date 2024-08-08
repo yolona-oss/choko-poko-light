@@ -43,7 +43,9 @@ export class SubCategoryController {
     @Get('/')
     async getAllDocs(@Res() response: Response) {
         const allDocs = await this.subCategoryService.getAllDocuments()
-        response.json(allDocs)
+        response.json({
+            subCategoryList: allDocs
+        })
     }
 
     @Get('/id/:id')
@@ -55,7 +57,7 @@ export class SubCategoryController {
     @Get('/count')
     async getSubCategoryEntriesCount(@Res() response: Response) {
         const subCatCount = await this.subCategoryService.getDocumentsCount()
-        response.json(subCatCount)
+        response.json({subCatCount: subCatCount})
     }
 
     @Post('/create')
