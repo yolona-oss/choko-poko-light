@@ -1,0 +1,18 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { CategorySchema } from './category.schema';
+import { CategoryService } from './category.service';
+import { SubCategorySchema } from './sub-category.schema';
+import { SubCategoryService } from './sub-category.service';
+
+@Module({
+    imports: [
+        MongooseModule.forFeature([
+            { name: 'Category', schema: CategorySchema },
+            { name: 'SubCategory', schema: SubCategorySchema }
+        ])
+    ],
+    providers: [SubCategoryService, CategoryService],
+    exports: [SubCategoryService, CategoryService]
+})
+export class CategoryModule {}
