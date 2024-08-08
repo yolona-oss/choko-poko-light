@@ -3,7 +3,7 @@ import { CreateUserDTO } from "../users/dto/CreateUserDTO";
 import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { UserEntity } from "../users/user.schema";
-import { AccessTokenPayload } from 'types/AccessTokenPayload';
+import { JwtPayload } from './interfaces/jwt-payload.interface'
 import { Crypto } from "internal/utils"
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
 import { AppError } from 'internal/error/AppError';
@@ -42,7 +42,7 @@ export class AuthService {
     }
 
     private generateToken(user: Omit<UserEntity, 'password'>): string {
-        const payload: AccessTokenPayload = {
+        const payload: JwtPayload = {
             email: user.email,
             id: user.id,
             isAdmin: user.isAdmin || false

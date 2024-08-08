@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { AccessTokenPayload } from 'types/AccessTokenPayload';
+import { JwtPayload } from 'auth/interfaces/jwt-payload.interface'
 
 export const User = createParamDecorator(
   (_: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return <AccessTokenPayload>request.user;
+    return <JwtPayload>request.user;
   },
 );

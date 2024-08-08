@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { AccessTokenPayload } from 'types/AccessTokenPayload';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { IS_PUBLIC_KEY } from 'common/decorators/public.decorotor';
 import { ROLES_KEY } from 'common/decorators/role.decorator';
 
@@ -46,7 +46,7 @@ export class JwtGuard extends AuthGuard('strategy-jwt') {
             throw new UnauthorizedException();
         }
         try {
-            const payload: AccessTokenPayload = this.jwtService.verify(token, {
+            const payload: JwtPayload = this.jwtService.verify(token, {
                 secret: this.configService.get<string>("jwt.token"),
             });
             request['user'] = payload;

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { AccessTokenPayload } from 'types/AccessTokenPayload';
+import { JwtPayload } from 'auth/interfaces/jwt-payload.interface';
 import { UsersService } from 'users/users.service';
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
 import { AppError } from 'internal/error/AppError';
@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'strategy-jwt') {
         });
     }
 
-    async validate(payload: AccessTokenPayload) {
+    async validate(payload: JwtPayload) {
         console.log("Jwt strat payload: " + JSON.stringify(payload,null,'\n'))
         const user = await this.usersService.getDocumentById(payload.id);
         if (!user) {

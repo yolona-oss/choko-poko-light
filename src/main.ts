@@ -2,7 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'app.module';
 import { ConfigService } from '@nestjs/config';
 import { DispatchError } from 'internal/DispatchError';
-import { JwtGuard } from 'auth/jwt.guard';
+import helmet from 'helmet';
+import compression from 'compression';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -13,6 +14,12 @@ async function bootstrap() {
 
     }
 
+    const helmetOptions = {
+        crossOriginEmbedderPolicy: false,
+    }
+
+    app.use(helmet(helmetOptions))
+    app.use(compression())
     app.setGlobalPrefix('api')
     app.useGlobalFilters(new DispatchError())
     app.enableCors(corsOptions)
