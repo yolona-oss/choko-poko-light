@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProductRAMsService } from './product-rams.service';
-import { ProductRAMs } from './product-rams.schema';
+import { ProductRAMsEntity } from './product-rams.schema';
 
 @Controller()
 export class ProductRamsController {
@@ -22,7 +22,7 @@ export class ProductRamsController {
     @Get('/')
     async getProductRAMs(@Res() response: Response) {
         try {
-            const execRes = await this.productRAMsService.getAllEntities()
+            const execRes = await this.productRAMsService.getAllDocuments()
             if (execRes) {
                 response.status(200).json(execRes)
             } else {
@@ -38,7 +38,7 @@ export class ProductRamsController {
     @Get('/id/:id')
     async getProductRAMsById(@Param('id') id: string, @Res() response: Response) {
         try {
-            const execRes = await this.productRAMsService.getEntityById(id)
+            const execRes = await this.productRAMsService.getDocumentById(id)
             if (execRes) {
                 response.status(200).send(execRes)
             } else {
@@ -52,9 +52,9 @@ export class ProductRamsController {
     }
 
     @Post('/create')
-    async createProductRAMs(@Body() data: ProductRAMs, @Res() response: Response) {
+    async createProductRAMs(@Body() data: ProductRAMsEntity, @Res() response: Response) {
         try {
-            const execRes = await this.productRAMsService.createEntity(data)
+            const execRes = await this.productRAMsService.createDocument(data)
             if (execRes) {
                 response.status(200).json(execRes)
             } else {
@@ -70,7 +70,7 @@ export class ProductRamsController {
     @Delete('/:id')
     async removeProductRAMsById(@Param('id') id: string, @Res() response: Response) {
         try {
-            const execRes = await this.productRAMsService.removeEntityById(id)
+            const execRes = await this.productRAMsService.removeDocumentById(id)
             if (execRes) {
                 response.status(200).json(execRes)
             } else {
@@ -86,11 +86,11 @@ export class ProductRamsController {
     @Put('/:id')
     async updateProductRAMsById(
         @Param('id') id: string,
-        @Body() data: Partial<ProductRAMs>,
+        @Body() data: Partial<ProductRAMsEntity>,
         @Res() response: Response
     ) {
         try {
-            const execRes = await this.productRAMsService.updateEntityById(id, data)
+            const execRes = await this.productRAMsService.updateDocumentById(id, data)
             if (execRes) {
                 response.status(200).json(execRes)
             } else {

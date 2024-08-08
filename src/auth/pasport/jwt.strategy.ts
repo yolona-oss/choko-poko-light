@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'strategy-jwt') {
     }
 
     async validate(payload: AccessTokenPayload) {
-        const user = await this.usersService.getEntityById(payload.id);
+        const user = await this.usersService.getDocumentById(payload.id);
         if (!user) {
             throw new AppError(AppErrorTypeEnum.INVALID_CREDENTIALS_EXCEPTION)
         }

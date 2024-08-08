@@ -14,8 +14,8 @@ import {
     DefaultValuePipe
 } from '@nestjs/common';
 import { Response } from 'express'
-import { Category } from './category.schema';
-import { SubCategory } from './sub-category.schema';
+import { CategoryEntity } from './category.schema';
+import { SubCategoryEntity } from './sub-category.schema';
 
 import { CategoryService } from './category.service';
 import { SubCategoryService } from './sub-category.service';
@@ -42,19 +42,19 @@ export class SubCategoryController {
 
     @Get('/')
     async getAllDocs(@Res() response: Response) {
-        const allDocs = await this.subCategoryService.getAllEntities()
+        const allDocs = await this.subCategoryService.getAllDocuments()
         response.json(allDocs)
     }
 
     @Get('/id/:id')
     async getSubCategoryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const subCategory = await this.subCategoryService.getEntityById(id)
+        const subCategory = await this.subCategoryService.getDocumentById(id)
         response.json(subCategory)
     }
 
     @Get('/count')
     async getSubCategoryEntriesCount(@Res() response: Response) {
-        const subCatCount = await this.subCategoryService.getEntitiesCount()
+        const subCatCount = await this.subCategoryService.getDocumentsCount()
         response.json(subCatCount)
     }
 
@@ -64,7 +64,7 @@ export class SubCategoryController {
             throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID)
         }
 
-        const subCat = await this.subCategoryService.createEntity({
+        const subCat = await this.subCategoryService.createDocument({
             // @ts-ignore
             category: body.category,
             subCat: body.subCat
@@ -79,7 +79,7 @@ export class SubCategoryController {
 
     @Delete('/:id')
     async removeById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const deleted = await this.subCategoryService.removeEntityById(id);
+        const deleted = await this.subCategoryService.removeDocumentById(id);
 
         response.status(200).json({
             success: true,
@@ -96,7 +96,7 @@ export class SubCategoryController {
             throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID)
         }
 
-        const subCat = await this.subCategoryService.updateEntityById(
+        const subCat = await this.subCategoryService.updateDocumentById(
             id,
             {
                 // @ts-ignore

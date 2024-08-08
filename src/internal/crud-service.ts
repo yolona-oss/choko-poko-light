@@ -36,15 +36,15 @@ export abstract class CRUDService<T extends Document> {
         }
     }
 
-    async getAllEntities() {
+    async getAllDocuments() {
         return await this.model.find().exec()
     }
 
-    async getEntitiesCount() {
+    async getDocumentsCount() {
         return await this.model.countDocuments()
     }
 
-    async getEntityById(id: string) {
+    async getDocumentById(id: string) {
         const entity = await this.model.findById(id)
         if (!entity) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
@@ -52,7 +52,7 @@ export abstract class CRUDService<T extends Document> {
         return entity
     }
 
-    async createEntity(data: Omit<T, keyof Document>) {
+    async createDocument(data: Omit<T, keyof Document>) {
         const newEntity = await this.model.create(data)
         if (!newEntity) {
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
@@ -60,11 +60,11 @@ export abstract class CRUDService<T extends Document> {
         return newEntity
     }
 
-    async removeEntityById(id: string) {
+    async removeDocumentById(id: string) {
         return await this.model.findByIdAndDelete(id)
     }
 
-    async updateEntityById(id: string, newData: Partial<T>) {
+    async updateDocumentById(id: string, newData: Partial<T>) {
         return await this.model.findByIdAndUpdate(id, newData, { new: true })
     }
 }

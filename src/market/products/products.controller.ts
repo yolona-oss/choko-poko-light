@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
 import { Response } from 'express'
-import { Product } from './products.schema';
+import { ProductEntity } from './products.schema';
 import { defaultsProductFilterParams, ProductFilterParams, ProductsService } from './products.service';
-import { RecentlyViewd } from './recently-viewd/recently-viewd.schema';
+import { RecentlyViewedEntity } from './recently-viewd/recently-viewd.schema';
 
 @Controller()
 export class ProductsController {
@@ -32,13 +32,13 @@ export class ProductsController {
 
     @Get('/')
     async getAllProducts(@Res() response: Response) {
-        const execRes = await this.productsService.getAllEntities()
+        const execRes = await this.productsService.getAllDocuments()
         response.json(execRes)
     }
 
     @Get('/count')
     async getProductsCount(@Res() response: Response) {
-        const execRes = await this.productsService.getEntitiesCount()
+        const execRes = await this.productsService.getDocumentsCount()
         response.status(200).json({
             productsCount: execRes
         })
@@ -56,8 +56,8 @@ export class ProductsController {
     }
 
     @Post('/recentlyViewd')
-    async createNewRecentlyViewd(@Body() body: RecentlyViewd, @Res() response: Response) {
-        const execRes = await this.productsService.recentlyViewdService.createEntity({
+    async createNewRecentlyViewd(@Body() body: RecentlyViewedEntity, @Res() response: Response) {
+        const execRes = await this.productsService.recentlyViewdService.createDocument({
             prodId:        body.id,
             name:          body.name,
             description:   body.description,
@@ -83,25 +83,25 @@ export class ProductsController {
 
     @Get('/recentlyViewd/')
     async getRecentlyViewd(@Res() response: Response) {
-        const execRes = await this.productsService.recentlyViewdService.getAllEntities()
+        const execRes = await this.productsService.recentlyViewdService.getAllDocuments()
         response.status(200).json(execRes)
     }
 
     @Post('/create')
-    async createNewProduct(@Body() data: Product, @Res() response: Response) {
+    async createNewProduct(@Body() data: ProductEntity, @Res() response: Response) {
         const execRes = await this.productsService.createNewEntry(data)
         response.status(200).json(execRes)
     }
 
     @Get('/id/:id')
     async getProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const execRes = await this.productsService.getEntityById(id)
+        const execRes = await this.productsService.getDocumentById(id)
         response.status(200).send(execRes)
     }
 
     @Delete('/:id')
     async removeProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const execRes = await this.productsService.removeEntityById(id)
+        const execRes = await this.productsService.removeDocumentById(id)
         response.status(200).json({
             success: true,
             message: "Product deleted"
@@ -111,10 +111,10 @@ export class ProductsController {
     @Put('/:id')
     async updateProductById(
         @Param('id', ParseObjectIdPipe) id: string,
-        @Body() newData: Partial<Product>,
+        @Body() newData: Partial<ProductEntity>,
         @Res() response: Response
     ) {
-        const execRes = await this.productsService.updateEntityById(id, newData)
+        const execRes = await this.productsService.updateDocumentById(id, newData)
         response.status(200).json(execRes)
     }
 }

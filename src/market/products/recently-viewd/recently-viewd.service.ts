@@ -1,7 +1,7 @@
 import { Document, Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { RecentlyViewd, RecentlyViewdDocument } from './recently-viewd.schema';
+import { RecentlyViewedEntity, RecentlyViewdDocument } from './recently-viewd.schema';
 import { CRUDService } from 'internal/crud-service';
 import { PartialBy } from 'internal/utils';
 
@@ -20,11 +20,11 @@ export class RecentlyViewdService extends CRUDService<RecentlyViewdDocument> {
     //    return this.recentlyViewdModel.create(data)
     //}
 
-    override async getAllEntities() {
+    override async getAllDocuments() {
         return await this.recentlyViewdModel.find().populate("category subCat").exec()
     }
 
-    async getAllEntriesByQuery(query: Object) {
+    async getAllDocumentsByQuery(query: Object) {
         return await this.recentlyViewdModel.find(query).populate("category subCat").exec()
     }
 

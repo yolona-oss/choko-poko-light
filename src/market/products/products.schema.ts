@@ -1,14 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-export type ProductDocument = Product & Document;
+export type ProductDocument = ProductEntity & Document;
 
 @Schema({
     toJSON: {
         virtuals: true
     }
 })
-export class Product {
+export class ProductEntity {
     id: string;
 
     @Prop({type: String, required: true})
@@ -74,7 +74,7 @@ export class Product {
     dateCreated?: Date;
 }
 
-const ProductSchema = SchemaFactory.createForClass(Product);
+const ProductSchema = SchemaFactory.createForClass(ProductEntity);
 
 ProductSchema.virtual('id').get(function() {
     return this._id.toHexString();

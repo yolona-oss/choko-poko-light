@@ -1,7 +1,7 @@
 import { Document, Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { SubCategory, SubCategoryDocument } from './sub-category.schema';
+import { SubCategoryEntity, SubCategoryDocument } from './sub-category.schema';
 import { CRUDService } from 'internal/crud-service';
 import { AppError } from 'internal/error/AppError';
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
@@ -16,7 +16,7 @@ export class SubCategoryService extends CRUDService<SubCategoryDocument> {
     }
 
     async getFiltredEntities(page: number, perPage: number) {
-        const totalDocs = await this.getEntitiesCount();
+        const totalDocs = await this.getDocumentsCount();
         const totalPages = Math.ceil(totalDocs / perPage);
 
         if (page > totalPages) {
@@ -36,7 +36,7 @@ export class SubCategoryService extends CRUDService<SubCategoryDocument> {
         }
     }
 
-    override async getAllEntities() {
+    override async getAllDocuments() {
         return await this.subCategoryModel.find().populate("category").exec()
     }
 }

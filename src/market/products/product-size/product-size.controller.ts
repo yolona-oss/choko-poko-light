@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProductSizeService } from './product-size.service';
-import { ProductSize } from './product-size.schema';
+import { ProductSizeEntity } from './product-size.schema';
 
 @Controller()
 export class ProductSizeController {
@@ -21,7 +21,7 @@ export class ProductSizeController {
     @Get('/')
     async getProductSizes(@Res() response: Response) {
         try {
-            const execRes = await this.productSizeService.getAllEntities()
+            const execRes = await this.productSizeService.getAllDocuments()
             if (execRes) {
                 response.status(200).json(execRes)
             } else {
@@ -37,7 +37,7 @@ export class ProductSizeController {
     @Get('/id/:id')
     async getProductSizeById(@Param('id') id: string, @Res() response: Response) {
         try {
-            const execRes = await this.productSizeService.getEntityById(id)
+            const execRes = await this.productSizeService.getDocumentById(id)
             if (execRes) {
                 response.status(200).send(execRes)
             } else {
@@ -49,9 +49,9 @@ export class ProductSizeController {
     }
 
     @Post('/create')
-    async createProductSize(@Body() data: ProductSize, @Res() response: Response) {
+    async createProductSize(@Body() data: ProductSizeEntity, @Res() response: Response) {
         try {
-            const execRes = await this.productSizeService.createEntity(data)
+            const execRes = await this.productSizeService.createDocument(data)
             if (execRes) {
                 response.status(200).json(execRes)
             } else {
@@ -67,7 +67,7 @@ export class ProductSizeController {
     @Delete('/:id')
     async removeProductSizeById(@Param('id') id: string, @Res() response: Response) {
         try {
-            const execRes = await this.productSizeService.removeEntityById(id)
+            const execRes = await this.productSizeService.removeDocumentById(id)
             if (execRes) {
                 response.status(200).json({
                     message: 'Item deleted',
@@ -86,11 +86,11 @@ export class ProductSizeController {
     @Put('/:id')
     async updateProductSizeById(
         @Param('id') id: string,
-        @Body() data: Partial<ProductSize>,
+        @Body() data: Partial<ProductSizeEntity>,
         @Res() response: Response
     ) {
         try {
-            const execRes = await this.productSizeService.updateEntityById(id, data)
+            const execRes = await this.productSizeService.updateDocumentById(id, data)
             if (execRes) {
                 response.status(200).send(execRes)
             } else {

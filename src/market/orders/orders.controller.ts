@@ -12,7 +12,7 @@ import {
     NotFoundException
 } from '@nestjs/common';
 import { Response } from 'express'
-import { Orders } from './orders.schema';
+import { OrdersEntity } from './orders.schema';
 import { OrdersService } from './orders.service';
 
 @Controller('orders')
@@ -23,7 +23,7 @@ export class OrdersController {
 
     @Get('/')
     async getAllOrders(@Res() response: Response) {
-        const execRes = await this.ordersService.getAllEntities()
+        const execRes = await this.ordersService.getAllDocuments()
         if (execRes) {
             response.status(200).json(execRes)
         } else {
@@ -33,7 +33,7 @@ export class OrdersController {
 
     @Get('/id/:id')
     async getOrderById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.ordersService.getEntityById(id)
+        const execRes = await this.ordersService.getDocumentById(id)
         if (execRes) {
             response.status(200).json(execRes)
         } else {
@@ -43,7 +43,7 @@ export class OrdersController {
 
     @Get('/count')
     async getOrdersCount(@Res() response: Response) {
-        const execRes = await this.ordersService.getEntitiesCount()
+        const execRes = await this.ordersService.getDocumentsCount()
         if (execRes) {
             response.status(200).json({
                 orderCount: execRes // TODO: serialize
@@ -54,8 +54,8 @@ export class OrdersController {
     }
 
     @Post('/create')
-    async createNewOrder(@Body() data: Orders, @Res() response: Response) {
-        const execRes = await this.ordersService.createEntity(data)
+    async createNewOrder(@Body() data: OrdersEntity, @Res() response: Response) {
+        const execRes = await this.ordersService.createDocument(data)
         if (execRes) {
             response.status(200).json(execRes)
         } else {
@@ -65,7 +65,7 @@ export class OrdersController {
 
     @Delete('/:id')
     async removeOrderById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.ordersService.removeEntityById(id)
+        const execRes = await this.ordersService.removeDocumentById(id)
         if (execRes) {
             response.status(200).json({ success: true, message: "Order deleted" })
         } else {
@@ -74,7 +74,7 @@ export class OrdersController {
     }
 
     @Put('/:id')
-    async updateOrderById(@Param('id') id: string, @Body() data: Partial<Orders>) { // TODO: create dto for orders 
-        const execRes = await this.ordersService.updateEntityById(id, data)
+    async updateOrderById(@Param('id') id: string, @Body() data: Partial<OrdersEntity>) { // TODO: create dto for orders 
+        const execRes = await this.ordersService.updateDocumentById(id, data)
     }
 }

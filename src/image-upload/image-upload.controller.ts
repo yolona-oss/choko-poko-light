@@ -42,14 +42,14 @@ export class ImageUploadController {
     }
 
     @Get('/')
-    async getAllEntries(@Res() response: Response) {
-        const entries = await this.imageUploadService.getAllEntities()
+    async getAll(@Res() response: Response) {
+        const entries = await this.imageUploadService.getAllDocuments()
         response.status(200).json(entries)
     }
 
     @Get('/id/:id')
-    async getEntryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const entry = await this.imageUploadService.getEntityById(id)
+    async getById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
+        const entry = await this.imageUploadService.getDocumentById(id)
         if (entry) {
             response.status(200).send(entry)
         }
@@ -57,7 +57,7 @@ export class ImageUploadController {
     }
 
     @Get('/collectionName/:collectionName')
-    async getEntryByCollectionName(@Param('collectionName') collection: string, @Res() response: Response) {
+    async getByCollectionName(@Param('collectionName') collection: string, @Res() response: Response) {
         const entry = await this.imageUploadService.findOne({collectionName: collection})
         if (entry) {
             response.status(200).send(entry)
@@ -66,8 +66,8 @@ export class ImageUploadController {
     }
 
     @Delete('/id/:id')
-    async removeEntryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const execRes = await this.imageUploadService.removeEntityById(id)
+    async removeById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
+        const execRes = await this.imageUploadService.removeDocumentById(id)
         if (execRes) {
             return response.status(200).json({success: true})
         }

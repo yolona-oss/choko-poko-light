@@ -1,14 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type ProductReviewsDocument = ProductReviews & Document;
+export type ProductReviewsDocument = ProductReviewsEntity & Document;
 
 @Schema({
     toJSON: {
         virtuals: true
     }
 })
-export class ProductReviews {
+export class ProductReviewsEntity {
     @Prop({type: String, required: true})
     productId: string;
 
@@ -27,7 +27,7 @@ export class ProductReviews {
     @Prop({type: Date, default: Date.now})
     dateCreated: Date;
 }
-const ProductReviewsSchema = SchemaFactory.createForClass(ProductReviews);
+const ProductReviewsSchema = SchemaFactory.createForClass(ProductReviewsEntity);
 
 ProductReviewsSchema.virtual('id').get(function() {
     return this._id.toHexString();

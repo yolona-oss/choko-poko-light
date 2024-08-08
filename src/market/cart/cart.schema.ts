@@ -1,14 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type CartDocument = Cart & Document;
+export type CartDocument = CartEntity & Document;
 
 @Schema({
     toJSON: {
         virtuals: true
     }
 })
-export class Cart {
+export class CartEntity {
     @Prop({type: String, required: true})
     productTitle: string;
 
@@ -39,7 +39,7 @@ export class Cart {
     @Prop({type: String, required: true})
     userId: string
 }
-const CartSchema = SchemaFactory.createForClass(Cart);
+const CartSchema = SchemaFactory.createForClass(CartEntity);
 
 CartSchema.virtual('id').get(function() {
     return this._id.toHexString();

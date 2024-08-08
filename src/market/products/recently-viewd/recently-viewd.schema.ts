@@ -1,14 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-export type RecentlyViewdDocument = RecentlyViewd & Document;
+export type RecentlyViewdDocument = RecentlyViewedEntity & Document;
 
 @Schema({
     toJSON: {
         virtuals: true
     }
 })
-export class RecentlyViewd {
+export class RecentlyViewedEntity {
     id: string;
 
     @Prop({type: String, default: ''})
@@ -69,7 +69,7 @@ export class RecentlyViewd {
     dateCreated: Date;
 }
 
-const RecentlyViewdSchema = SchemaFactory.createForClass(RecentlyViewd);
+const RecentlyViewdSchema = SchemaFactory.createForClass(RecentlyViewedEntity);
 
 RecentlyViewdSchema.virtual('id').get(function() {
     return this._id.toHexString();

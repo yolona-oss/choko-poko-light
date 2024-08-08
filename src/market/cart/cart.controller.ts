@@ -12,7 +12,7 @@ import {
     NotFoundException
 } from '@nestjs/common';
 import { Response } from 'express'
-import { Cart } from './cart.schema';
+import { CartEntity } from './cart.schema';
 import { CartService } from './cart.service';
 
 @Controller('cart')
@@ -23,7 +23,7 @@ export class CartController {
 
     @Get()
     async getAllCarts(@Res() response: Response) {
-        const execRes = await this.cartService.getAllEntities()
+        const execRes = await this.cartService.getAllDocuments()
         if (execRes) {
             response.status(200).json(execRes)
         }
@@ -32,7 +32,7 @@ export class CartController {
 
     @Get(':id')
     async getCartById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.cartService.getEntityById(id)
+        const execRes = await this.cartService.getDocumentById(id)
         if (execRes) {
             response.status(200).json(execRes)
         }
@@ -41,7 +41,7 @@ export class CartController {
 
     @Get('/get/count')
     async getCartsCount(@Res() response: Response) {
-        const execRes = await this.cartService.getEntitiesCount()
+        const execRes = await this.cartService.getDocumentsCount()
         if (execRes) {
             response.status(200).json({
                 orderCount: execRes // TODO: serialize
@@ -51,8 +51,8 @@ export class CartController {
     }
 
     @Post('/create')
-    async createNewCart(@Body() data: Cart, @Res() response: Response) {
-        const execRes = await this.cartService.createEntity(data)
+    async createNewCart(@Body() data: CartEntity, @Res() response: Response) {
+        const execRes = await this.cartService.createDocument(data)
         if (execRes) {
             response.status(200).json(execRes)
         }
@@ -61,7 +61,7 @@ export class CartController {
 
     @Delete(':id')
     async removeCartById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.cartService.removeEntityById(id)
+        const execRes = await this.cartService.removeDocumentById(id)
         if (execRes) {
             response.status(200).json({ success: true, message: "Cart deleted" })
         }
@@ -69,7 +69,7 @@ export class CartController {
     }
 
     @Put(':id')
-    async updateOrderById(@Param('id') id: string, @Body() data: Partial<Cart>) { // TODO: create dto for orders 
-        const execRes = await this.cartService.updateEntityById(id, data)
+    async updateOrderById(@Param('id') id: string, @Body() data: Partial<CartEntity>) { // TODO: create dto for orders 
+        const execRes = await this.cartService.updateDocumentById(id, data)
     }
 }

@@ -36,19 +36,19 @@ export class CategoryController {
 
     @Get('/')
     async getAllDocs(@Res() response: Response) {
-        const allDocs = await this.categoryService.getAllEntities()
+        const allDocs = await this.categoryService.getAllDocuments()
         response.json(allDocs)
     }
 
     @Get('/id/:id')
     async getCategoryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const category = await this.categoryService.getEntityById(id)
+        const category = await this.categoryService.getDocumentById(id)
         response.json(category)
     }
 
     @Get('/count')
     async getCategoryEntriesCount(@Res() response: Response) {
-        const catCount = await this.categoryService.getEntitiesCount()
+        const catCount = await this.categoryService.getDocumentsCount()
         response.json(catCount)
     }
 
@@ -62,7 +62,7 @@ export class CategoryController {
         },
         @Res() response: Response
     ) {
-        const category = await this.categoryService.createEntity({
+        const category = await this.categoryService.createDocument({
             name: body.name,
             // @ts-ignore
             //subCat: body.subCat,
@@ -79,7 +79,7 @@ export class CategoryController {
 
     @Delete('/:id')
     async removeById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const deleted = await this.categoryService.removeEntityById(id);
+        const deleted = await this.categoryService.removeDocumentById(id);
 
         if (!deleted) {
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
@@ -96,7 +96,7 @@ export class CategoryController {
         @Body() body: {name: string, images: string[], color: string},
         @Res() response: Response
     ) {
-        const updatedCat = await this.categoryService.updateEntityById(
+        const updatedCat = await this.categoryService.updateDocumentById(
             id,
             {
                 name: body.name,

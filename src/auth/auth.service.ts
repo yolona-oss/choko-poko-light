@@ -36,7 +36,7 @@ export class AuthService {
         const { password } = userInfo;
 
         const passwordHash = Crypto.createPasswordHash(password)
-        const newUser = await this.usersService.createEntity({...userInfo, password: passwordHash})
+        const newUser = await this.usersService.createDocument({...userInfo, password: passwordHash})
 
         const token = this.generateToken(newUser)
 

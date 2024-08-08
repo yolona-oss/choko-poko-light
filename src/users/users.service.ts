@@ -30,7 +30,7 @@ export class UsersService extends CRUDService<UserDocument> {
         return await super.findOne({ email: email })
     }
 
-    override async createEntity(userInfo: Omit<UserDocument, keyof Document>) {
+    override async createDocument(userInfo: Omit<UserDocument, keyof Document>) {
         const isDuplicate = await this.getEntityByEmail(userInfo.email)
         const isPhoneDuplicate = await this.getEntityByPhone(userInfo.phone)
         if (isDuplicate || isPhoneDuplicate) {
@@ -38,14 +38,14 @@ export class UsersService extends CRUDService<UserDocument> {
         }
 
         userInfo.isAdmin = false
-        return super.createEntity(userInfo)
+        return super.createDocument(userInfo)
     }
 
     async removeUserById(id: string) {
-        return await super.removeEntityById(id)
+        return await super.removeDocumentById(id)
     }
 
-    async updateEntityByIdSafe(id: string, newUserInfo: Partial<UserEntity>, currentPassword?: string) {
+    async updateDocumentByIdSafe(id: string, newUserInfo: Partial<UserEntity>, currentPassword?: string) {
         if (Object.keys(newUserInfo).length == 0) {
             throw new AppError(AppErrorTypeEnum.DB_NOTHING_TO_UPDATE)
         }
@@ -54,7 +54,7 @@ export class UsersService extends CRUDService<UserDocument> {
             throw new UnauthorizedException("Cannot promote to admin")
         }
 
-        const existsUser = await this.getEntityById(id)
+        const existsUser = await this.getDocumentById(id)
         if (!existsUser) {
             throw "User dont exists"
         }
@@ -76,7 +76,7 @@ export class UsersService extends CRUDService<UserDocument> {
             })
         }
 
-        const updated = await super.updateEntityById(id, newUserInfo)
+        const updated = await super.updateDocumentById(id, newUserInfo)
         if (!updated) {
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
         }
@@ -85,14 +85,14 @@ export class UsersService extends CRUDService<UserDocument> {
     }
 
     async changePassword(id: string, currentPassword: string, newPassword: string): Promise<UserEntity> {
-        return await this.updateEntityByIdSafe(id, { password: newPassword }, currentPassword)
+        return await this.updateDocumentByIdSafe(id, { password: newPassword }, currentPassword)
     }
 
     /***
-     * @deprecated Use UsersService::updateEntityByIdSafe instead
+     * @deprecated Use UsersService::updateDocumentByIdSafe instead
      */
-    async updateEntityById(id: string, newData: Partial<UserDocument>) {
-        throw new Error("Use UsersService::updateEntityByIdSafe instead")
-        return super.updateEntityById(id, newData)
+    async updateDocumentById(id: string, newData: Partial<UserDocument>) {
+        throw new Error("Use UsersService::updateDocumentByIdSafe instead")
+        return super.updateDocumentById(id, newData)
     }
 }

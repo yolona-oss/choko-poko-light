@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProductReviewsService } from './product-reviews.service';
-import { ProductReviews } from './product-reviews.schema';
+import { ProductReviewsEntity } from './product-reviews.schema';
 import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
 
 @Controller()
@@ -18,13 +18,13 @@ export class ProductReviewsController {
 
     @Get('/')
     async getProductReviews(@Res() response: Response) {
-        const execRes = await this.productReviewsService.getAllEntities()
+        const execRes = await this.productReviewsService.getAllDocuments()
         response.status(200).json(execRes)
     }
 
     @Get('/count')
     async getReviewsCount(@Res() response: Response) {
-        const execRes = await this.productReviewsService.getEntitiesCount()
+        const execRes = await this.productReviewsService.getDocumentsCount()
         response.status(200).json({
             productsReviews: execRes
         })
@@ -40,13 +40,13 @@ export class ProductReviewsController {
 
     @Get('/id/:id')
     async getProductReviewsById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const execRes = await this.productReviewsService.getEntityById(id)
+        const execRes = await this.productReviewsService.getDocumentById(id)
         response.status(200).send(execRes)
     }
 
     @Post('/create')
-    async createNewProductReview(@Body() data: ProductReviews, @Res() response: Response) {
-        const execRes = await this.productReviewsService.createEntity(data)
+    async createNewProductReview(@Body() data: ProductReviewsEntity, @Res() response: Response) {
+        const execRes = await this.productReviewsService.createDocument(data)
         response.status(200).json(execRes)
     }
 }

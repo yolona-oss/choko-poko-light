@@ -45,7 +45,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
             existingImagesCollection.images.concat(imagesURL)
             images = await existingImagesCollection.save()
         } else {
-            images = await super.createEntity({ images: imagesURL, collectionName: collectionName })
+            images = await super.createDocument({ images: imagesURL, collectionName: collectionName })
         }
 
         if (!images) {
@@ -58,15 +58,15 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         return images
     }
 
-    override async removeEntityById(id: string) {
-        const imagesEntity = await this.getEntityById(id)
+    override async removeDocumentById(id: string) {
+        const imagesEntity = await this.getDocumentById(id)
         if (!imagesEntity) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }
         for (const image of imagesEntity.images) {
             await this.cloudinaryService.destroyFile(image)
         }
-        return await super.removeEntityById(id)
+        return await super.removeDocumentById(id)
     }
 
     private async removeConcreetImage(entity: ImagesDocument | null, filename: string) {
@@ -84,7 +84,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     }
 
     async removeConcreetImageFromEntityById(id: string, filename: string) {
-        const entity = await super.getEntityById(id)
+        const entity = await super.getDocumentById(id)
         return await this.removeConcreetImage(entity, filename)
     }
 
@@ -96,8 +96,8 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     /***
      * @deprecated Use ImageUploadService::uploadImages instead
      */
-    override async createEntity(data: Omit<ImagesDocument, keyof Document>) {
+    override async createDocument(data: Omit<ImagesDocument, keyof Document>) {
         throw new Error("Use ImageUploadService::uploadImages instead")
-        return super.createEntity(data)
+        return super.createDocument(data)
     }
 }

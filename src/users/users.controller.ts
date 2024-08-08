@@ -26,19 +26,19 @@ export class UsersController {
 
     @Get()
     async getAllUsers(@Res() response: Response) {
-        this.usersService.getAllEntities()
+        this.usersService.getAllDocuments()
             .then((users) => response.json(users))
     }
 
     @Get('/count')
     async getUsersCount(@Res() response: Response) {
-        this.usersService.getEntitiesCount()
+        this.usersService.getDocumentsCount()
             .then((count) => response.json({userCount: count}))
     }
 
     @Get(':id')
     async getUserById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        this.usersService.getEntityById(id)
+        this.usersService.getDocumentById(id)
             .then((user) => response.json(user))
     }
 
@@ -56,7 +56,7 @@ export class UsersController {
         @Body() data: Partial<UserEntity>,
         @Res() response: Response
     ) {
-        this.usersService.updateEntityByIdSafe(id, data, data.password)
+        this.usersService.updateDocumentByIdSafe(id, data, data.password)
             .then(() => response.json({success: true}))
     }
 

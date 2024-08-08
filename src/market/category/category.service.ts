@@ -16,7 +16,7 @@ export class CategoryService extends CRUDService<CategoryDocument> {
     }
 
     async getFiltredEntities(page: number, perPage: number) {
-        const totalDocs = await this.getEntitiesCount();
+        const totalDocs = await this.getDocumentsCount();
         const totalPages = Math.ceil(totalDocs / perPage);
 
         if (page > totalPages) {

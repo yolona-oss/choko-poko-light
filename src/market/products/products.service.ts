@@ -1,7 +1,7 @@
 import { Model, Document } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { Product, ProductDocument } from './products.schema';
+import { ProductEntity, ProductDocument } from './products.schema';
 import { CRUDService } from 'internal/crud-service';
 import { RecentlyViewdService } from './recently-viewd/recently-viewd.service';
 import { CategoryService } from 'market/category/category.service';
@@ -102,7 +102,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
         const _page = parseInt(<string>page)
         const _perPage = parseInt(<string>perPage)
 
-        const totalEntries = await this.getEntitiesCount();
+        const totalEntries = await this.getDocumentsCount();
         const totalPages   = +Math.ceil(totalEntries / _perPage);
 
         return {
@@ -141,7 +141,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
         if (pagesQuantity.page && (pagesQuantity.perPage > 0)) {
             entries = await this.getEntriesByPage(query, pagesQuantity.page, pagesQuantity.perPage)
         } else {
-            entries = await this.getAllEntriesByQuery(query)
+            entries = await this.getAllDocumentsByQuery(query)
         }
 
         return {
@@ -165,7 +165,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
         if (pagesQuantity.page && (pagesQuantity.perPage > 0)) {
             entries = await this.recentlyViewdService.getEntriesByPage(query, pagesQuantity.page, pagesQuantity.perPage)
         } else {
-            entries = await this.recentlyViewdService.getAllEntriesByQuery(query)
+            entries = await this.recentlyViewdService.getAllDocumentsByQuery(query)
         }
 
         return {
@@ -175,15 +175,15 @@ export class ProductsService extends CRUDService<ProductDocument> {
         }
     }
 
-    async createNewEntry(newProduct: Product) {
-        const categoryEntry = await this.categoryService.getAllEntities()
+    async createNewEntry(newProduct: ProductEntity) {
+        const categoryEntry = await this.categoryService.getAllDocuments()
 
         if (!categoryEntry) {
             throw "Invalid category"
         }
 
         const images = new Array<String>
-        const imageUploadEntries = await this.imageUploadService.getAllEntities()
+        const imageUploadEntries = await this.imageUploadService.getAllDocuments()
         const _images = imageUploadEntries?.map((item: {images: string[], id: string}) => {
             item.images?.map((image: string) => {
                 images.push(image);
@@ -191,11 +191,11 @@ export class ProductsService extends CRUDService<ProductDocument> {
             })
         })
 
-        return await super.createEntity(newProduct)
+        return await super.createDocument(newProduct)
     }
 
-    override async removeEntityById(id: string) {
-        const productEntry = await this.getEntityById(id)
+    override async removeDocumentById(id: string) {
+        const productEntry = await this.getDocumentById(id)
         if (!productEntry) {
             throw "Product with given ID not found"
         }
@@ -213,16 +213,16 @@ export class ProductsService extends CRUDService<ProductDocument> {
         return await this.productModel.findByIdAndDelete(id)
     }
 
-    override async getAllEntities() {
+    override async getAllDocuments() {
         return await this.productModel.find().populate("category subCat").exec()
     }
 
     // search func TODO
-    async getAllEntriesByQuery(query: Object) {
+    async getAllDocumentsByQuery(query: Object) {
         return await this.productModel.find(query).populate("category subCat").exec()
     }
 
-    override async getEntityById(id: string) {
+    override async getDocumentById(id: string) {
         const entity = await this.productModel.findById(id).populate("category subCat").exec()
         if (!entity) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
@@ -233,8 +233,8 @@ export class ProductsService extends CRUDService<ProductDocument> {
     /**
      * @deprecated Use createNewEntry instead. Execution will throw the error
      */
-    override async createEntity(data: Omit<ProductDocument, keyof Document>) {
+    override async createDocument(data: Omit<ProductDocument, keyof Document>) {
         throw new Error("Use ProductsService::createNewEntry instead. createEntry not valid")
-        return await super.createEntity(data)
+        return await super.createDocument(data)
     }
 }

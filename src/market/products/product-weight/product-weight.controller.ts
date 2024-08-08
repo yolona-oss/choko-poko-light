@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProductWeightService } from './product-weight.service';
-import { ProductWeight } from './product-weight.schema';
+import { ProductWeightEntity } from './product-weight.schema';
 
 @Controller()
 export class ProductWeightController {
@@ -20,25 +20,25 @@ export class ProductWeightController {
 
     @Get('/')
     async getAllProductWeights(@Res() response: Response) {
-        const execRes = await this.productWeightSerivce.getAllEntities()
+        const execRes = await this.productWeightSerivce.getAllDocuments()
         response.status(200).json(execRes)
     }
 
     @Get('/id/:id')
     async getProductWeightById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.productWeightSerivce.getEntityById(id)
+        const execRes = await this.productWeightSerivce.getDocumentById(id)
         response.status(200).json(execRes)
     }
 
     @Post('/create')
-    async createProductWeight(@Body() data: ProductWeight, @Res() response: Response) {
-        const execRes = await this.productWeightSerivce.createEntity(data)
+    async createProductWeight(@Body() data: ProductWeightEntity, @Res() response: Response) {
+        const execRes = await this.productWeightSerivce.createDocument(data)
         response.status(200).json(execRes)
     }
 
     @Delete('/:id')
     async deleteProductWeightById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.productWeightSerivce.removeEntityById(id)
+        const execRes = await this.productWeightSerivce.removeDocumentById(id)
         response.status(200).json({
             message: 'Item deleted',
             success: false
@@ -48,10 +48,10 @@ export class ProductWeightController {
     @Put('/:id')
     async updateProductWeight(
         @Param('id') id: string,
-        @Body() data: Partial<ProductWeight>,
+        @Body() data: Partial<ProductWeightEntity>,
         @Res() response: Response
     ) {
-        const execRes = await this.productWeightSerivce.updateEntityById(id, data)
+        const execRes = await this.productWeightSerivce.updateDocumentById(id, data)
         response.status(200).send(execRes)
     }
 }

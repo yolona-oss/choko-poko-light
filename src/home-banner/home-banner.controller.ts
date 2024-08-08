@@ -8,7 +8,7 @@ export class HomeBannerController {
     constructor(private homeBannerService: HomeBannerService) {}
 
     @Get()
-    async getAllEntries(@Res() response: Response) {
+    async getAll(@Res() response: Response) {
         const entries = await this.homeBannerService.getAll()
         if (entries) {
             return response.status(200).json(entries)
@@ -34,17 +34,8 @@ export class HomeBannerController {
         throw new BadRequestException("Cannot add new entries")
     }
 
-    @Delete('deleteImage')
-    async removeEntry(@Query('img') imgUrl: string, @Res() response: Response) {
-        const execRes = await this.homeBannerService.removeFromCloudinary(extractFileName(imgUrl))
-        if (execRes) {
-            return response.status(200).send(execRes)
-        }
-        throw new Error()
-    }
-
     @Delete(':id')
-    async removeEntryById(@Param('id') id: string, @Res() response: Response) {
+    async removeById(@Param('id') id: string, @Res() response: Response) {
         const execRes = await this.homeBannerService.removeById(id)
         if (execRes) {
             return response.status(200).json({success: true, message: "Slide deleted"})
