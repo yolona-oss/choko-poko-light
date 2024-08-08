@@ -32,8 +32,7 @@ export class ProductReviewsController {
 
     // now only one param avaal
     @Get('/filtred')
-    async getFiltredProductReviews(@Query('productId') id: string, @Res() response: Response) {
-        console.log(id)
+    async getFiltredProductReviews(@Param('productId') id: string, @Res() response: Response) {
         const execRes = await this.productReviewsService.findOne({productId: id})
         response.status(200).json([execRes])
     }

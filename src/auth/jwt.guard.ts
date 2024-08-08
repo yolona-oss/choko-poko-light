@@ -22,13 +22,14 @@ export class JwtGuard extends AuthGuard('strategy-jwt') {
     canActivate(
         context: ExecutionContext,
     ): Promise<boolean> | Observable<boolean> | boolean {
-        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        if (isPublic) {
-            return true;
-        }
+        // now with boottom defention this code is unused
+        //const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+        //    context.getHandler(),
+        //    context.getClass(),
+        //]);
+        //if (isPublic) {
+        //    return true;
+        //}
 
         const isRoleBased = this.reflector.getAllAndOverride<string>(ROLES_KEY, [
             context.getHandler(),

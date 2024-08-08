@@ -29,7 +29,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
             overwrite: false,
         };
 
-        // TODO check if exsisting
+        // TODO check if exsisting with redis?
 
         for (const file of files) {
             const uploadedFile = await this.cloudinaryService.uploadFile(file.path, cloudinaryUploadOptions);

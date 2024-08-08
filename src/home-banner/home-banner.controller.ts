@@ -1,9 +1,8 @@
-import { Query, Param, Res, Get, Post, Delete, Put, Body, Controller, HttpException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Param, Res, Get, Post, Delete, Put, Body, Controller, HttpException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { Response } from 'express'
 import { HomeBannerService } from './home-banner.service';
-import { extractFileName } from 'internal/utils';
 
-@Controller('homeBanner')
+@Controller('home-banner')
 export class HomeBannerController {
     constructor(private homeBannerService: HomeBannerService) {}
 
@@ -16,7 +15,7 @@ export class HomeBannerController {
         throw new BadRequestException("Cannot retrive banners")
     }
 
-    @Get(':id')
+    @Get('/id/:id')
     async getEntryById(@Param('id') id: string, @Res() response: Response) {
         const entry = await this.homeBannerService.getById(id)
         if (entry) {

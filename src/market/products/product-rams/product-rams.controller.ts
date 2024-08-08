@@ -21,66 +21,26 @@ export class ProductRamsController {
 
     @Get('/')
     async getProductRAMs(@Res() response: Response) {
-        try {
-            const execRes = await this.productRAMsService.getAllDocuments()
-            if (execRes) {
-                response.status(200).json(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productRAMsService.getAllDocuments()
+        response.status(200).json(execRes)
     }
 
     @Get('/id/:id')
     async getProductRAMsById(@Param('id') id: string, @Res() response: Response) {
-        try {
-            const execRes = await this.productRAMsService.getDocumentById(id)
-            if (execRes) {
-                response.status(200).send(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productRAMsService.getDocumentById(id)
+        response.status(200).send(execRes)
     }
 
     @Post('/create')
     async createProductRAMs(@Body() data: ProductRAMsEntity, @Res() response: Response) {
-        try {
-            const execRes = await this.productRAMsService.createDocument(data)
-            if (execRes) {
-                response.status(200).json(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productRAMsService.createDocument(data)
+        response.status(200).json(execRes)
     }
 
     @Delete('/:id')
     async removeProductRAMsById(@Param('id') id: string, @Res() response: Response) {
-        try {
-            const execRes = await this.productRAMsService.removeDocumentById(id)
-            if (execRes) {
-                response.status(200).json(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productRAMsService.removeDocumentById(id)
+        response.status(200).json(execRes)
     }
 
     @Put('/:id')
@@ -89,17 +49,7 @@ export class ProductRamsController {
         @Body() data: Partial<ProductRAMsEntity>,
         @Res() response: Response
     ) {
-        try {
-            const execRes = await this.productRAMsService.updateDocumentById(id, data)
-            if (execRes) {
-                response.status(200).json(execRes)
-            } else {
-                response.status(500).json({
-                    success: false
-                })
-            }
-        } catch (e) {
-            throw new BadRequestException(e)
-        }
+        const execRes = await this.productRAMsService.updateDocumentById(id, data)
+        response.status(200).json(execRes)
     }
 }

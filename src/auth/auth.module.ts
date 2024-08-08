@@ -15,15 +15,15 @@ import { JwtGuard } from './jwt.guard';
     providers: [
         AuthService,
         //JwtGuard,
-        //{
-        //    provide: APP_GUARD,
-        //    useClass: JwtGuard,
-        //},
+        {
+            provide: APP_GUARD,
+            useClass: JwtGuard,
+        },
     ],
     imports: [
         PassportModule.register({
             property: 'user',
-            defaultStrategy: 'jwt'
+            defaultStrategy: 'strategy-jwt'
         }),
         JwtModule.registerAsync({
             useFactory: async (configService: ConfigService) => {
