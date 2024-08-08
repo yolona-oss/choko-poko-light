@@ -21,7 +21,7 @@ export class OrdersController {
         private ordersService: OrdersService
     ) {}
 
-    @Get()
+    @Get('/')
     async getAllOrders(@Res() response: Response) {
         const execRes = await this.ordersService.getAllEntities()
         if (execRes) {
@@ -31,7 +31,7 @@ export class OrdersController {
         }
     }
 
-    @Get(':id')
+    @Get('/id/:id')
     async getOrderById(@Param('id') id: string, @Res() response: Response) {
         const execRes = await this.ordersService.getEntityById(id)
         if (execRes) {
@@ -41,7 +41,7 @@ export class OrdersController {
         }
     }
 
-    @Get('/get/count')
+    @Get('/count')
     async getOrdersCount(@Res() response: Response) {
         const execRes = await this.ordersService.getEntitiesCount()
         if (execRes) {
@@ -63,7 +63,7 @@ export class OrdersController {
         }
     }
 
-    @Delete(':id')
+    @Delete('/:id')
     async removeOrderById(@Param('id') id: string, @Res() response: Response) {
         const execRes = await this.ordersService.removeEntityById(id)
         if (execRes) {
@@ -73,7 +73,7 @@ export class OrdersController {
         }
     }
 
-    @Put(':id')
+    @Put('/:id')
     async updateOrderById(@Param('id') id: string, @Body() data: Partial<Orders>) { // TODO: create dto for orders 
         const execRes = await this.ordersService.updateEntityById(id, data)
     }

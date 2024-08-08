@@ -50,6 +50,18 @@ const errors: Record<AppErrorTypeEnum, IErrorMessage> = {
         httpStatus: HttpStatus.NOT_ACCEPTABLE,
         errorMessage: 'Invalid ObjectId passed.',
         userMessage: 'Invalid ObjectId passed.'
+    },
+    [AppErrorTypeEnum.CANNOT_UPLOAD_IMAGE]: {
+        type: AppErrorTypeEnum.CANNOT_UPLOAD_IMAGE,
+        httpStatus: HttpStatus.BAD_REQUEST, // TODO change
+        errorMessage: 'Cannot upload image.',
+        userMessage: 'Cannot upload image.'
+    },
+    [AppErrorTypeEnum.DB_INVALID_RANGE]: {
+        type: AppErrorTypeEnum.DB_INVALID_RANGE,
+        httpStatus: HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE, // TODO change
+        errorMessage: 'Not in ranger.',
+        userMessage: 'Not in ranger.'
     }
 }
 

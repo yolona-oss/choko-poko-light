@@ -11,6 +11,7 @@ import { extractFileName } from 'internal/utils';
 import { CloudinaryService } from 'common/cloudinary/cloudinary.service'
 import { AppError } from 'internal/error/AppError';
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { DEFAULT_IMAGES_ENTITY_COLLECTION_NAME } from 'common/constants';
 
 export interface ProductFilterParams {
         page?: string,
@@ -43,8 +44,6 @@ export class ProductsService extends CRUDService<ProductDocument> {
         private subCategoryService: SubCategoryService,
 
         private imageUploadService: ImageUploadService,
-
-        private cloudinaryService: CloudinaryService
     ) {
         super(productModel)
     }
@@ -202,10 +201,12 @@ export class ProductsService extends CRUDService<ProductDocument> {
         }
         const productImages = productEntry.images
 
+        // TODO for campatibility tables Images and no one other dont bounds((
         for (const image of productImages) {
-            const imageName = extractFileName(image)
-            if (imageName) {
-                await this.cloudinaryService.destroyFile(imageName)
+            try {
+                await this.imageUploadService.removeConcreetImageFromEntryByCollectionName(DEFAULT_IMAGES_ENTITY_COLLECTION_NAME, image)
+            } catch(e) {
+                // dont care its already be in products model before normal images model implements
             }
         }
 

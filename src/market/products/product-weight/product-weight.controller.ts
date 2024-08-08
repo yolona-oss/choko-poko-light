@@ -24,7 +24,7 @@ export class ProductWeightController {
         response.status(200).json(execRes)
     }
 
-    @Get('/:id')
+    @Get('/id/:id')
     async getProductWeightById(@Param('id') id: string, @Res() response: Response) {
         const execRes = await this.productWeightSerivce.getEntityById(id)
         response.status(200).json(execRes)

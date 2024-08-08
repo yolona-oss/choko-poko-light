@@ -53,7 +53,7 @@ export abstract class CRUDService<T extends Document> {
     }
 
     async createEntity(data: Omit<T, keyof Document>) {
-        const newEntity = (await this.model.create(data)).save()
+        const newEntity = await this.model.create(data)
         if (!newEntity) {
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
         }

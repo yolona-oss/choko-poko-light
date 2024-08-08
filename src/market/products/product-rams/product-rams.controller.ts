@@ -35,7 +35,7 @@ export class ProductRamsController {
         }
     }
 
-    @Get('/:id')
+    @Get('/id/:id')
     async getProductRAMsById(@Param('id') id: string, @Res() response: Response) {
         try {
             const execRes = await this.productRAMsService.getEntityById(id)

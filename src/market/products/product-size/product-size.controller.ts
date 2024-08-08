@@ -34,7 +34,7 @@ export class ProductSizeController {
         }
     }
 
-    @Get('/:id')
+    @Get('/id/:id')
     async getProductSizeById(@Param('id') id: string, @Res() response: Response) {
         try {
             const execRes = await this.productSizeService.getEntityById(id)

@@ -1,0 +1,4 @@
+export const DEFAULT_IMAGES_ENTITY_COLLECTION_NAME = 'default'
+
+export const DEFAULT_REQUEST_PAGE = 1 
+export const DEFAULT_REQUEST_PER_PAGE = 8

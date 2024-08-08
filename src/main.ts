@@ -9,9 +9,13 @@ async function bootstrap() {
     const configService = app.get(ConfigService);
     const port = configService.get<number>('port');
 
+    const corsOptions = {
+
+    }
+
     app.setGlobalPrefix('api')
     app.useGlobalFilters(new DispatchError())
-    app.enableCors()
+    app.enableCors(corsOptions)
 
     await app.listen(<number>port,
                      () => {

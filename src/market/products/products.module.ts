@@ -1,7 +1,6 @@
 import { RouterModule } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CloudinaryModule } from 'common/cloudinary/cloudinary.module';
 import { ImageUploadModule } from 'image-upload/image-upload.module';
 import { CategoryModule } from 'market/category/category.module';
 import { CategorySchema } from 'market/category/category.schema';
@@ -53,7 +52,6 @@ import { RecentlyViewdModule } from './recently-viewd/recently-viewd.module';
         RecentlyViewdModule,
         CategoryModule,
         ImageUploadModule,
-        CloudinaryModule,
     ],
     providers: [ProductsService],
     controllers: [ProductsController],

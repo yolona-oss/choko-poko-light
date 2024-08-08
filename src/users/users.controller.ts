@@ -30,7 +30,7 @@ export class UsersController {
             .then((users) => response.json(users))
     }
 
-    @Get('/get/count')
+    @Get('/count')
     async getUsersCount(@Res() response: Response) {
         this.usersService.getEntitiesCount()
             .then((count) => response.json({userCount: count}))

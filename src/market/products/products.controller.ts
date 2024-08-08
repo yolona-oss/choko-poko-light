@@ -19,7 +19,7 @@ import { RecentlyViewd } from './recently-viewd/recently-viewd.schema';
 export class ProductsController {
     constructor(private productsService: ProductsService) {}
 
-    @Get('/')
+    @Get('/filtred')
     async getFiltredProducts(@Query() query: ProductFilterParams, @Res() response: Response) {
         const defaultedQuery = {
             ...defaultsProductFilterParams,
@@ -30,13 +30,13 @@ export class ProductsController {
         response.status(200).send(execRes)
     }
 
-    @Get('/get/all')
+    @Get('/')
     async getAllProducts(@Res() response: Response) {
         const execRes = await this.productsService.getAllEntities()
         response.json(execRes)
     }
 
-    @Get('/get/count')
+    @Get('/count')
     async getProductsCount(@Res() response: Response) {
         const execRes = await this.productsService.getEntitiesCount()
         response.status(200).json({
@@ -44,7 +44,7 @@ export class ProductsController {
         })
     }
 
-    @Get('/featured')
+    @Get('/get/featured')
     async getFeaturedProducts(@Query() query: ProductFilterParams, @Res() response: Response) {
         const defaultedQuery = {
             ...defaultsProductFilterParams,
@@ -81,7 +81,7 @@ export class ProductsController {
         response.status(200).json(execRes)
     }
 
-    @Get('/recentlyViewd')
+    @Get('/recentlyViewd/')
     async getRecentlyViewd(@Res() response: Response) {
         const execRes = await this.productsService.recentlyViewdService.getAllEntities()
         response.status(200).json(execRes)
@@ -93,13 +93,13 @@ export class ProductsController {
         response.status(200).json(execRes)
     }
 
-    @Get(':id')
+    @Get('/id/:id')
     async getProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const execRes = await this.productsService.getEntityById(id)
         response.status(200).send(execRes)
     }
 
-    @Delete(':id')
+    @Delete('/:id')
     async removeProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const execRes = await this.productsService.removeEntityById(id)
         response.status(200).json({
@@ -108,7 +108,7 @@ export class ProductsController {
         })
     }
 
-    @Put(':id')
+    @Put('/:id')
     async updateProductById(
         @Param('id', ParseObjectIdPipe) id: string,
         @Body() newData: Partial<Product>,

@@ -8,30 +8,108 @@ import {
     Res,
     Controller,
     Post,
-    BadRequestException,
-    NotFoundException
 } from '@nestjs/common';
 import { Response } from 'express'
-import { Category } from './category.schema';
-import { SubCategory } from './sub-category.schema';
+import { ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
 
 import { CategoryService } from './category.service';
-import { SubCategoryService } from './sub-category.service';
+import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
+import { Public } from 'common/decorators/public.decorotor';
+import { AppError } from 'internal/error/AppError';
+import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
 
 @Controller('category')
 export class CategoryController {
     constructor(
         private categoryService: CategoryService,
-        private subCategoryService: SubCategoryService
     ) {}
 
+    @Get('/filtred')
+    async getFiltredCategories(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+        @Query('perPage', new DefaultValuePipe(8), ParseIntPipe) perPage: number,
+        @Res() response: Response
+    ) {
+        const result = await this.categoryService.getFiltredEntities(page, perPage)
+        response.status(200).json(result)
+    }
+
     @Get('/')
-    async getAllCarts(@Res() response: Response) {
-        const execRes = await this.categoryService.getAllEntities()
-        if (execRes) {
-            response.status(200).json(execRes)
+    async getAllDocs(@Res() response: Response) {
+        const allDocs = await this.categoryService.getAllEntities()
+        response.json(allDocs)
+    }
+
+    @Get('/id/:id')
+    async getCategoryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
+        const category = await this.categoryService.getEntityById(id)
+        response.json(category)
+    }
+
+    @Get('/count')
+    async getCategoryEntriesCount(@Res() response: Response) {
+        const catCount = await this.categoryService.getEntitiesCount()
+        response.json(catCount)
+    }
+
+    @Post('/create')
+    async createCategory(
+        @Body() body: {
+            name: string,
+            subCat: string,
+            images: string[],
+            color: string
+        },
+        @Res() response: Response
+    ) {
+        const category = await this.categoryService.createEntity({
+            name: body.name,
+            // @ts-ignore
+            //subCat: body.subCat,
+            images: body.images,
+            color: body.color
+        });
+
+        if (!category) {
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
         }
-        throw new NotFoundException("Cannot retrive orders")
+
+        response.json(category);
+    }
+
+    @Delete('/:id')
+    async removeById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
+        const deleted = await this.categoryService.removeEntityById(id);
+
+        if (!deleted) {
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
+        }
+
+        response.status(200).json({
+            success: true,
+        })
+    }
+
+    @Put('/:id')
+    async updateById(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Body() body: {name: string, images: string[], color: string},
+        @Res() response: Response
+    ) {
+        const updatedCat = await this.categoryService.updateEntityById(
+            id,
+            {
+                name: body.name,
+                images: body.images,
+                color: body.color
+            }
+        )
+
+        if (!updatedCat) {
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
+        }
+
+        response.json(updatedCat);
     }
 }
 
