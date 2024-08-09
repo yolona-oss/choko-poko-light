@@ -31,14 +31,14 @@ export class JwtGuard extends AuthGuard('strategy-jwt') {
         //    return true;
         //}
 
-        //const isRoleBased = this.reflector.getAllAndOverride<string>(ROLES_KEY, [
-        //    context.getHandler(),
-        //    context.getClass(),
-        //]);
-        //
-        //if (!isRoleBased) {
-        //    return true
-        //}
+        const isRoleBased = this.reflector.getAllAndOverride<string>(ROLES_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        
+        if (!isRoleBased) {
+            return true
+        }
 
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);

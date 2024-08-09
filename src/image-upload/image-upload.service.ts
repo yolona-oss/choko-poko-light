@@ -32,8 +32,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         // TODO check if exsisting with redis?
 
         for (const file of files) {
-            //const uploadedFile = await this.cloudinaryService.uploadFile(file.path, cloudinaryUploadOptions);
-            const uploadedFile = {secure_url: "asdfasdf"}
+            const uploadedFile = await this.cloudinaryService.uploadFile(file.path, cloudinaryUploadOptions);
             imagesURL.push(uploadedFile.secure_url)
             fs.unlinkSync(`uploads/${file.filename}`)
         }
@@ -56,7 +55,10 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
         }
 
-        return images
+        return {
+            imagesDocument: images,
+            uploadedImages: imagesURL
+        }
     }
 
     override async removeDocumentById(id: string) {

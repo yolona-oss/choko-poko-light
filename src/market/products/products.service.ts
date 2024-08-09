@@ -48,27 +48,28 @@ export class ProductsService extends CRUDService<ProductDocument> {
     }
 
     async createNewEntry(newProduct: ProductEntity) {
-        const categoryEntry = await this.categoryService.getDocumentById(
-            // @ts-ignore
-            newProduct.category
-        )
+        // const categoryEntry = await this.categoryService.getDocumentById(
+        //     // @ts-ignore
+        //     newProduct.category
+        // )
 
-        if (!categoryEntry) {
-            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
-                errorMessage: 'Invalid category',
-                userMessage: 'Invalid category'
-            })
-        }
+        // if (!categoryEntry) {
+        //     throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+        //         errorMessage: 'Invalid category',
+        //         userMessage: 'Invalid category'
+        //     })
+        // }
 
-        for (const image of newProduct.images) {
-            const isUploaded = await this.imageUploadService.isImageUploaded(image)
-            // TODO remove logs
-            console.log("is uploaded: " + isUploaded)
-            if (!isUploaded) {
-                throw new Error("not uploaded")
-            }
-        }
+        // for (const image of newProduct.images) {
+        //     const isUploaded = await this.imageUploadService.isImageUploaded(image)
+        //     // TODO remove logs
+        //     console.log("is uploaded: " + isUploaded)
+        //     if (!isUploaded) {
+        //         throw new Error("not uploaded")
+        //     }
+        // }
 
+        console.log(newProduct)
         return await super.createDocument(newProduct)
     }
 
