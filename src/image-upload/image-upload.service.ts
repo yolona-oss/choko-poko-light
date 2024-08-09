@@ -32,7 +32,8 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         // TODO check if exsisting with redis?
 
         for (const file of files) {
-            const uploadedFile = await this.cloudinaryService.uploadFile(file.path, cloudinaryUploadOptions);
+            //const uploadedFile = await this.cloudinaryService.uploadFile(file.path, cloudinaryUploadOptions);
+            const uploadedFile = {secure_url: "asdfasdf"}
             imagesURL.push(uploadedFile.secure_url)
             fs.unlinkSync(`uploads/${file.filename}`)
         }
@@ -42,8 +43,8 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         const existingImagesCollection = await super.findOne({collectionName: collectionName})
         let images: ImagesDocument | null
         if (existingImagesCollection) {
-            existingImagesCollection.images.concat(imagesURL)
-            images = await existingImagesCollection.save()
+            const _images = existingImagesCollection.images.concat(imagesURL)
+            images = await this.imageUploadModel.findByIdAndUpdate(existingImagesCollection.id, {images: _images})
         } else {
             images = await super.createDocument({ images: imagesURL, collectionName: collectionName })
         }

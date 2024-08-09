@@ -15,8 +15,8 @@ export class DispatchError implements ExceptionFilter {
                 httpCode: exception.httpStatus,
             });
         } else if (exception instanceof UnauthorizedException) {
-            console.log(exception.message);
-            console.error(exception.stack);
+            //console.log(exception.message);
+            //console.error(exception.stack);
             return res.status(HttpStatus.UNAUTHORIZED).json(exception.message);
         } else if (exception.status === 403) {
             return res.status(HttpStatus.FORBIDDEN).json(exception.message);
