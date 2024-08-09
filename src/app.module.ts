@@ -15,9 +15,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ImageUploadModule } from './image-upload/image-upload.module';
 import { HomeBannerModule } from './home-banner/home-banner.module';
 import { SearchModule } from './search/search.module';
-//import { JwtGuard } from 'auth/jwt.guard';
-//import { JwtStrategy } from 'auth/pasport/jwt.strategy';
+import { JwtGuard } from 'auth/jwt.guard';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -39,12 +39,17 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
         HomeBannerModule,
         SearchModule,
         AuthModule,
+        JwtModule
     ],
     providers: [
         {
             provide: APP_GUARD,
             useClass: ThrottlerGuard
-        }
+        },
+        {
+            provide: APP_GUARD,
+            useClass: JwtGuard,
+        },
     ],
 })
 export class AppModule { }

@@ -8,17 +8,12 @@ import { UsersModule } from './../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './pasport/jwt.strategy';
-import { JwtGuard } from './jwt.guard';
 
 @Module({
     controllers: [AuthController],
     providers: [
         AuthService,
-        //JwtGuard,
-        {
-            provide: APP_GUARD,
-            useClass: JwtGuard,
-        },
+        JwtStrategy
     ],
     imports: [
         PassportModule.register({
