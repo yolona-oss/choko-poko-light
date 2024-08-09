@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type HomeBannerDocument = HomeBannerEntity & Document;
 
@@ -9,6 +9,8 @@ export type HomeBannerDocument = HomeBannerEntity & Document;
     }
 })
 export class HomeBannerEntity {
+    id: mongoose.Schema.Types.ObjectId
+
     @Prop({type: [String], required: true})
     images: string[];
 }

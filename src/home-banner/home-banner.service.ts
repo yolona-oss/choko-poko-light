@@ -5,52 +5,40 @@ import { HomeBannerDocument } from './home-banner.schema';
 import { CloudinaryService } from 'common/cloudinary/cloudinary.service';
 //import { CloudinaryService } from 'nestjs-cloudinary'
 import { extractFileName } from 'internal/utils';
+import { CRUDService } from 'internal/crud-service';
+import { AppError } from 'internal/error/AppError';
+import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { ImageUploadService } from 'image-upload/image-upload.service';
 
 @Injectable()
-export class HomeBannerService {
+export class HomeBannerService extends CRUDService<HomeBannerDocument> {
     constructor(
         @InjectModel('HomeBanner')
         private readonly homeBannerModel: Model<HomeBannerDocument>,
-        private cloudinaryService: CloudinaryService
-    ) {}
-
-    async getAll() {
-        return await this.homeBannerModel.find().exec()
+        private readonly imageService: ImageUploadService
+    ) {
+        super(homeBannerModel)
     }
 
-    async getById(id: string) {
-        return await this.homeBannerModel.findById(id)
-    }
-
-    async create(images: string[]) {
-        return await this.homeBannerModel.create({
-            images: images
-        })
-    }
-
-    async updateById(id: string, images: string[]) {
-        if (images.length <= 0) {
-            throw "Cannot update" //TODO
+    override async updateDocumentById(id: string, hbData: Partial<HomeBannerDocument>) {
+        if (!hbData.images || hbData.images.length <= 0) {
+            throw new AppError(AppErrorTypeEnum.DB_NOTHING_TO_UPDATE)
         }
 
-        return await this.homeBannerModel.findByIdAndUpdate(id, { images: images }, { new: true })
+        return await this.homeBannerModel.findByIdAndUpdate(id, {images: hbData.images}, { new: true })
     }
 
-    async removeById(id: string) {
+    override async removeDocumentById(id: string) {
         const entry = await this.homeBannerModel.findById(id)
         if (!entry) {
-            throw "Cannot retrive data from model"
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }
         const imagesUrl = entry.images;
 
         for (const url of imagesUrl) {
-            await this.removeFromCloudinary(extractFileName(url))
+            await this.imageService.removeConcreetImageFromDefaultCollection(url)
         }
 
         return await this.homeBannerModel.findByIdAndDelete(id)
-    }
-
-    async removeFromCloudinary(fileName: string) {
-        return await this.cloudinaryService.destroyFile(fileName)
     }
 }

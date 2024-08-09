@@ -29,7 +29,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
             overwrite: false,
         };
 
-        // TODO check if exsisting with redis?
+        // TODO check if exsisting with redis? and return existing
 
         for (const file of files) {
             const uploadedFile = await this.cloudinaryService.uploadFile(file.path, cloudinaryUploadOptions);
@@ -56,7 +56,11 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         }
 
         return {
+<<<<<<< HEAD
             imagesDocument: images,
+=======
+            imageCollection: images,
+>>>>>>> 000d7423fcb14a422e5f07ba7ac7a28b37c783a5
             uploadedImages: imagesURL
         }
     }
@@ -94,6 +98,10 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     async removeConcreetImageFromEntryByCollectionName(collectionName: string, filename: string) {
         const entity = await super.findOne({collectionName: collectionName})
         return await this.removeConcreetImage(entity, filename)
+    }
+
+    async removeConcreetImageFromDefaultCollection(filename: string) {
+        return await this.removeConcreetImageFromEntryByCollectionName(DEFAULT_IMAGES_ENTITY_COLLECTION_NAME, filename)
     }
 
     /***

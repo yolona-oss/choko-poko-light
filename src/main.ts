@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'app.module';
 import { ConfigService } from '@nestjs/config';
-import { DispatchError } from 'internal/DispatchError';
+import { AllExeptionFilter } from 'common/exceptions/all-exception.filter';
 import helmet from 'helmet';
 import compression from 'compression';
 
@@ -21,7 +21,7 @@ async function bootstrap() {
     app.use(helmet(helmetOptions))
     app.use(compression())
     app.setGlobalPrefix('api')
-    app.useGlobalFilters(new DispatchError())
+    app.useGlobalFilters(new AllExeptionFilter())
     app.enableCors(corsOptions)
 
     await app.listen(<number>port,

@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtPayload } from 'auth/interfaces/jwt-payload.interface';
 import { IS_PUBLIC_KEY } from 'common/decorators/public.decorotor';
 import { ROLES_KEY } from 'common/decorators/role.decorator';
 
@@ -35,7 +35,11 @@ export class JwtGuard extends AuthGuard('strategy-jwt') {
             context.getHandler(),
             context.getClass(),
         ]);
+<<<<<<< HEAD:src/auth/jwt.guard.ts
         
+=======
+
+>>>>>>> 000d7423fcb14a422e5f07ba7ac7a28b37c783a5:src/common/guards/jwt.guard.ts
         if (!isRoleBased) {
             return true
         }
