@@ -2,28 +2,30 @@ import {ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Unauth
 import {AppError} from 'internal/error/AppError';
 
 @Catch(/*HttpException*/)
-export class DispatchError implements ExceptionFilter {
+export class AllExeptionFilter implements ExceptionFilter {
     catch(exception: any, host: ArgumentsHost): any {
         const ctx = host.switchToHttp();
-        const res = ctx.getResponse();
+        const response = ctx.getResponse();
+        //const request = ctx.getRequest();
 
         if (exception instanceof AppError) {
-            return res.status(exception.httpStatus).json({
+            return response.status(exception.httpStatus).json({
                 errorCode: exception.errorCode,
                 errorMsg: exception.errorMessage,
                 usrMsg: exception.userMessage,
                 httpCode: exception.httpStatus,
             });
         } else if (exception instanceof UnauthorizedException) {
+            // TODO create render to login
             //console.log(exception.message);
             //console.error(exception.stack);
-            return res.status(HttpStatus.UNAUTHORIZED).json(exception.message);
+            return response.status(HttpStatus.UNAUTHORIZED).json(exception.message);
         } else if (exception.status === 403) {
-            return res.status(HttpStatus.FORBIDDEN).json(exception.message);
+            return response.status(HttpStatus.FORBIDDEN).json(exception.message);
         } else {
             console.error(exception.message);
             console.error(exception.stack);
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+            return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
         }
     }
 }

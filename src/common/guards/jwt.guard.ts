@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtPayload } from 'auth/interfaces/jwt-payload.interface';
 import { IS_PUBLIC_KEY } from 'common/decorators/public.decorotor';
 import { ROLES_KEY } from 'common/decorators/role.decorator';
 
@@ -31,14 +31,14 @@ export class JwtGuard extends AuthGuard('strategy-jwt') {
         //    return true;
         //}
 
-        //const isRoleBased = this.reflector.getAllAndOverride<string>(ROLES_KEY, [
-        //    context.getHandler(),
-        //    context.getClass(),
-        //]);
-        //
-        //if (!isRoleBased) {
-        //    return true
-        //}
+        const isRoleBased = this.reflector.getAllAndOverride<string>(ROLES_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+
+        if (!isRoleBased) {
+            return true
+        }
 
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
