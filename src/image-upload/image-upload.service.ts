@@ -57,7 +57,6 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
 
         return {
             imagesDocument: images,
-            imageCollection: images,
             uploadedImages: imagesURL
         }
     }

@@ -47,7 +47,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
                                      async (query, page, perPage) => await this.recentlyViewdService.getEntriesByPage(query, page, perPage))
     }
 
-    async createNewEntry(newProduct: ProductEntity) {
+    async createNewProduct(newProduct: ProductEntity) {
         // const categoryEntry = await this.categoryService.getDocumentById(
         //     // @ts-ignore
         //     newProduct.category
@@ -69,7 +69,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
         //     }
         // }
 
-        console.log(newProduct)
+        //console.log(newProduct)
         return await super.createDocument(newProduct)
     }
 
@@ -110,7 +110,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
     }
 
     /**
-     * @deprecated Use createNewEntry instead. Execution will throw the error
+     * @deprecated Use createNewProduct instead. Execution will throw the error
      */
     override async createDocument(data: Omit<ProductDocument, keyof Document>) {
         throw new Error("Use ProductsService::createNewEntry instead. createEntry not valid")
