@@ -53,3 +53,4 @@ import { JwtModule } from '@nestjs/jwt';
     ],
 })
 export class AppModule { }
+console.log(__dirname)

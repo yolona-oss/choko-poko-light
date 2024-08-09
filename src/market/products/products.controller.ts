@@ -89,7 +89,7 @@ export class ProductsController {
 
     @Post('/create')
     async createNewProduct(@Body() data: ProductEntity, @Res() response: Response) {
-        const execRes = await this.productsService.createNewEntry(data)
+        const execRes = await this.productsService.createNewProduct(data)
         response.status(200).json(execRes)
     }
 
