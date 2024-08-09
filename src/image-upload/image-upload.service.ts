@@ -56,11 +56,8 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         }
 
         return {
-<<<<<<< HEAD
             imagesDocument: images,
-=======
             imageCollection: images,
->>>>>>> 000d7423fcb14a422e5f07ba7ac7a28b37c783a5
             uploadedImages: imagesURL
         }
     }

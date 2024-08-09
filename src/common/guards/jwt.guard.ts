@@ -35,11 +35,7 @@ export class JwtGuard extends AuthGuard('strategy-jwt') {
             context.getHandler(),
             context.getClass(),
         ]);
-<<<<<<< HEAD:src/auth/jwt.guard.ts
-        
-=======
 
->>>>>>> 000d7423fcb14a422e5f07ba7ac7a28b37c783a5:src/common/guards/jwt.guard.ts
         if (!isRoleBased) {
             return true
         }

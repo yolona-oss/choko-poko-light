@@ -24,11 +24,7 @@ export class OrdersController {
     @Get('/')
     async getAllOrders(@Res() response: Response) {
         const execRes = await this.ordersService.getAllDocuments()
-        if (execRes) {
-            response.status(200).json(execRes)
-        } else {
-            throw new NotFoundException("Cannot retrive orders")
-        }
+        response.status(200).json(execRes)
     }
 
     @Get('/id/:id')
