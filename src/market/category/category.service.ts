@@ -1,7 +1,8 @@
-import { Model } from 'mongoose'
+import { Document, Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { CategoryDocument } from './category.schema';
+import { ImageUploadService } from 'image-upload/image-upload.service';
 import { CRUDService } from 'internal/crud-service';
 import { AppError } from 'internal/error/AppError';
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
@@ -10,7 +11,8 @@ import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
 export class CategoryService extends CRUDService<CategoryDocument> {
     constructor(
         @InjectModel('Category')
-        readonly categoryModel: Model<CategoryDocument>
+        readonly categoryModel: Model<CategoryDocument>,
+        private imageUploadService: ImageUploadService
     ) {
         super(categoryModel)
     }
@@ -34,5 +36,10 @@ export class CategoryService extends CRUDService<CategoryDocument> {
             totalPages: totalPages,
             page: page
         }
+    }
+
+    override async removeDocumentById(id: string) {
+        await this.imageUploadService.removeImagesFromModelById(this.categoryModel, id)
+        return super.removeDocumentById(id)
     }
 }

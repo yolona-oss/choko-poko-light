@@ -2,7 +2,6 @@ import {
     Res,
     Get,
     Post,
-    Query,
     Param,
     Body,
     Controller,

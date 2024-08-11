@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CloudinaryModule } from 'common/cloudinary/cloudinary.module';
 import { ImageUploadModule } from 'image-upload/image-upload.module';
 import { HomeBannerController } from './home-banner.controller';
 import { HomeBannerSchema } from './home-banner.schema';

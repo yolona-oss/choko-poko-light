@@ -13,6 +13,7 @@ import { ProductsController } from './products.controller';
 import { ProductSchema } from './products.schema';
 import { ProductsService } from './products.service';
 import { RecentlyViewdModule } from './recently-viewd/recently-viewd.module';
+import { ProductsFilteringService } from './products-filter.service';
 
 @Module({
     imports: [
@@ -53,7 +54,7 @@ import { RecentlyViewdModule } from './recently-viewd/recently-viewd.module';
         CategoryModule,
         ImageUploadModule,
     ],
-    providers: [ProductsService],
+    providers: [ProductsService, ProductsFilteringService],
     controllers: [ProductsController],
     exports: [ProductsService]
 })

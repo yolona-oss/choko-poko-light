@@ -1,11 +1,8 @@
-import { Document, Model } from 'mongoose'
+import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { RecentlyViewedEntity, RecentlyViewdDocument } from './recently-viewd.schema';
+import { RecentlyViewdDocument } from './recently-viewd.schema';
 import { CRUDService } from 'internal/crud-service';
-import { PartialBy } from 'internal/utils';
-
-//type SomeIt<Omit<T, keyof Document>>
 
 @Injectable()
 export class RecentlyViewdService extends CRUDService<RecentlyViewdDocument> {
@@ -15,10 +12,6 @@ export class RecentlyViewdService extends CRUDService<RecentlyViewdDocument> {
     ) {
         super(recentlyViewdModel)
     }
-
-    //async createEntry(data: PartialBy<RecentlyViewd, 'dateCreated'>) {
-    //    return this.recentlyViewdModel.create(data)
-    //}
 
     override async getAllDocuments() {
         return await this.recentlyViewdModel.find().populate("category subCat").exec()

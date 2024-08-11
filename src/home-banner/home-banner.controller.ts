@@ -1,4 +1,4 @@
-import { Param, Res, Get, Post, Delete, Put, Body, Controller, HttpException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Param, Res, Get, Post, Delete, Put, Body, Controller } from '@nestjs/common';
 import { Response } from 'express'
 import { HomeBannerService } from './home-banner.service';
 
@@ -14,20 +14,20 @@ export class HomeBannerController {
 
     @Get('/id/:id')
     async getEntryById(@Param('id') id: string, @Res() response: Response) {
-        const entry = await this.homeBannerService.getDocumentById(id)
-        return response.status(200).send(entry)
+        const doc = await this.homeBannerService.getDocumentById(id)
+        return response.status(200).send(doc)
     }
 
     @Post('/create')
     async createNewEntry(@Body() body: {images: string[]}, @Res() response: Response) {
-        const execRes = await this.homeBannerService.createDocument({images: body.images})
+        await this.homeBannerService.createDocument({images: body.images})
         return response.status(200).json({success: true, message: "Images added"})
     }
 
     @Delete(':id')
     async removeById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.homeBannerService.removeDocumentById(id)
-        return response.status(200).json({success: true, message: "Slide deleted"})
+        await this.homeBannerService.removeDocumentById(id)
+        return response.json({success: true, message: "Slide deleted"})
     }
 
     @Put(':id')
@@ -36,7 +36,7 @@ export class HomeBannerController {
         @Body() body: {images: string[]},
         @Res() response: Response
     ) {
-        const execRes = await this.homeBannerService.updateDocumentById(id, {images: body.images})
-        return response.send(execRes)
+        const updatedDoc = await this.homeBannerService.updateDocumentById(id, {images: body.images})
+        return response.send(updatedDoc)
     }
 }

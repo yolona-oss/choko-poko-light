@@ -1,7 +1,7 @@
-import { Document, Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Document, Model, MongooseError } from 'mongoose';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ImagesEntity, ImagesDocument, ImagesSchema } from './image-upload.schema';
+import { ImagesDocument } from './image-upload.schema';
 import { CRUDService } from 'internal/crud-service';
 import { CloudinaryService } from 'common/cloudinary/cloudinary.service';
 import * as fs from 'fs'
@@ -9,6 +9,15 @@ import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
 import { AppError } from 'internal/error/AppError';
 import { DEFAULT_IMAGES_ENTITY_COLLECTION_NAME } from 'common/constants';
 import { extractFileName } from 'internal/utils';
+
+interface A {
+    asdf: number
+    foo: string
+}
+
+interface B {
+    bar: number
+}
 
 @Injectable()
 export class ImageUploadService extends CRUDService<ImagesDocument> {
@@ -20,7 +29,10 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         super(imageUploadModel)
     }
 
-    async uploadImages(files: Array<Express.Multer.File>, collectionName: string = DEFAULT_IMAGES_ENTITY_COLLECTION_NAME) {
+    async uploadImages(
+        files: Array<Express.Multer.File>,
+        collectionName: string = DEFAULT_IMAGES_ENTITY_COLLECTION_NAME
+    ) {
         let imagesURL = new Array<string>;
 
         const cloudinaryUploadOptions = {
@@ -39,25 +51,45 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
 
         // todo may be check for imagesURL
 
-        const existingImagesCollection = await super.findOne({collectionName: collectionName})
-        let images: ImagesDocument | null
-        if (existingImagesCollection) {
-            const _images = existingImagesCollection.images.concat(imagesURL)
-            images = await this.imageUploadModel.findByIdAndUpdate(existingImagesCollection.id, {images: _images})
-        } else {
-            images = await super.createDocument({ images: imagesURL, collectionName: collectionName })
-        }
+        try {
+            const existingImagesCollection = await super.findOne({collectionName: collectionName})
+            let images: ImagesDocument | null
 
-        if (!images) {
+            if (existingImagesCollection) {
+                const _images = existingImagesCollection.images.concat(imagesURL)
+                images = await this.imageUploadModel.findByIdAndUpdate(existingImagesCollection.id, {images: _images})
+            } else {
+                images = await super.createDocument({ images: imagesURL, collectionName: collectionName })
+            }
+
+            return {
+                imagesDocument: images,
+                uploadedImages: imagesURL
+            }
+        } catch (error: any) {
             for (const image of imagesURL) {
-                await this.cloudinaryService.destroyFile(image)
+                await this.cloudinaryService.destroyFile(extractFileName(image))
             }
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
         }
+    }
 
-        return {
-            imagesDocument: images,
-            uploadedImages: imagesURL
+    async getDocumentFromDefaultCollection(): Promise<ImagesDocument> {
+        return await this.getDocumentByCollectionName(DEFAULT_IMAGES_ENTITY_COLLECTION_NAME)
+    }
+
+    async getDocumentByCollectionName(collectionName: string) {
+        try {
+            const doc = await this.imageUploadModel.findOne({collectionName: collectionName})
+            if (!doc) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return doc
+        } catch (e) {
+            if (e instanceof AppError) {
+                throw e
+            }
+            throw new BadRequestException(e)
         }
     }
 
@@ -67,7 +99,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }
         for (const image of imagesEntity.images) {
-            await this.cloudinaryService.destroyFile(image)
+            await this.cloudinaryService.destroyFile(extractFileName(image))
         }
         return await super.removeDocumentById(id)
     }
@@ -92,7 +124,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     }
 
     async removeConcreetImageFromEntryByCollectionName(collectionName: string, filename: string) {
-        const entity = await super.findOne({collectionName: collectionName})
+        const entity = await this.getDocumentByCollectionName(collectionName)
         return await this.removeConcreetImage(entity, filename)
     }
 
@@ -128,5 +160,26 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     override async createDocument(data: Omit<ImagesDocument, keyof Document>) {
         throw new Error("Use ImageUploadService::uploadImages instead")
         return super.createDocument(data)
+    }
+
+    /***
+     * @description interact only with default collection
+     *
+     * @returns returns count of deleted images
+     */
+    async removeImagesFromModelById<T extends { images: string[] }>(
+        model: Model<T>,
+        id: string
+    ) {
+        const targetDoc = await model.findById(id)
+        if (!targetDoc) {
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        }
+        let count = 0
+        for (const image of targetDoc.images) {
+            count++
+                await this.removeConcreetImageFromDefaultCollection(image)
+        }
+        return count
     }
 }

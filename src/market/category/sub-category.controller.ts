@@ -8,16 +8,10 @@ import {
     Res,
     Controller,
     Post,
-    BadRequestException,
-    NotFoundException,
     ParseIntPipe,
     DefaultValuePipe
 } from '@nestjs/common';
 import { Response } from 'express'
-import { CategoryEntity } from './category.schema';
-import { SubCategoryEntity } from './sub-category.schema';
-
-import { CategoryService } from './category.service';
 import { SubCategoryService } from './sub-category.service';
 import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
 import mongoose from 'mongoose';
@@ -62,26 +56,34 @@ export class SubCategoryController {
 
     @Post('/create')
     async createSubCategory(@Body() body: {category: string, subCat: string}, @Res() response: Response) {
+        console.log(body)
         if (!mongoose.isValidObjectId(body.category)) {
             throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID)
         }
 
-        const subCat = await this.subCategoryService.createDocument({
-            // @ts-ignore
-            category: body.category,
-            subCat: body.subCat
-        });
+        try {
+            const subCat = await this.subCategoryService.createDocument({
+                // @ts-ignore
+                category: body.category,
+                subCat: body.subCat
+            });
 
-        if (!subCat) {
+            if (!subCat) {
+                throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
+            }
+
+            response.json(subCat);
+        } catch (e) {
+            if (e instanceof AppError) {
+                throw e
+            }
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
         }
-
-        response.json(subCat);
     }
 
     @Delete('/:id')
     async removeById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const deleted = await this.subCategoryService.removeDocumentById(id);
+        await this.subCategoryService.removeDocumentById(id);
 
         response.status(200).json({
             success: true,

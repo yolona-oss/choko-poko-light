@@ -34,11 +34,13 @@ export class ImageUploadController {
     ) {
         if (!files) {
             throw new AppError(AppErrorTypeEnum.CANNOT_UPLOAD_IMAGE, {
-                errorMessage: "No files attached"
+                errorMessage: "No files attached",
+                userMessage: "No files attached"
             })
         }
-        const uploadedImages = await this.imageUploadService.uploadImages(files);
-        res.status(200).json(uploadedImages)
+
+        const jsonRes = await this.imageUploadService.uploadImages(files);
+        res.status(200).json(jsonRes)
     }
 
     @Get('/')

@@ -15,6 +15,7 @@ import { ProductEntity } from './products.schema';
 import { ProductsService } from './products.service';
 import { RecentlyViewedEntity } from './recently-viewd/recently-viewd.schema';
 import { ProductFilterParams, defaultsProductFilterParams } from './interfaces/ProductFilterParams';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Controller()
 export class ProductsController {
@@ -88,7 +89,7 @@ export class ProductsController {
     }
 
     @Post('/create')
-    async createNewProduct(@Body() data: ProductEntity, @Res() response: Response) {
+    async createNewProduct(@Body() data: CreateProductDto, @Res() response: Response) {
         const execRes = await this.productsService.createNewProduct(data)
         response.status(200).json(execRes)
     }

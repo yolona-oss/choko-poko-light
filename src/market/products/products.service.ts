@@ -1,24 +1,27 @@
-import { Model, Document } from 'mongoose'
+import mongoose, { Model, Document } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { ProductEntity, ProductDocument } from './products.schema';
+import { ProductDocument, ProductEntity } from './products.schema';
 import { CRUDService } from 'internal/crud-service';
 import { RecentlyViewdService } from './recently-viewd/recently-viewd.service';
 import { CategoryService } from 'market/category/category.service';
 import { ImageUploadService } from 'image-upload/image-upload.service';
 import { AppError } from 'internal/error/AppError';
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
-import { DEFAULT_IMAGES_ENTITY_COLLECTION_NAME } from 'common/constants';
 import { ProductFilterParams } from './interfaces/ProductFilterParams';
+import { ProductsFilteringService } from './products-filter.service';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Injectable()
 export class ProductsService extends CRUDService<ProductDocument> {
     constructor(
         @InjectModel('Product')
-        readonly productModel: Model<ProductDocument>,
+        private readonly productModel: Model<ProductDocument>,
+        private readonly categoryService: CategoryService,
+        private readonly imageUploadService: ImageUploadService,
+        private readonly filtering: ProductsFilteringService,
+
         readonly recentlyViewdService: RecentlyViewdService,
-        private categoryService: CategoryService,
-        private imageUploadService: ImageUploadService,
     ) {
         super(productModel)
     }
@@ -38,58 +41,60 @@ export class ProductsService extends CRUDService<ProductDocument> {
     async getFiltredProducts(filterOpts: ProductFilterParams) {
         return await this.getFiltred(filterOpts,
                                      async (query) => await this.getAllDocumentsByQuery(query),
-                                     async (query, page, perPage) => await this.getEntriesByPage(query, page, perPage))
+                                         async (query, page, perPage) => await this.getEntriesByPage(query, page, perPage))
     }
 
     async getFiltredRecentlyViewdProducts(filterOpts: ProductFilterParams) {
         return await this.getFiltred(filterOpts,
                                      async (query) => await this.recentlyViewdService.getAllDocumentsByQuery(query),
-                                     async (query, page, perPage) => await this.recentlyViewdService.getEntriesByPage(query, page, perPage))
+                                         async (query, page, perPage) => await this.recentlyViewdService.getEntriesByPage(query, page, perPage))
     }
 
-    async createNewProduct(newProduct: ProductEntity) {
-        // const categoryEntry = await this.categoryService.getDocumentById(
-        //     // @ts-ignore
-        //     newProduct.category
-        // )
+    async createNewProduct(newProduct: CreateProductDto) {
+        const categoryEntry = await this.categoryService.getDocumentById(
+            newProduct.category
+        )
 
-        // if (!categoryEntry) {
-        //     throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
-        //         errorMessage: 'Invalid category',
-        //         userMessage: 'Invalid category'
-        //     })
-        // }
-
-        // for (const image of newProduct.images) {
-        //     const isUploaded = await this.imageUploadService.isImageUploaded(image)
-        //     // TODO remove logs
-        //     console.log("is uploaded: " + isUploaded)
-        //     if (!isUploaded) {
-        //         throw new Error("not uploaded")
-        //     }
-        // }
-
-        //console.log(newProduct)
-        return await super.createDocument(newProduct)
-    }
-
-    override async removeDocumentById(id: string) {
-        const productEntry = await this.getDocumentById(id)
-        if (!productEntry) {
-            throw "Product with given ID not found"
+        if (!categoryEntry) {
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+                errorMessage: 'Cannot create product: invalid category submitted',
+                userMessage: 'Cannot create product: invalid category submitted'
+            })
         }
-        const productImages = productEntry.images
 
-        // TODO for campatibility tables Images and no one other dont bounds((
-        for (const image of productImages) {
-            try {
-                await this.imageUploadService.removeConcreetImageFromEntryByCollectionName(DEFAULT_IMAGES_ENTITY_COLLECTION_NAME, image)
-            } catch(e) {
-                // dont care its already be in products model before normal images model implements
+        for (const image of newProduct.images) {
+            const isUploaded = await this.imageUploadService.isImageUploaded(image)
+            if (!isUploaded) {
+                throw new AppError(AppErrorTypeEnum.IMAGE_NOT_UPLOADED)
             }
         }
 
-        return await this.productModel.findByIdAndDelete(id)
+        try {
+            return await this.productModel.create(newProduct)
+        } catch (error) {
+            if (error instanceof mongoose.Error.ValidationError) {
+                throw new AppError(AppErrorTypeEnum.DB_VALIDATION_ERROR, {
+                    errorMessage: 'Cannot create product: invalid data submitted',
+                    userMessage: 'Cannot create product: invalid data submitted'
+                })
+            }
+            throw error
+        }
+        //return await super.createDocument(newProduct)
+    }
+
+    override async removeDocumentById(id: string) {
+        await this.imageUploadService.removeImagesFromModelById(this.productModel, id)
+
+        try {
+            const deleted = await this.productModel.findByIdAndDelete(id)
+            if (!deleted) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return deleted
+        } catch(e) {
+            throw e
+        }
     }
 
     override async getAllDocuments() {
@@ -120,15 +125,15 @@ export class ProductsService extends CRUDService<ProductDocument> {
     private async getFiltred(
         filterOpts: ProductFilterParams,
         findFn: (query: any) => Promise<Document[]|null>,
-        findByPageFn: (query: any, page: number, perPage: number) => Promise<Document[]|null>
+            findByPageFn: (query: any, page: number, perPage: number) => Promise<Document[]|null>
     ) {
-        const pagesQuantity = await this.processQuantityOfOutput(filterOpts.page, filterOpts.perPage)
+        const pagesQuantity = await this.filtering.processQuantityOfOutput(filterOpts.page, filterOpts.perPage)
 
         if (pagesQuantity.page > pagesQuantity.totalPages) {
             throw new AppError(AppErrorTypeEnum.DB_INVALID_RANGE)
         }
 
-        const query = this.createFilterQuery(filterOpts)
+        const query = this.filtering.createFilterQuery(filterOpts)
 
         let docs: Document[]|null
         if (pagesQuantity.page && pagesQuantity.perPage) {
@@ -143,67 +148,6 @@ export class ProductsService extends CRUDService<ProductDocument> {
             products: docs || [],
             totalPages: pagesQuantity.totalPages,
             page: pagesQuantity.page
-        }
-    }
-
-    private createFilterQuery(filterOpts: ProductFilterParams) {
-        const {
-            minPrice, maxPrice,
-            subCategoryId,
-            categoryId, categoryName, category,
-            rating,
-            location,
-            isFeatured
-        } = filterOpts
-
-        let query: Record<string, any> = {}
-
-        // TODO: add maxPrice handler
-        // may be use loop for appending query?
-        const queryByPrice         = { price: { $gte: parseInt(<string>minPrice), $lte: parseInt(<string>maxPrice) || 99999999 } }
-        const queryByCategoryId    = { category: categoryId || category }
-        const queryByCategoryName  = { catName: categoryName }
-        const queryBySubCategoryId = { subCatId: subCategoryId }
-        const queryByRating        = { rating: rating }
-        const queryByLocation      = { location: location }
-        const queryByisFeaturing   = { isFeatured: isFeatured }
-
-        if (minPrice)      { Object.assign(query, queryByPrice) }
-        if (categoryName)  { Object.assign(query, queryByCategoryName) }
-        if (subCategoryId) { Object.assign(query, queryBySubCategoryId) }
-        if (rating)        { Object.assign(query, queryByRating) }
-        if (location)      { Object.assign(query, queryByLocation) }
-        if (categoryId || category) { Object.assign(query, queryByCategoryId) }
-        // may be use typeof Boolean?
-        if (location !== undefined && location !== null && location !== "All") { // TODO: create enum
-            Object.assign(query, queryByLocation)
-        }
-        if (isFeatured !== undefined && isFeatured !== null) {
-            Object.assign(query, queryByisFeaturing)
-        }
-
-        return query
-    }
-
-    private async processQuantityOfOutput(page?: string, perPage?: string) {
-        const _page = parseInt(page || "1")
-        const totalDocuments = await this.getDocumentsCount();
-        if (!perPage) {
-            return {
-                page: _page,
-                perPage: null,
-                totalDocuments: totalDocuments,
-                totalPages: 1
-            }
-        }
-        const _perPage = parseInt(perPage)
-        const totalPages   = +Math.ceil(totalDocuments / _perPage);
-
-        return {
-            page: _page,
-            perPage: _perPage,
-            totalDocuments: totalDocuments,
-            totalPages: totalPages
         }
     }
 

@@ -6,9 +6,7 @@ import {
     Delete,
     Param,
     Body,
-    BadRequestException,
     Controller,
-    NotFoundException
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProductWeightService } from './product-weight.service';

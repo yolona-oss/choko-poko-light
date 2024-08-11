@@ -9,11 +9,11 @@ const errors: Record<AppErrorTypeEnum, IErrorMessage> = {
         errorMessage: 'Entity exists',
         userMessage: 'Entity exists'
     },
-    [AppErrorTypeEnum.DB_NO_ENTRIES]: {
-        type: AppErrorTypeEnum.DB_NO_ENTRIES,
+    [AppErrorTypeEnum.DB_CANNOT_READ]: {
+        type: AppErrorTypeEnum.DB_CANNOT_READ,
         httpStatus: HttpStatus.NOT_FOUND,
-        errorMessage: 'No entries exits in the database',
-        userMessage: 'No entries.'
+        errorMessage: 'Cannot read entity.',
+        userMessage: 'Cannot read entity.'
     },
     [AppErrorTypeEnum.DB_ENTITY_NOT_FOUND]: {
         type: AppErrorTypeEnum.DB_ENTITY_NOT_FOUND,
@@ -61,7 +61,37 @@ const errors: Record<AppErrorTypeEnum, IErrorMessage> = {
         type: AppErrorTypeEnum.DB_INVALID_RANGE,
         httpStatus: HttpStatus.BAD_REQUEST, // TODO change
         errorMessage: 'Not in ranger.',
-        userMessage: 'Not in ranger.'
+        userMessage: 'Selected range is invalid.'
+    },
+    [AppErrorTypeEnum.DB_INCORRECT_MODEL]: {
+        type: AppErrorTypeEnum.DB_INCORRECT_MODEL,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Incorrenct db model passed.',
+        userMessage: 'Cannot interact with database.'
+    },
+    [AppErrorTypeEnum.IMAGE_NOT_UPLOADED]: {
+        type: AppErrorTypeEnum.IMAGE_NOT_UPLOADED,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Image not uploaded. Cannot proceed.',
+        userMessage: 'Image not uploaded. Cannot proceed.'
+    },
+    [AppErrorTypeEnum.DB_CANNOT_DELETE]: {
+        type: AppErrorTypeEnum.DB_CANNOT_DELETE,
+        httpStatus: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorMessage: 'Cannot delete selected entity.',
+        userMessage: 'Cannot delete selected entity.'
+    },
+    [AppErrorTypeEnum.DB_DUPLICATE_KEY]: {
+        type: AppErrorTypeEnum.DB_DUPLICATE_KEY,
+        httpStatus: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorMessage: 'Duplicate key.',
+        userMessage: 'Duplicate key.'
+    },
+    [AppErrorTypeEnum.DB_VALIDATION_ERROR]: {
+        type: AppErrorTypeEnum.DB_VALIDATION_ERROR,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Validation error.',
+        userMessage: 'Validation error.'
     }
 }
 
@@ -70,14 +100,30 @@ interface AppErrorModificationOptions extends Pick<IErrorMessage, 'errorMessage'
     userMessage: string
 }
 
+// TODO: move to enum
+
+/***
+ *
+ * @constructor Create AppError with passed error code otherwise create "Bad Request"
+ *
+ */
 export class AppError extends Error {
     public errorCode: AppErrorTypeEnum;
     public httpStatus: number;
     public errorMessage: string;
     public userMessage: string;
 
-    constructor(errorCode: AppErrorTypeEnum, options?: Partial<AppErrorModificationOptions>) {
+    constructor(errorCode?: AppErrorTypeEnum, options?: Partial<AppErrorModificationOptions>) {
         super();
+        if (!errorCode) {
+            this.name = "Bad Request";
+            this.httpStatus = HttpStatus.BAD_REQUEST;
+            this.errorCode = 400;
+            this.errorMessage = "Bad Request";
+            this.userMessage = "Bad Request";
+            return;
+        }
+
         const error: IErrorMessage = errors[errorCode];
         if (options) {
             // @ts-ignore // TODO

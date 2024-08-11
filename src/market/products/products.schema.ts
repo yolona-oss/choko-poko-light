@@ -9,7 +9,7 @@ export type ProductDocument = ProductEntity & Document;
     }
 })
 export class ProductEntity {
-    id: string;
+    id?: string;
 
     @Prop({type: String, required: true})
     name: string;

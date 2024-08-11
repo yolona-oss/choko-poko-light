@@ -51,7 +51,9 @@ export class CategoryController {
     @Get('/count')
     async getCategoryEntriesCount(@Res() response: Response) {
         const catCount = await this.categoryService.getDocumentsCount()
-        response.json({categoryCount: catCount})
+        response.json({
+            categoryCount: catCount
+        })
     }
 
     @Post('/create')
@@ -81,11 +83,7 @@ export class CategoryController {
 
     @Delete('/:id')
     async removeById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const deleted = await this.categoryService.removeDocumentById(id);
-
-        if (!deleted) {
-            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
-        }
+        await this.categoryService.removeDocumentById(id);
 
         response.status(200).json({
             success: true,
@@ -106,10 +104,6 @@ export class CategoryController {
                 color: body.color
             }
         )
-
-        if (!updatedCat) {
-            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
-        }
 
         response.json(updatedCat);
     }

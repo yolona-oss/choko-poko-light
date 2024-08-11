@@ -13,6 +13,7 @@ export class CloudinaryService {
     }
 
     async destroyFile(imageName: string) {
+        console.log("Cloudinary deleting file: " + imageName)
         return await cloudinary.uploader.destroy(
             imageName,
             (e, r) => {

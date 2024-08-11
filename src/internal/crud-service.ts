@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Document, FilterQuery, Model } from 'mongoose';
 import { AppError } from './error/AppError';
 import { AppErrorTypeEnum } from './error/AppErrorTypeEnum';
+import { DeepPartial } from 'common/types/deep-partial';
 
 @Injectable()
 export abstract class CRUDService<T extends Document> {
@@ -21,7 +22,7 @@ export abstract class CRUDService<T extends Document> {
     async findOne(
         conditions: Partial<Record<keyof T, unknown>>,
         projection: string | Record<string, unknown> = {},
-        options: Record<string, unknown> = {}
+            options: Record<string, unknown> = {}
     ): Promise<T|null>
     {
         try {
@@ -32,39 +33,90 @@ export abstract class CRUDService<T extends Document> {
             );
         } catch (e) {
             console.log(e)
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(e);
         }
     }
 
-    async getAllDocuments() {
-        return await this.model.find().exec()
-    }
-
-    async getDocumentsCount() {
-        return await this.model.countDocuments()
-    }
-
-    async getDocumentById(id: string) {
-        const entity = await this.model.findById(id)
-        if (!entity) {
-            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+    async getAllDocuments(): Promise<T[]> {
+        try {
+            return await this.model.find().exec()
+        } catch (error: any) {
+            console.log(error)
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_READ, {
+                errorMessage: error
+            })
         }
-        return entity
     }
 
-    async createDocument(data: Omit<T, keyof Document>) {
-        const newEntity = await this.model.create(data)
-        if (!newEntity) {
-            throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
+    async getDocumentsCount(): Promise<number> {
+        try {
+            return await this.model.countDocuments()
+        } catch (error: any) {
+            console.log(error)
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_READ, {
+                errorMessage: error
+            })
         }
-        return newEntity
     }
 
-    async removeDocumentById(id: string) {
-        return await this.model.findByIdAndDelete(id)
+    async getDocumentById(id: string): Promise<T> {
+        try {
+            const entity = await this.model.findById(id)
+            if (!entity) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return entity
+        } catch (error: any) {
+            if (error?.name === 'CastError') {
+                throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID, {
+                    errorMessage: error
+                })
+            } else if (error?.code === 11000) {
+                throw new AppError(AppErrorTypeEnum.DB_DUPLICATE_KEY, {
+                    errorMessage: error
+                })
+            }
+            throw error
+        }
     }
 
-    async updateDocumentById(id: string, newData: Partial<T>) {
-        return await this.model.findByIdAndUpdate(id, newData, { new: true })
+    async createDocument(data: Omit<T, keyof Document>): Promise<T> {
+        try {
+            return await this.model.create(data)
+        } catch (error: any) {
+            if (error?.name === 'ValidationError') {
+                throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE, {
+                    errorMessage: Object.values(error.errors).join(' ')
+                })
+            }
+            throw error
+        }
+    }
+
+    async removeDocumentById(id: string): Promise<any> {
+        try {
+            return await this.model.findByIdAndDelete(id)
+        } catch (error: any) {
+            if (error?.name === 'ValidationError') {
+                throw new AppError(AppErrorTypeEnum.DB_CANNOT_DELETE, {
+                    errorMessage: Object.values(error.errors).join(' ')
+                })
+            }
+            throw error
+        }
+    }
+
+    async updateDocumentById(id: string, newData: DeepPartial<T>): Promise<T> {
+        try {
+            await this.model.findByIdAndUpdate(id, newData)
+            return this.getDocumentById(id)
+        } catch (error: any) {
+            if (error?.name === 'ValidationError') {
+                throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+                    errorMessage: Object.values(error.errors).join(' ')
+                })
+            }
+            throw error
+        }
     }
 }

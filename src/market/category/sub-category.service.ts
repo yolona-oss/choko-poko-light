@@ -1,7 +1,7 @@
-import { Document, Model } from 'mongoose'
+import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { SubCategoryEntity, SubCategoryDocument } from './sub-category.schema';
+import { SubCategoryDocument } from './sub-category.schema';
 import { CRUDService } from 'internal/crud-service';
 import { AppError } from 'internal/error/AppError';
 import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';

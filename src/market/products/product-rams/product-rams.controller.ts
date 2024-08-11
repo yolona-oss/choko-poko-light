@@ -6,7 +6,6 @@ import {
     Delete,
     Param,
     Body,
-    BadRequestException,
     Controller
 } from '@nestjs/common';
 import { Response } from 'express';
