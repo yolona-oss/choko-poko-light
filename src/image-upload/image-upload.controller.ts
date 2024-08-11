@@ -19,13 +19,14 @@ import { generateRandom } from 'internal/utils';
 
 @Controller('image-upload')
 export class ImageUploadController {
-    constructor(private imageUploadService: ImageUploadService) {}
+
+    constructor(private readonly imageUploadService: ImageUploadService) {}
 
     @Post('upload')
     @UseInterceptors(FilesInterceptor("images", 20, { // TODO create constants
         storage: diskStorage({
             destination: (_, __, cb) => cb(null, './uploads'),
-            filename: (_, file, cb) => cb(null, `${generateRandom()}_${file.originalname}`)
+                filename: (_, file, cb) => cb(null, `${generateRandom()}_${file.originalname}`)
         })
     }))
     async uploadFile(
@@ -73,6 +74,6 @@ export class ImageUploadController {
         if (execRes) {
             return response.status(200).json({success: true})
         }
-            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
     }
 }

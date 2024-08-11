@@ -12,13 +12,10 @@ export class CloudinaryService {
         );
     }
 
-    async destroyFile(imageName: string) {
-        console.log("Cloudinary deleting file: " + imageName)
-        return await cloudinary.uploader.destroy(
-            imageName,
-            (e, r) => {
-                console.log(e, r)
-            }
-        )
+    async destroyFile(public_id: string) {
+        console.log("Cloudinary deleting file: " + public_id)
+        const res = await cloudinary.uploader.destroy(public_id)
+        console.log(res)
+        return res
     }
 }

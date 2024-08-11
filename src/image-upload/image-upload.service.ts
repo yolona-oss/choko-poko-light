@@ -1,4 +1,4 @@
-import { Document, Model, MongooseError } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ImagesDocument } from './image-upload.schema';
@@ -164,6 +164,8 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
 
     /***
      * @description interact only with default collection
+     *
+     * @description used because legacy db is not using relations with iamges model
      *
      * @returns returns count of deleted images
      */
