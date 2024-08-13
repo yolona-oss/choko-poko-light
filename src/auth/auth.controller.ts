@@ -3,7 +3,7 @@ import { Response } from 'express'
 import { CreateUserDTO } from "../users/dto/CreateUserDTO";
 import { AuthService } from "./auth.service";
 import { Login } from './interfaces/login.interface';
-import { Public } from 'common/decorators/public.decorotor';
+import { Public } from './../common/decorators/public.decorotor';
 
 @Controller('auth')
 export class AuthController {

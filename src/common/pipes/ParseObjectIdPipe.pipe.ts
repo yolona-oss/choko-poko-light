@@ -1,6 +1,6 @@
-import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
-import { AppError } from 'internal/error/AppError';
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { PipeTransform, Injectable } from '@nestjs/common';
+import { AppError } from './../../internal/error/AppError';
+import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
 import { Types } from 'mongoose';
 
 @Injectable()

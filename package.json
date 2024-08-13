@@ -1,4 +1,5 @@
 {
+  "packageManager": "npm@10.8.2",
   "name": "spice-server",
   "version": "0.0.1",
   "description": "",

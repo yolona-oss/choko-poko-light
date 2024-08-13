@@ -1,10 +1,10 @@
 import { RouterModule } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ImageUploadModule } from 'image-upload/image-upload.module';
-import { CategoryModule } from 'market/category/category.module';
-import { CategorySchema } from 'market/category/category.schema';
-import { SubCategorySchema } from 'market/category/sub-category.schema';
+import { ImageUploadModule } from './../../image-upload/image-upload.module';
+import { CategoryModule } from './../category/category.module';
+import { CategorySchema } from './../category/category.schema';
+import { SubCategorySchema } from './../category/sub-category.schema';
 import { ProductRAMsModule } from './product-rams/product-rams.module';
 import { ProductReviewsModule } from './product-reviews/product-reviews.module';
 import { ProductSizeModule } from './product-size/product-size.module';

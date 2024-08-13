@@ -13,10 +13,10 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express'
 import { SubCategoryService } from './sub-category.service';
-import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
+import { ParseObjectIdPipe } from './../../common/pipes/ParseObjectIdPipe.pipe';
 import mongoose from 'mongoose';
-import { AppError } from 'internal/error/AppError';
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { AppError } from './../../internal/error/AppError';
+import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
 
 @Controller('sub-category')
 export class SubCategoryController {

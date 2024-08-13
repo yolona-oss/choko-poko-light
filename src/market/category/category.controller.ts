@@ -13,10 +13,10 @@ import { Response } from 'express'
 import { ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
 
 import { CategoryService } from './category.service';
-import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
-import { Public } from 'common/decorators/public.decorotor';
-import { AppError } from 'internal/error/AppError';
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { ParseObjectIdPipe } from './../../common/pipes/ParseObjectIdPipe.pipe';
+import { Public } from './../../common/decorators/public.decorotor';
+import { AppError } from './../../internal/error/AppError';
+import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
 
 @Controller('category')
 export class CategoryController {

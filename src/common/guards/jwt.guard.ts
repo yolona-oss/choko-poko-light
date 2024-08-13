@@ -5,9 +5,9 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { JwtPayload } from 'auth/interfaces/jwt-payload.interface';
-import { IS_PUBLIC_KEY } from 'common/decorators/public.decorotor';
-import { ROLES_KEY } from 'common/decorators/role.decorator';
+import { JwtPayload } from './../../auth/interfaces/jwt-payload.interface';
+import { IS_PUBLIC_KEY } from './../../common/decorators/public.decorotor';
+import { ROLES_KEY } from './../../common/decorators/role.decorator';
 
 @Injectable()
 export class JwtGuard extends AuthGuard('strategy-jwt') {

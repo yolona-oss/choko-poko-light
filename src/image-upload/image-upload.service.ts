@@ -2,13 +2,13 @@ import { Document, Model } from 'mongoose';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ImagesDocument } from './image-upload.schema';
-import { CRUDService } from 'internal/crud-service';
-import { CloudinaryService } from 'common/cloudinary/cloudinary.service';
+import { CRUDService } from './../internal/crud-service';
+import { CloudinaryService } from './../common/cloudinary/cloudinary.service';
 import * as fs from 'fs'
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
-import { AppError } from 'internal/error/AppError';
-import { DEFAULT_IMAGES_ENTITY_COLLECTION_NAME } from 'common/constants';
-import { extractFileName } from 'internal/utils';
+import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
+import { AppError } from './../internal/error/AppError';
+import { DEFAULT_IMAGES_ENTITY_COLLECTION_NAME } from './../common/constants';
+import { extractFileName } from './../internal/utils';
 
 interface A {
     asdf: number

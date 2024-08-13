@@ -2,10 +2,10 @@ import { Document, Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { CategoryDocument } from './category.schema';
-import { ImageUploadService } from 'image-upload/image-upload.service';
-import { CRUDService } from 'internal/crud-service';
-import { AppError } from 'internal/error/AppError';
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { ImageUploadService } from './../../image-upload/image-upload.service';
+import { CRUDService } from './../../internal/crud-service';
+import { AppError } from './../../internal/error/AppError';
+import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
 
 @Injectable()
 export class CategoryService extends CRUDService<CategoryDocument> {

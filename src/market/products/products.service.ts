@@ -1,13 +1,13 @@
 import mongoose, { Model, Document } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { ProductDocument, ProductEntity } from './products.schema';
-import { CRUDService } from 'internal/crud-service';
+import { ProductDocument } from './products.schema';
+import { CRUDService } from './../../internal/crud-service';
 import { RecentlyViewdService } from './recently-viewd/recently-viewd.service';
-import { CategoryService } from 'market/category/category.service';
-import { ImageUploadService } from 'image-upload/image-upload.service';
-import { AppError } from 'internal/error/AppError';
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { CategoryService } from './../category/category.service';
+import { ImageUploadService } from './../../image-upload/image-upload.service';
+import { AppError } from './../../internal/error/AppError';
+import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
 import { ProductFilterParams } from './interfaces/ProductFilterParams';
 import { ProductsFilteringService } from './products-filter.service';
 import { CreateProductDto } from './dto/create-product.dto';

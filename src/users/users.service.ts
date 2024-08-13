@@ -2,11 +2,11 @@ import { Model } from 'mongoose';
 import { Injectable, Scope, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserEntity, UserDocument } from './user.schema';
-import { CRUDService } from 'internal/crud-service';
-import { AppError } from 'internal/error/AppError';
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
+import { CRUDService } from './../internal/crud-service';
+import { AppError } from './../internal/error/AppError';
+import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
 import { Document } from 'mongoose'
-import { Crypto } from 'internal/utils'
+import { Crypto } from './../internal/utils'
 
 @Injectable()
 export class UsersService extends CRUDService<UserDocument> {

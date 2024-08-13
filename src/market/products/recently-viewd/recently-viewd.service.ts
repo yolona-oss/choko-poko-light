@@ -2,7 +2,7 @@ import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { RecentlyViewdDocument } from './recently-viewd.schema';
-import { CRUDService } from 'internal/crud-service';
+import { CRUDService } from './../../../internal/crud-service';
 
 @Injectable()
 export class RecentlyViewdService extends CRUDService<RecentlyViewdDocument> {

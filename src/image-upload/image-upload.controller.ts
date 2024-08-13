@@ -12,10 +12,10 @@ import { Response } from 'express'
 import { ImageUploadService } from './image-upload.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer'
-import { AppError } from 'internal/error/AppError';
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
-import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
-import { generateRandom } from 'internal/utils';
+import { AppError } from './../internal/error/AppError';
+import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
+import { ParseObjectIdPipe } from './../common/pipes/ParseObjectIdPipe.pipe';
+import { generateRandom } from './../internal/utils';
 
 @Controller('image-upload')
 export class ImageUploadController {

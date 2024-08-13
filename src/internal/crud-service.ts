@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Document, FilterQuery, Model } from 'mongoose';
 import { AppError } from './error/AppError';
 import { AppErrorTypeEnum } from './error/AppErrorTypeEnum';
-import { DeepPartial } from 'common/types/deep-partial';
+import { DeepPartial } from './../common/types/deep-partial';
 
 @Injectable()
 export abstract class CRUDService<T extends Document> {

@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { OrdersService } from './orders.service';
 import { OrdersSchema } from './orders.schema'
 import { OrdersController } from './orders.controller';
-import { ImageUploadModule } from 'image-upload/image-upload.module';
+import { ImageUploadModule } from './../../image-upload/image-upload.module';
 
 @Module({
     providers: [OrdersService],

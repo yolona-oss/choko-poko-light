@@ -9,7 +9,7 @@ import {
     Controller,
     Post,
 } from '@nestjs/common';
-import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
+import { ParseObjectIdPipe } from './../../common/pipes/ParseObjectIdPipe.pipe';
 import { Response } from 'express'
 import { ProductEntity } from './products.schema';
 import { ProductsService } from './products.service';

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import { DEFAULT_SERVICE_PORT } from '../constants';
 
 if (process.env.NODE_ENV === 'prod') {
     dotenv.config({
@@ -32,7 +33,7 @@ export interface ConfigSchema {
 }
 
 export default (): ConfigSchema => ({
-    port: parseInt(<any>process.env.PORT, 10) || 3000,
+    port: parseInt(<any>process.env.PORT, 10) || DEFAULT_SERVICE_PORT,
     database: {
         connection_string: <string>process.env.DATABASE_CONNECTION_STRING,
         name: <string>process.env.DATABASE_NAME,

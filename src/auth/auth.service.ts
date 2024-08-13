@@ -4,9 +4,9 @@ import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { UserEntity } from "../users/user.schema";
 import { JwtPayload } from './interfaces/jwt-payload.interface'
-import { Crypto } from "internal/utils"
-import { AppErrorTypeEnum } from 'internal/error/AppErrorTypeEnum';
-import { AppError } from 'internal/error/AppError';
+import { Crypto } from "./../internal/utils"
+import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
+import { AppError } from './../internal/error/AppError';
 
 // TODO: move to another place
 export class AccessOutput {

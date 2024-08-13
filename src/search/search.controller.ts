@@ -1,6 +1,6 @@
 import { Query, Res, Get, Body, Controller, Post, BadRequestException } from '@nestjs/common';
 import { Response } from 'express'
-import { ProductsService } from 'market/products/products.service';
+import { ProductsService } from './../market/products/products.service';
 
 @Controller('search')
 export class SearchController {

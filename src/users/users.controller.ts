@@ -6,16 +6,14 @@ import {
     Get,
     Delete,
     Put,
-    Query,
-    UseGuards
 } from '@nestjs/common';
 import { UsersService } from "./users.service";
 import { Response } from 'express'
 import { UserEntity } from './user.schema';
-import { Public } from 'common/decorators/public.decorotor'
-import { Roles } from 'common/decorators/role.decorator';
-import { User } from 'common/decorators/user.decorator'
-import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
+import { Public } from './../common/decorators/public.decorotor'
+import { Roles } from './../common/decorators/role.decorator';
+import { User } from './../common/decorators/user.decorator'
+import { ParseObjectIdPipe } from './../common/pipes/ParseObjectIdPipe.pipe';
 
 @Controller('users')
 export class UsersController {

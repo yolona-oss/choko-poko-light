@@ -1,5 +1,5 @@
 import {ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, UnauthorizedException} from '@nestjs/common';
-import {AppError} from 'internal/error/AppError';
+import {AppError} from './../../internal/error/AppError';
 
 @Catch(/*HttpException*/)
 export class AllExeptionFilter implements ExceptionFilter {

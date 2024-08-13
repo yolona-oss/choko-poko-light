@@ -9,7 +9,7 @@ import {
 import { Response } from 'express';
 import { ProductReviewsService } from './product-reviews.service';
 import { ProductReviewsEntity } from './product-reviews.schema';
-import { ParseObjectIdPipe } from 'common/pipes/ParseObjectIdPipe.pipe';
+import { ParseObjectIdPipe } from './../../../common/pipes/ParseObjectIdPipe.pipe';
 
 @Controller()
 export class ProductReviewsController {
