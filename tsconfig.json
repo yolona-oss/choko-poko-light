@@ -5,6 +5,7 @@
         "outDir": "./dist",
         "baseUrl": "./",
         "rootDir": "./",
+        "useDefineForClassFields": false,
         "skipLibCheck": true,
         "declaration": true,
         "removeComments": true,
@@ -23,7 +24,7 @@
         "noUnusedLocals": false,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "noFallthroughCasesInSwitch": true,
         "esModuleInterop": true,
         "incremental": true,
@@ -39,3 +40,40 @@
         //"watchAssets": true
     }
 }
+//{
+//    "compilerOptions": {
+//        "module": "commonjs",
+//        "target": "es2017",
+//        "outDir": "./build",
+//        "baseUrl": "./src",
+//        "rootDir": "./",
+//        "removeComments": true,
+//        "emitDecoratorMetadata": true,
+//        "experimentalDecorators": true,
+//        "allowSyntheticDefaultImports": true,
+//        "sourceMap": true,
+//        "incremental": true,
+//        "importHelpers": true,
+//        "strict": true,
+//        "strictNullChecks": true,
+//        "strictBindCallApply": true,
+//        "strictPropertyInitialization": false,
+//        "alwaysStrict": true,
+//        "noUnusedLocals": false,
+//        "noUnusedParameters": true,
+//        "noImplicitReturns": true,
+//        "noFallthroughCasesInSwitch": true,
+//        "esModuleInterop": true,
+//        "incremental": true,
+//        "resolveJsonModule": true,
+//        "isolatedModules": true
+//        //"assets": [
+//        //    {
+//        //        "include": "./src/raw_data/russian-cities.json",
+//        //        "outDir": "build/src/raw_data",
+//        //        "watchAssets": true
+//        //    }
+//        //],
+//        //"watchAssets": true
+//    }
+//}

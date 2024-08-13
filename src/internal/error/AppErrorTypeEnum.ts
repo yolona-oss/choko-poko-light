@@ -1,4 +1,5 @@
 export const enum AppErrorTypeEnum {
+    BAD_REQUEST = 400,
     DB_CANNOT_READ,
     DB_ENTITY_EXISTS,
     DB_ENTITY_NOT_FOUND,
@@ -13,5 +14,5 @@ export const enum AppErrorTypeEnum {
     DB_INCORRECT_MODEL,
     IMAGE_NOT_UPLOADED,
     DB_DUPLICATE_KEY,
-    DB_VALIDATION_ERROR
+    DB_VALIDATION_ERROR,
 }

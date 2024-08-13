@@ -3,6 +3,12 @@ import { IErrorMessage } from './IErrorMessage';
 import { HttpStatus } from '@nestjs/common';
 
 const errors: Record<AppErrorTypeEnum, IErrorMessage> = {
+    [AppErrorTypeEnum.BAD_REQUEST]: {
+        type: AppErrorTypeEnum.BAD_REQUEST,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Bad Request',
+        userMessage: 'Bad Request'
+    },
     [AppErrorTypeEnum.DB_ENTITY_EXISTS]: {
         type: AppErrorTypeEnum.DB_ENTITY_EXISTS,
         httpStatus: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -92,7 +98,7 @@ const errors: Record<AppErrorTypeEnum, IErrorMessage> = {
         httpStatus: HttpStatus.BAD_REQUEST,
         errorMessage: 'Validation error.',
         userMessage: 'Validation error.'
-    }
+    },
 }
 
 interface AppErrorModificationOptions extends Pick<IErrorMessage, 'errorMessage' | 'userMessage'> {
@@ -118,7 +124,7 @@ export class AppError extends Error {
         if (!errorCode) {
             this.name = "Bad Request";
             this.httpStatus = HttpStatus.BAD_REQUEST;
-            this.errorCode = 400;
+            this.errorCode = AppErrorTypeEnum.BAD_REQUEST;
             this.errorMessage = "Bad Request";
             this.userMessage = "Bad Request";
             return;
