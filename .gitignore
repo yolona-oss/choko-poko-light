@@ -3,9 +3,14 @@
 /build
 build/
 node_modules/
+/node_modules
 
-.dev.env
 .env
+.env.dev
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
 # Logs
 logs
@@ -38,4 +43,5 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
 .vercel
