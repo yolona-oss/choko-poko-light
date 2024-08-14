@@ -24,8 +24,10 @@ import { JwtModule } from '@nestjs/jwt';
         ConfigModule.forRoot({
             load: [AppConfig],
             isGlobal: true,
+            cache: true
         }),
         ServeStaticModule.forRoot({
+            //rootPath: join(<string>process.env.npm_config_local_prefix, 'uploads'), // TODO: just configure it
             rootPath: join(__dirname, '..', '..', 'uploads'), // TODO: just configure it
         }),
         ThrottlerModule.forRoot([{
