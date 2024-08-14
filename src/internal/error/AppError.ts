@@ -99,6 +99,24 @@ const errors: Record<AppErrorTypeEnum, IErrorMessage> = {
         errorMessage: 'Validation error.',
         userMessage: 'Validation error.'
     },
+    [AppErrorTypeEnum.ROLE_ALREADY_PROVIDED]: {
+        type: AppErrorTypeEnum.ROLE_ALREADY_PROVIDED,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Role already provided.',
+        userMessage: 'Role already provided.'
+    },
+    [AppErrorTypeEnum.INSUFFICIENT_USER_PASSWORD_LENGTH]: {
+        type: AppErrorTypeEnum.INSUFFICIENT_USER_PASSWORD_LENGTH,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Insufficient user password length.',
+        userMessage: 'Insufficient user password length.'
+    },
+    [AppErrorTypeEnum.ROLE_NOT_PROVIDED]: {
+        type: AppErrorTypeEnum.ROLE_NOT_PROVIDED,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Role not provided.',
+        userMessage: 'Role not provided.'
+    }
 }
 
 interface AppErrorModificationOptions extends Pick<IErrorMessage, 'errorMessage' | 'userMessage'> {

@@ -22,13 +22,27 @@ export interface ConfigSchema {
 
     },
     jwt: {
-        token: string,
-        sign_options: {
-            expires_in: string
+        access_token: {
+            secret: string,
+            sign_options: {
+                expires_in: string
+            }
+        },
+        refresh_token: {
+            secret: string,
+            sign_options: {
+                expires_in: string
+            }
         }
     },
     static_data_storage: {
         cities_file: string
+    },
+    default_user: {
+        name: string,
+        email: string,
+        phone: string,
+        password: string
     }
 }
 
@@ -44,12 +58,26 @@ export default (): ConfigSchema => ({
         api_secret: <string>process.env.CLOUDINARY_CONFIG_API_SECRET
     },
     jwt: {
-        token: <string>process.env.JWT_SECRET_KEY,
-        sign_options: {
-            expires_in: <string>process.env.JWT_OPTION_EXPIRES_IN
+        access_token: {
+            secret: <string>process.env.JWT_SECRET_KEY,
+            sign_options: {
+                expires_in: <string>process.env.JWT_OPTION_EXPIRES_IN
+            },
+        },
+        refresh_token: {
+            secret: <string>process.env.JWT_REFRESH_TOKEN_SECRET_KEY,
+            sign_options: {
+                expires_in: <string>process.env.JWT_REFRESH_TOKEN_OPTION_EXPIRES_IN
+            },
         }
     },
     static_data_storage: {
         cities_file: `${process.env.npm_config_local_prefix}/${process.env.DATABASE_CITIES_FILE}`
+    },
+    default_user: {
+        name: <string>process.env.DEFAULT_USER_NAME,
+        email: <string>process.env.DEFAULT_USER_EMAIL,
+        phone: <string>process.env.DEFAULT_USER_PHONE,
+        password: <string>process.env.DEFAULT_USER_PASSWORD
     }
 })

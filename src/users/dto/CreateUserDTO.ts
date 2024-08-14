@@ -1,7 +1,9 @@
+import { Role } from "./../../common/enums/role.enum"
+
 export interface CreateUserDTO {
-    name: string
-    email: string
-    phone: string
-    password: string
-    images: string[]
+    readonly name: string
+    readonly phone: string
+    readonly email: string
+    readonly password: string
+    readonly images?: string[]
 }

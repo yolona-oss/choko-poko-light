@@ -1,6 +1,8 @@
+import { Role } from './../../common/enums/role.enum';
+
 export type JwtPayload = {
     email: string
     id: string
-    isAdmin: boolean // secure check
+    roles: Role[]
     // ip?
 }

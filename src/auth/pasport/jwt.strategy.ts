@@ -16,12 +16,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'strategy-jwt') {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.getOrThrow<string>("jwt.token")
+            secretOrKey: configService.getOrThrow<string>("jwt.access_token.secret")
         });
     }
 
     async validate(payload: JwtPayload) {
-        console.log("Jwt strat payload: " + JSON.stringify(payload,null,'\n'))
+        console.log("Jwt payload: " + JSON.stringify(payload,null,'\n'))
         const user = await this.usersService.getDocumentById(payload.id);
         if (!user) {
             throw new AppError(AppErrorTypeEnum.INVALID_CREDENTIALS_EXCEPTION)

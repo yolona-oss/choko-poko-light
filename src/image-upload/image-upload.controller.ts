@@ -7,6 +7,7 @@ import {
     Post,
     Delete,
     Controller,
+    Query
 } from '@nestjs/common';
 import { Response } from 'express'
 import { ImageUploadService } from './image-upload.service';
@@ -75,5 +76,11 @@ export class ImageUploadController {
             return response.status(200).json({success: true})
         }
         throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+    }
+
+    @Delete('/remove-concreet')
+    async removeConcreet(@Query('fileurl') url: string, @Res() response: Response) {
+        await this.imageUploadService.removeConcreetImageFromDefaultCollection(url)
+        return response.json({success: true})
     }
 }

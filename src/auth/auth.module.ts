@@ -22,13 +22,13 @@ import { JwtStrategy } from './pasport/jwt.strategy';
         }),
         JwtModule.registerAsync({
             useFactory: async (configService: ConfigService) => {
-                const secret = configService.get<string>('jwt.token')
-                const expiresIn = configService.get<string>('jwt.sign_options.expires_in')
+                const secret = configService.getOrThrow<string>('jwt.access_token.secret')
+                const expiresIn = configService.getOrThrow<string>('jwt.access_token.sign_options.expires_in')
                 return {
                     secret: secret,
                     signOptions: {
                         expiresIn: expiresIn
-                    }
+                    },
                 }
             },
             inject: [ConfigService]

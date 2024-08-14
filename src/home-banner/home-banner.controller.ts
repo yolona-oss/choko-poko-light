@@ -1,4 +1,4 @@
-import { Param, Res, Get, Post, Delete, Put, Body, Controller } from '@nestjs/common';
+import { Query, Param, Res, Get, Post, Delete, Put, Body, Controller } from '@nestjs/common';
 import { Response } from 'express'
 import { HomeBannerService } from './home-banner.service';
 

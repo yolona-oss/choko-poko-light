@@ -17,10 +17,15 @@ import { RecentlyViewedEntity } from './recently-viewd/recently-viewd.schema';
 import { ProductFilterParams, defaultsProductFilterParams } from './interfaces/ProductFilterParams';
 import { CreateProductDto } from './dto/create-product.dto';
 
+import { Public } from './../../common/decorators/public.decorotor';
+import { Roles } from './../../common/decorators/role.decorator';
+import { Role } from './../../common/enums/role.enum';
+
 @Controller()
 export class ProductsController {
     constructor(private productsService: ProductsService) {}
 
+    @Public()
     @Get('/filtred')
     async getFiltredProducts(@Query() query: ProductFilterParams, @Res() response: Response) {
         const defaultedQuery = {
@@ -31,12 +36,14 @@ export class ProductsController {
         response.status(200).send(execRes)
     }
 
+    @Public()
     @Get('/')
     async getAllProducts(@Res() response: Response) {
         const execRes = await this.productsService.getAllDocuments()
         response.json(execRes)
     }
 
+    @Public()
     @Get('/count')
     async getProductsCount(@Res() response: Response) {
         const execRes = await this.productsService.getDocumentsCount()
@@ -45,6 +52,7 @@ export class ProductsController {
         })
     }
 
+    @Public()
     @Get('/get/featured')
     async getFeaturedProducts(@Query() query: ProductFilterParams, @Res() response: Response) {
         const defaultedQuery = {
@@ -56,6 +64,7 @@ export class ProductsController {
         response.status(200).send(execRes)
     }
 
+    @Roles(Role.Admin)
     @Post('/recentlyViewd')
     async createNewRecentlyViewd(@Body() body: RecentlyViewedEntity, @Res() response: Response) {
         const execRes = await this.productsService.recentlyViewdService.createDocument({
@@ -82,24 +91,28 @@ export class ProductsController {
         response.status(200).json(execRes)
     }
 
+    @Public()
     @Get('/recentlyViewd/')
     async getRecentlyViewd(@Res() response: Response) {
         const execRes = await this.productsService.recentlyViewdService.getAllDocuments()
         response.status(200).json(execRes)
     }
 
+    @Roles(Role.Admin)
     @Post('/create')
     async createNewProduct(@Body() data: CreateProductDto, @Res() response: Response) {
         const execRes = await this.productsService.createNewProduct(data)
         response.status(200).json(execRes)
     }
 
+    @Public()
     @Get('/id/:id')
     async getProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const execRes = await this.productsService.getDocumentById(id)
         response.status(200).send(execRes)
     }
 
+    @Roles(Role.Admin)
     @Delete('/:id')
     async removeProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const execRes = await this.productsService.removeDocumentById(id)
@@ -109,6 +122,7 @@ export class ProductsController {
         })
     }
 
+    @Roles(Role.Admin)
     @Put('/:id')
     async updateProductById(
         @Param('id', ParseObjectIdPipe) id: string,

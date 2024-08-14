@@ -1,12 +1,15 @@
 import { Model } from 'mongoose';
-import { Injectable, Scope, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserEntity, UserDocument } from './user.schema';
 import { CRUDService } from './../internal/crud-service';
 import { AppError } from './../internal/error/AppError';
 import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
-import { Document } from 'mongoose'
 import { Crypto } from './../internal/utils'
+import { CreateUserDTO } from './dto/CreateUserDTO';
+import { DEFAULT_USER_PROFILE_IMAGE, MIN_USER_PASSWORD_LENGTH, MAX_USER_PASSWORD_LENGTH } from './../common/constants';
+
+import { Role } from './../common/enums/role.enum';
 
 @Injectable()
 export class UsersService extends CRUDService<UserDocument> {
@@ -17,11 +20,6 @@ export class UsersService extends CRUDService<UserDocument> {
         super(usersModel)
     }
 
-    async getNotAdminEntities() {
-        // TODO create CRUDService method
-        return await this.usersModel.find({ isAdmin: false })
-    }
-
     async getEntityByPhone(phone: string) {
         return await super.findOne({ phone: phone })
     }
@@ -30,15 +28,35 @@ export class UsersService extends CRUDService<UserDocument> {
         return await super.findOne({ email: email })
     }
 
-    override async createDocument(userInfo: Omit<UserDocument, keyof Document>) {
-        const isDuplicate = await this.getEntityByEmail(userInfo.email)
-        const isPhoneDuplicate = await this.getEntityByPhone(userInfo.phone)
+    override async createDocument(userData: CreateUserDTO) {
+        const isDuplicate = await this.getEntityByEmail(userData.email)
+        const isPhoneDuplicate = await this.getEntityByPhone(userData.phone)
         if (isDuplicate || isPhoneDuplicate) {
-            throw new AppError(AppErrorTypeEnum.DB_ENTITY_EXISTS, {errorMessage: "User exists", userMessage: "User exists"})
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_EXISTS,
+                               {errorMessage: "User exists", userMessage: "User exists"})
         }
 
-        userInfo.isAdmin = false
-        return super.createDocument(userInfo)
+        if (userData.password.length < MIN_USER_PASSWORD_LENGTH) {
+            throw new AppError(AppErrorTypeEnum.INSUFFICIENT_USER_PASSWORD_LENGTH, {
+                errorMessage: "Insufficient user password length. Must be at least 8 characters.",
+                userMessage: "Insufficient user password length. Must be at least 8 characters."
+            })
+        } else if (userData.password.length >= MAX_USER_PASSWORD_LENGTH) {
+            throw new AppError(AppErrorTypeEnum.INSUFFICIENT_USER_PASSWORD_LENGTH, {
+                errorMessage: "Insufficient user password length. Must be less than 64 characters.",
+                userMessage: "Insufficient user password length. Must be less than 64 characters."
+            })
+        }
+
+        const passwordHash = Crypto.createPasswordHash(userData.password)
+        return super.createDocument(
+            {
+                ...userData,
+                password: passwordHash,
+                roles: <string[]>([Role.User]),
+                images: userData.images || [DEFAULT_USER_PROFILE_IMAGE]
+            }
+        )
     }
 
     async removeUserById(id: string) {
@@ -50,15 +68,11 @@ export class UsersService extends CRUDService<UserDocument> {
             throw new AppError(AppErrorTypeEnum.DB_NOTHING_TO_UPDATE)
         }
 
-        if (newUserInfo.isAdmin && newUserInfo.isAdmin == true) {
-            throw new UnauthorizedException("Cannot promote to admin")
+        if (newUserInfo.roles?.includes(Role.Admin)) {
+            throw new UnauthorizedException("Cannot update admin status.")
         }
 
         const existsUser = await this.getDocumentById(id)
-        if (!existsUser) {
-            throw "User dont exists"
-        }
-
 
         if (currentPassword) {
             if (!Crypto.comparePasswords(currentPassword, existsUser.password)) {
@@ -76,16 +90,32 @@ export class UsersService extends CRUDService<UserDocument> {
             })
         }
 
-        const updated = await super.updateDocumentById(id, newUserInfo)
-        if (!updated) {
-            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
-        }
-
-        return updated
+        return await super.updateDocumentById(id, newUserInfo)
     }
 
     async changePassword(id: string, currentPassword: string, newPassword: string): Promise<UserEntity> {
         return await this.updateDocumentByIdSafe(id, { password: newPassword }, currentPassword)
+    }
+
+    async addRole(id: string, role: Role) {
+        const currentRoles = (await this.getDocumentById(id)).roles
+
+        if (currentRoles.includes(role)) {
+            throw new AppError(AppErrorTypeEnum.ROLE_ALREADY_PROVIDED)
+        }
+
+        return await this.updateDocumentByIdSafe(
+            id,
+            { roles: [...currentRoles, role] }
+        )
+    }
+
+    async removeRole(id: string, role: Role) {
+        const currentRoles = (await this.getDocumentById(id)).roles
+
+        if (!currentRoles.includes(role)) {
+            throw new AppError(AppErrorTypeEnum.ROLE_NOT_PROVIDED)
+        }
     }
 
     /***
@@ -94,5 +124,24 @@ export class UsersService extends CRUDService<UserDocument> {
     async updateDocumentById(id: string, newData: Partial<UserDocument>) {
         throw new Error("Use UsersService::updateDocumentByIdSafe instead")
         return super.updateDocumentById(id, newData)
+    }
+
+    async __createDefaultAdmin(user: CreateUserDTO) {
+        const defaultUser = await this.getEntityByEmail(user.email)
+        if (!defaultUser) {
+            try {
+                await this.usersModel.create({
+                    ...user,
+                    password: Crypto.createPasswordHash(user.password),
+                    roles: [Role.Admin]
+                })
+            } catch (e) {
+                console.error(e)
+                throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE, {
+                    errorMessage: "Cannot create default admin",
+                    userMessage: "Cannot create default admin"
+                })
+            }
+        }
     }
 }
