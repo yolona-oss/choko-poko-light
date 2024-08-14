@@ -2,6 +2,10 @@
 /dist
 /build
 build/
+node_modules/
+
+.dev.env
+.env
 
 # Logs
 logs
