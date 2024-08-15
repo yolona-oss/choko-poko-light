@@ -59,9 +59,9 @@ export default (): ConfigSchema => ({
     },
     jwt: {
         access_token: {
-            secret: <string>process.env.JWT_SECRET_KEY,
+            secret: <string>process.env.JWT_TOKEN_SECRET_KEY,
             sign_options: {
-                expires_in: <string>process.env.JWT_OPTION_EXPIRES_IN
+                expires_in: <string>process.env.JWT_TOKEN_OPTION_EXPIRES_IN
             },
         },
         refresh_token: {
