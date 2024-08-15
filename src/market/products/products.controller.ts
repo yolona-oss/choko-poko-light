@@ -14,7 +14,7 @@ import { Response } from 'express'
 import { ProductEntity } from './products.schema';
 import { ProductsService } from './products.service';
 import { RecentlyViewedEntity } from './recently-viewd/recently-viewd.schema';
-import { ProductFilterParams, defaultsProductFilterParams } from './interfaces/ProductFilterParams';
+import { ProductFilterParams } from './interfaces/ProductFilterParams';
 import { CreateProductDto } from './dto/create-product.dto';
 
 import { Public } from './../../common/decorators/public.decorotor';
@@ -27,12 +27,9 @@ export class ProductsController {
 
     @Public()
     @Get('/filtred')
-    async getFiltredProducts(@Query() query: ProductFilterParams, @Res() response: Response) {
-        const defaultedQuery = {
-            ...defaultsProductFilterParams,
-            ...query
-        }
-        const execRes = await this.productsService.getFiltredProducts(defaultedQuery)
+    async getFiltredProducts(@Query() query: any, @Res() response: Response) {
+        console.log("Queyr: " + JSON.stringify(query, null, '\n'))
+        const execRes = await this.productsService.getFiltredProducts(query)
         response.status(200).send(execRes)
     }
 
@@ -55,39 +52,15 @@ export class ProductsController {
     @Public()
     @Get('/get/featured')
     async getFeaturedProducts(@Query() query: ProductFilterParams, @Res() response: Response) {
-        const defaultedQuery = {
-            ...defaultsProductFilterParams,
-            ...query,
-            isFeatured: true
-        }
-        const execRes = await this.productsService.getFiltredRecentlyViewdProducts(defaultedQuery)
+        Object.assign(query, {isFutured: true})
+        const execRes = await this.productsService.getFiltredRecentlyViewdProducts(query)
         response.status(200).send(execRes)
     }
 
     @Roles(Role.Admin)
     @Post('/recentlyViewd')
     async createNewRecentlyViewd(@Body() body: RecentlyViewedEntity, @Res() response: Response) {
-        const execRes = await this.productsService.recentlyViewdService.createDocument({
-            prodId:        body.id,
-            name:          body.name,
-            description:   body.description,
-            images:        body.images,
-            brand:         body.brand,
-            price:         body.price,
-            oldPrice:      body.oldPrice,
-            subCatId:      body.subCatId,
-            catName:       body.catName,
-            subCat:        body.subCat,
-            category:      body.category,
-            countInStock:  body.countInStock,
-            rating:        body.rating,
-            isFeatured:    body.isFeatured,
-            discount:      body.discount,
-            productRam:    body.productRam,
-            size:          body.size,
-            productWeight: body.productWeight,
-            dateCreated:   new Date()
-        })
+        const execRes = await this.productsService.recentlyViewdService.createDocument(body)
         response.status(200).json(execRes)
     }
 

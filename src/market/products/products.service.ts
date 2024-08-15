@@ -40,8 +40,8 @@ export class ProductsService extends CRUDService<ProductDocument> {
 
     async getFiltredProducts(filterOpts: ProductFilterParams) {
         return await this.getFiltred(filterOpts,
-                                     async (query) => await this.getAllDocumentsByQuery(query),
-                                         async (query, page, perPage) => await this.getEntriesByPage(query, page, perPage))
+                                     async (query) => await this.getDocumentsByQuery(query),
+                                         async (query, page, perPage) => await this.getDocumentsByPage(query, page, perPage))
     }
 
     async getFiltredRecentlyViewdProducts(filterOpts: ProductFilterParams) {
@@ -102,7 +102,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
     }
 
     // search func TODO
-    async getAllDocumentsByQuery(query: Object) {
+    async getDocumentsByQuery(query: Object) {
         return await this.productModel.find(query).populate("category subCat").exec()
     }
 
@@ -138,10 +138,8 @@ export class ProductsService extends CRUDService<ProductDocument> {
         let docs: Document[]|null
         if (pagesQuantity.page && pagesQuantity.perPage) {
             docs = await findByPageFn(query, pagesQuantity.page, pagesQuantity.perPage)
-            //docs = await this.getEntriesByPage(query, pagesQuantity.page, pagesQuantity.perPage)
         } else {
             docs = await findFn(query)
-            //docs = await this.getAllDocumentsByQuery(query)
         }
 
         return {
@@ -151,7 +149,7 @@ export class ProductsService extends CRUDService<ProductDocument> {
         }
     }
 
-    private async getEntriesByPage(query: Object, page: number, perPage: number) {
+    private async getDocumentsByPage(query: Object, page: number, perPage: number) {
         return await this.productModel
         .find(query)
         .populate("category subCat")

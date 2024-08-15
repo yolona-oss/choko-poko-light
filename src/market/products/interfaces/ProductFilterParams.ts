@@ -11,8 +11,3 @@ export interface ProductFilterParams {
         location?: string,
         isFeatured?: boolean
 }
-
-// TODO: use values form providers, that reads from ConfigService
-export const defaultsProductFilterParams: Pick<ProductFilterParams, 'page' | 'perPage'> = {
-    page: "1",
-}
