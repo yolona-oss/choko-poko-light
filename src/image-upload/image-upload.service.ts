@@ -1,13 +1,15 @@
 import mongoose, { Document, Model } from 'mongoose';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ImagesDocument } from './image-upload.schema';
-import { CRUDService } from './../internal/crud-service';
-import { CloudinaryService } from './../common/cloudinary/cloudinary.service';
 import * as fs from 'fs'
-import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
-import { AppError } from './../internal/error/AppError';
-import { extractFileName } from './../internal/utils';
+
+import { CloudinaryService } from './../common/cloudinary/cloudinary.service';
+
+import { ImagesDocument } from './schemas/image-upload.schema';
+
+import { CRUDService } from './../common/misc/crud-service';
+import { AppError, AppErrorTypeEnum } from './../common/app-error';
+import { extractFileName } from './../common/misc/utils';
 
 @Injectable()
 export class ImageUploadService extends CRUDService<ImagesDocument> {

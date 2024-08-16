@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './../interfaces/jwt-payload.interface';
+
 import { UsersService } from './../../users/users.service';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
-import { AppError } from './../../internal/error/AppError';
+
+import { JwtPayload } from './../interfaces/jwt-payload.interface';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'strategy-jwt') {

@@ -2,10 +2,8 @@ import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersController } from './users.controller';
-import { UserSchema } from './user.schema';
+import { UserSchema } from './schemas/user.schema';
 import { UsersService } from './users.service';
-
-import { Role } from './../common/enums/role.enum';
 
 @Module({
     controllers: [UsersController],

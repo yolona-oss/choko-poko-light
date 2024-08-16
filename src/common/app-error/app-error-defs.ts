@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
-import { AppErrorTypeEnum } from './AppErrorTypeEnum';
-import { IErrorMessage } from './IErrorMessage';
+import { AppErrorTypeEnum } from './enums/app-error-type.enum';
+import { IErrorMessage } from './interfaces/ierror-message.interface';
 
 export const ErrorsDefenition: Record<AppErrorTypeEnum, IErrorMessage> = {
     [AppErrorTypeEnum.BAD_REQUEST]: {

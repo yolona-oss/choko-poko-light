@@ -1,9 +1,9 @@
-import { isValidObjectId } from "mongoose"
-import { AppError } from "./error/AppError"
-import { AppErrorTypeEnum } from "./error/AppErrorTypeEnum"
-import { extractValueFromObject, assignToCustomPath } from "./helpers"
+import { AppError, AppErrorTypeEnum } from "./../app-error"
+import { assignToCustomPath } from "./helpers"
 
-export class OPQBuilder {
+import { IBuilder } from "./../types/builder.type"
+
+export class OPQBuilder implements IBuilder<Record<string, any>> {
     private options: Record<string, any>
 
     constructor() {

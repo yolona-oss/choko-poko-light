@@ -4,15 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { CategoryDocument } from './schemas/category.schema';
 
 import { ImageUploadService } from './../../image-upload/image-upload.service';
-import { CRUDService } from './../../internal/crud-service';
+import { CRUDService } from './../../common/misc/crud-service';
 
 import { FilteringCategoryOptions } from './interfaces/filtring-category-options.interface';
 import { FiltredCategoryList } from './interfaces/filtred-category-list.interface';
 
-import { AppError } from './../../internal/error/AppError';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
-import { OPQBuilder } from './../../internal/OptionalParamQueryBuilder';
+import { OPQBuilder } from './../../common/misc/opq-builder';
 
 @Injectable()
 export class CategoryService extends CRUDService<CategoryDocument> {

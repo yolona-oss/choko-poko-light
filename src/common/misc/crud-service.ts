@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Document, FilterQuery, Model } from 'mongoose';
-import { AppError } from './error/AppError';
-import { AppErrorTypeEnum } from './error/AppErrorTypeEnum';
-import { DeepPartial } from './../common/types/deep-partial';
+import { AppError, AppErrorTypeEnum } from './../app-error';
+import { DeepPartial } from './../types/deep-partial.type';
 
 @Injectable()
 export abstract class CRUDService<T extends Document> {

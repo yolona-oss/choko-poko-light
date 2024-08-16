@@ -1,12 +1,14 @@
 import { Model } from 'mongoose';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserEntity, UserDocument } from './user.schema';
-import { CRUDService } from './../internal/crud-service';
-import { AppError } from './../internal/error/AppError';
-import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
-import { Crypto } from './../internal/utils'
-import { CreateUserDTO } from './dto/CreateUserDTO';
+
+import { CreateUserDTO } from './dto/create-user.dto';
+import { UserEntity, UserDocument } from './schemas/user.schema';
+
+import { CRUDService } from './../common/misc/crud-service';
+import { AppError, AppErrorTypeEnum } from './../common/app-error';
+import { Crypto } from './../common/misc/utils'
+
 import { DEFAULT_USER_PROFILE_IMAGE, MIN_USER_PASSWORD_LENGTH, MAX_USER_PASSWORD_LENGTH } from './../common/constants';
 
 import { Role } from './../common/enums/role.enum';

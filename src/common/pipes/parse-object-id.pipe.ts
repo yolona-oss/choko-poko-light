@@ -1,6 +1,5 @@
 import { PipeTransform, Injectable } from '@nestjs/common';
-import { AppError } from './../../internal/error/AppError';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
+import { AppError, AppErrorTypeEnum } from './../app-error';
 import { Types } from 'mongoose';
 
 @Injectable()

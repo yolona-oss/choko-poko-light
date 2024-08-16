@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from "../users/users.service";
-import { JwtService } from "@nestjs/jwt";
-import { Crypto } from "./../internal/utils"
-import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
-import { AppError } from './../internal/error/AppError';
-import { AuthJwtTokens } from './interfaces/auth-jwt-tokens.interface';
 import { ConfigService } from '@nestjs/config';
-import { SignUpDto } from './dto/sign-up.dto';
+import { JwtService } from '@nestjs/jwt';
+
+import { UsersService } from '../users/users.service';
+
+import { Crypto } from './../common/misc/utils';
+
+import { AppError, AppErrorTypeEnum } from './../common/app-error';
+
+import { AuthJwtTokens } from './interfaces/auth-jwt-tokens.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+
 import { AuthResponseDto, AuthResponseUserTransform } from './dto/auth-response.dto';
+import { SignUpDto } from './dto/sign-up.dto';
+
 
 import { Role } from './../common/enums/role.enum';
 

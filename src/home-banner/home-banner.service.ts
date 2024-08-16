@@ -2,12 +2,14 @@ import mongoose from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { HomeBannerDocument } from './home-banner.schema';
-import { CRUDService } from './../internal/crud-service';
-import { AppError } from './../internal/error/AppError';
-import { AppErrorTypeEnum } from './../internal/error/AppErrorTypeEnum';
+
 import { ImageUploadService } from './../image-upload/image-upload.service';
-import { DeepPartial } from './../common/types/deep-partial';
+
+import { HomeBannerDocument } from './schemas/home-banner.schema';
+
+import { CRUDService } from './../common/misc/crud-service';
+import { AppError, AppErrorTypeEnum } from './../common/app-error';
+import { DeepPartial } from './../common/types/deep-partial.type';
 
 @Injectable()
 export class HomeBannerService extends CRUDService<HomeBannerDocument> {

@@ -9,7 +9,8 @@ import {
     Post,
 } from '@nestjs/common';
 import { Response } from 'express'
-import { OrdersEntity } from './orders.schema';
+
+import { OrdersEntity } from './schemas/orders.schema';
 import { OrdersService } from './orders.service';
 
 import { Public } from './../../common/decorators/public.decorotor';

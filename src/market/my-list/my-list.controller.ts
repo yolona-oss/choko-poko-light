@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Res } from '@nestjs/common';
+import { Controller, Get, Post, Query, Res, Req } from '@nestjs/common';
 import { MyListService } from './my-list.service';
 import { Response } from 'express';
 
@@ -15,15 +15,19 @@ export class MyListController {
     }
 
     @Post('/add')
-    async addToUser(@Query() query: any, @Res() response: Response) {
-        const doc = await this.myListService.addToUser(query.productId, query.userId)
+    async addToUser(
+        @Query() query: any, @Res() response: Response
+    ) {
+        const doc = await this.myListService.addToUser(query)
         response.json(doc)
     }
 
     @Post('/remove')
-    async removeFromUser(@Query() query: any, @Res() response: Response) {
-        // TODO create removeMany handler
-        const doc = await this.myListService.removeFromUser(query.productId, query.userId)
+    async removeFromUser(
+        @Query() query: any,
+        @Res() response: Response
+    ) {
+        const doc = await this.myListService.removeFromUser(query)
         response.json(doc)
     }
 }

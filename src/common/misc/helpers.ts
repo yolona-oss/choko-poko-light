@@ -46,11 +46,3 @@ export function assignToCustomPath(obj: object, propPath: string, value: any) {
     }
     return _obj
 }
-
-export function isObjectId(str_id: string) {
-    return mongoose.Types.ObjectId.isValid(str_id)
-}
-
-//export class Validatior {
-//    static IsMongooseObject
-//}

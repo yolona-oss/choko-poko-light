@@ -12,13 +12,12 @@ import {
 import mongoose from 'mongoose';
 import { Response } from 'express'
 
-import { ParseObjectIdPipe } from './../../common/pipes/ParseObjectIdPipe.pipe';
+import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 import { CategoryService } from './category.service';
 
-import { AppError } from './../../internal/error/AppError';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
-import { Public } from './../../common/decorators/public.decorotor';
+//import { Public } from './../../common/decorators/public.decorotor';
 
 @Controller('category')
 export class CategoryController {

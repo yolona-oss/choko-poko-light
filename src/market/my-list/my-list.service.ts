@@ -4,12 +4,11 @@ import mongoose, { isValidObjectId, Model } from 'mongoose';
 
 import { FindInListQuery } from './interfaces/find-query.interface';
 import { AddToListQuery, RemoveFromListQuery } from './interfaces/list-operation-query.interface';
-import { OPQBuilder } from './../../internal/OptionalParamQueryBuilder';
+import { OPQBuilder } from './../../common/misc/opq-builder';
 
 import { MyListDocument } from './schemas/my-list.schema';
 
-import { AppError } from './../../internal/error/AppError';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
 @Injectable()
 export class MyListService {
@@ -72,10 +71,10 @@ export class MyListService {
         return created
     }
 
-    async addToUser(productId: string, userId: string) {
-        const updated = await this.myListModel.findOneAndUpdate({ user: userId }, {
+    async addToUser(opts: AddToListQuery) {
+        const updated = await this.myListModel.findOneAndUpdate({ user: opts.userId }, {
             $addToSet: {
-                products: new mongoose.Schema.Types.ObjectId(productId)
+                products: new mongoose.Schema.Types.ObjectId(opts.productId)
             }
         }, { new: true })
 
@@ -86,10 +85,10 @@ export class MyListService {
         return await updated.populate('products')
     }
 
-    async removeFromUser(productId: string, userId: string) {
-        const updated = await this.myListModel.findOneAndUpdate({ user: userId }, {
+    async removeFromUser(opts: RemoveFromListQuery) {
+        const updated = await this.myListModel.findOneAndUpdate({ user: opts.userId }, {
             $pull: {
-                products: new mongoose.Schema.Types.ObjectId(productId)
+                products: new mongoose.Schema.Types.ObjectId(opts.productId)
             }
         }, { new: true })
 

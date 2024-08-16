@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProductReviewsSchema } from './product-reviews.schema';
+import { ProductReviewsSchema } from './schemas/product-reviews.schema';
 import { ProductReviewsService } from './product-reviews.service';
 import { ProductReviewsController } from './product-reviews.controller';
 

@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { DEFAULT_IMAGES_ENTITY_COLLECTION_NAME } from './../common/constants';
 
 export type ImagesDocument = ImagesEntity & Document;
 

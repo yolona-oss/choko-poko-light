@@ -1,8 +1,8 @@
 import { Document, Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { CRUDService } from './../../internal/crud-service';
+import { CRUDService } from './../../common/misc/crud-service';
 import { InjectModel } from '@nestjs/mongoose';
-import { OrdersDocument, OrdersEntity } from './orders.schema';
+import { OrdersDocument } from './schemas/orders.schema';
 import { ImageUploadService } from './../../image-upload/image-upload.service';
 
 @Injectable()

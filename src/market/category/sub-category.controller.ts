@@ -14,10 +14,9 @@ import { Response } from 'express'
 
 import { SubCategoryService } from './sub-category.service';
 
-import { ParseObjectIdPipe } from './../../common/pipes/ParseObjectIdPipe.pipe';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
+import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 
-import { AppError } from './../../internal/error/AppError';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
 
 @Controller('sub-category')
 export class SubCategoryController {

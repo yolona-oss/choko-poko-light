@@ -9,10 +9,10 @@ import {
 } from '@nestjs/common';
 import { UsersService } from "./users.service";
 import { Response } from 'express'
-import { UserEntity } from './user.schema';
+import { UserEntity } from './schemas/user.schema';
 import { Roles } from './../common/decorators/role.decorator';
 //import { User } from './../common/decorators/user.decorator'
-import { ParseObjectIdPipe } from './../common/pipes/ParseObjectIdPipe.pipe';
+import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
 import { Role } from 'src/common/enums/role.enum';
 
 @Controller('users')

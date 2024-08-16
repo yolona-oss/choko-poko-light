@@ -10,7 +10,7 @@ import {
     Post,
     NotImplementedException,
 } from '@nestjs/common';
-import { ParseObjectIdPipe } from './../../common/pipes/ParseObjectIdPipe.pipe';
+import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 import { Response } from 'express'
 import { ProductEntity } from './schemas/products.schema';
 import { ProductsService } from './products.service';

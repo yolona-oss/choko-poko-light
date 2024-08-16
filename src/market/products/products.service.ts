@@ -4,8 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CategoryService } from './../category/category.service';
 import { ImageUploadService } from './../../image-upload/image-upload.service';
 
-import { AppError } from './../../internal/error/AppError';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
 import { CreateProductDto } from './dto/create-product.dto';
 
@@ -13,15 +12,15 @@ import { ProductDocument } from './schemas/products.schema';
 import { CategoryEntity } from './../category/schemas/category.schema';
 import { SubCategoryEntity } from '../category/schemas/sub-category.schema';
 import { ProductEntity } from './schemas/products.schema';
-import { ImagesEntity } from './../../image-upload/image-upload.schema';
+import { ImagesEntity } from './../../image-upload/schemas/image-upload.schema';
 
-import { OPQBuilder } from 'src/internal/OptionalParamQueryBuilder';
+import { OPQBuilder } from './../../common/misc/opq-builder';
 import { FilteringOptions } from './interfaces/filtering-options.interface';
 import { FiltredProducts } from './interfaces/filtred-products.interface';
 
 //import { CRUDService } from './../../internal/crud-service';
 
-import { DeepPartial } from './../../common/types/deep-partial';
+import { DeepPartial } from './../../common/types/deep-partial.type';
 
 @Injectable()
 export class ProductsService {

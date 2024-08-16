@@ -2,12 +2,14 @@ import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { SubCategoryDocument } from './schemas/sub-category.schema';
-import { CRUDService } from './../../internal/crud-service';
-import { AppError } from './../../internal/error/AppError';
-import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
+
+import { CRUDService } from './../../common/misc/crud-service';
+import { OPQBuilder } from './../../common/misc/opq-builder';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
+
 import { FilteringSubCategoryOptions } from './interfaces/filtring-sub-category-options.interface';
-import { OPQBuilder } from 'src/internal/OptionalParamQueryBuilder';
 import { FiltredSubCategoryList } from './interfaces/filtred-sub-category.interface';
+
 
 @Injectable()
 export class SubCategoryService extends CRUDService<SubCategoryDocument> {

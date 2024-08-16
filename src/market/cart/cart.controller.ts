@@ -12,7 +12,7 @@ import {
     NotFoundException
 } from '@nestjs/common';
 import { Response } from 'express'
-import { CartEntity } from './cart.schema';
+import { CartEntity } from './schemas/cart.schema';
 import { CartService } from './cart.service';
 
 @Controller('cart')

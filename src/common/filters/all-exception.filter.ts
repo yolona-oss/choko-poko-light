@@ -1,12 +1,11 @@
-import {ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, UnauthorizedException} from '@nestjs/common';
-import {AppError} from './../../internal/error/AppError';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { AppError } from './../app-error'
 
 @Catch(/*HttpException*/)
 export class AllExeptionFilter implements ExceptionFilter {
     catch(exception: any, host: ArgumentsHost): any {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
-        //const request = ctx.getRequest();
 
         if (exception instanceof AppError) {
             return response.status(exception.httpStatus).json({
@@ -17,8 +16,6 @@ export class AllExeptionFilter implements ExceptionFilter {
             });
         } else if (exception instanceof UnauthorizedException) {
             // TODO create render to login
-            //console.log(exception.message);
-            //console.error(exception.stack);
             return response.status(HttpStatus.UNAUTHORIZED).json(exception.message);
         } else if (exception.status === 403) {
             return response.status(HttpStatus.FORBIDDEN).json(exception.message);

@@ -1,6 +1,6 @@
-import { AppErrorTypeEnum } from './AppErrorTypeEnum';
-import { IErrorMessage } from './IErrorMessage';
-import { ErrorsDefenition } from './AppErrorDefenitions';
+import { AppErrorTypeEnum } from './enums/app-error-type.enum';
+import { IErrorMessage } from './interfaces/ierror-message.interface';
+import { ErrorsDefenition } from './app-error-defs';
 
 interface AppErrorModificationOptions extends Pick<IErrorMessage, 'errorMessage' | 'userMessage'> {
     errorMessage: string
@@ -8,9 +8,7 @@ interface AppErrorModificationOptions extends Pick<IErrorMessage, 'errorMessage'
 }
 
 /***
- *
  * @constructor Create AppError with passed error code otherwise create "Bad Request"
- *
  */
 export class AppError extends Error {
     public errorCode: AppErrorTypeEnum;

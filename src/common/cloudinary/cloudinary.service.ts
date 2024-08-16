@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UploadApiOptions, UploadApiErrorResponse, v2 as cloudinary } from 'cloudinary';
-import { AppError } from 'src/internal/error/AppError';
-import { AppErrorTypeEnum } from 'src/internal/error/AppErrorTypeEnum';
-import { CloudinaryResponse } from './cloudinary-response';
+import { UploadApiOptions, v2 as cloudinary } from 'cloudinary';
+import { AppError, AppErrorTypeEnum } from './../app-error';
+import { CloudinaryResponse } from './types/cloudinary-response.type';
 
 @Injectable()
 export class CloudinaryService {
