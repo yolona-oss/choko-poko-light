@@ -39,7 +39,11 @@ export class CategoryService extends CRUDService<CategoryDocument> {
     }
 
     override async removeDocumentById(id: string) {
-        await this.imageUploadService.removeImagesFromModelById(this.categoryModel, id)
+        const doc = await super.getDocumentById(id)
+
+        for (const image of doc.images) {
+            await this.imageUploadService.removeDocumentById(image.toString())
+        }
         return super.removeDocumentById(id)
     }
 }

@@ -9,8 +9,8 @@ export interface CreateProductDto {
     readonly subCatId?: string
     readonly catId?: string
     readonly catName?: string
-    readonly category: string // mongoose.Schema.Types.ObjectId
-    readonly subCat: string // mongoose.Schema.Types.ObjectId
+    readonly category: string
+    readonly subCat: string
     readonly countInStock: number
     readonly rating?: number
     readonly isFeatured?: boolean

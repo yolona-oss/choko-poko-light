@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type OrdersDocument = OrdersEntity & Document;
 
@@ -38,7 +38,7 @@ export class OrdersEntity {
         productTitle: {type: String},
         quantity: {type: Number},
         price: {type: Number},
-        image: {type: String},
+        image: {type: mongoose.Schema.Types.ObjectId, ref: 'Images'},
         subTotal: {type: Number},
     }] })
     products: [
@@ -47,7 +47,7 @@ export class OrdersEntity {
             productTitle: string
             quantity: number
             price: number
-            image: string
+            image: mongoose.Schema.Types.ObjectId
             subTotal: number
         }
     ]

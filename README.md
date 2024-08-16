@@ -17,3 +17,5 @@ If dependencies errors, try run `npm install --legacy-peer-deps` or `npm install
 [-] events to order creation(update data of product quantity)
 [-] event to admin product editing
 [-] caching for some routes
+[-] move code from internal to common
+[-] append users shcmea to remove my-list entry on deleting

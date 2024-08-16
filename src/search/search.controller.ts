@@ -13,7 +13,7 @@ export class SearchController {
         if (!q) {
             throw new BadRequestException("Query is required")
         }
-        const foundItems = await this.productService.searchFunc(q)
+        const foundItems = await this.productService.search(q)
 
         if (foundItems) {
             response.status(200).json(foundItems)

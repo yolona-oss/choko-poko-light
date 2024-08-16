@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Document, FilterQuery, Model } from 'mongoose';
 import { AppError } from './error/AppError';
 import { AppErrorTypeEnum } from './error/AppErrorTypeEnum';
@@ -33,7 +33,7 @@ export abstract class CRUDService<T extends Document> {
             );
         } catch (e) {
             console.log(e)
-            throw new InternalServerErrorException(e);
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_READ)
         }
     }
 

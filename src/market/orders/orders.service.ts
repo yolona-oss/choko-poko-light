@@ -16,11 +16,10 @@ export class OrdersService extends CRUDService<OrdersDocument> {
     }
 
     override async removeDocumentById(id: string) {
-        const docs = await super.getAllDocuments()
-        for (const doc of docs) {
-            for (const product of doc.products) {
-                await this.imageUploadService.removeConcreetImageFromDefaultCollection(product.image)
-            }
+        const doc = await super.getDocumentById(id)
+
+        for (const product of doc.products) {
+            await this.imageUploadService.removeDocumentById(product.image.toString())
         }
 
         return await super.removeDocumentById(id)

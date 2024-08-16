@@ -6,14 +6,14 @@ import { OrdersController } from './orders.controller';
 import { ImageUploadModule } from './../../image-upload/image-upload.module';
 
 @Module({
-    providers: [OrdersService],
     imports: [
         MongooseModule.forFeature([
             { name: 'Orders', schema: OrdersSchema },
         ]),
         ImageUploadModule
     ],
-    //exports: [],
-    controllers: [OrdersController]
+    providers: [OrdersService],
+    controllers: [OrdersController],
+    exports: [OrdersService]
 })
 export class OrdersModule {}

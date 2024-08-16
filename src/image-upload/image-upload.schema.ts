@@ -6,17 +6,20 @@ export type ImagesDocument = ImagesEntity & Document;
 
 @Schema({
     toJSON: {
-        virtuals: true
+        virtuals: true,
     }
 })
 export class ImagesEntity {
-    id: string;
+    id: string
 
-    @Prop({type: [String], required: true})
-    images: string[]
+    @Prop({type: String, default: "common image"})
+    name?: string;
 
-    @Prop({type: String, default: DEFAULT_IMAGES_ENTITY_COLLECTION_NAME})
-    collectionName?: string
+    @Prop({type: String, default: "common image description"})
+    description?: string;
+
+    @Prop({type: String, required: true})
+    imageUrl: string;
 }
 
 const ImagesSchema = SchemaFactory.createForClass(ImagesEntity);

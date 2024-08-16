@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
@@ -18,6 +19,21 @@ export class HomeBannerService extends CRUDService<HomeBannerDocument> {
         super(homeBannerModel)
     }
 
+    override async getDocumentById(id: string) {
+        try {
+            const doc = await this.homeBannerModel.findById(id).populate('images').exec()
+            if (!doc) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return doc
+        } catch (error) {
+            if (error instanceof AppError) {
+                throw error
+            }
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        }
+    }
+
     override async updateDocumentById(id: string, data: DeepPartial<HomeBannerDocument>) {
         if (!data.images || data.images.length <= 0) {
             throw new AppError(AppErrorTypeEnum.DB_NOTHING_TO_UPDATE)
@@ -27,13 +43,10 @@ export class HomeBannerService extends CRUDService<HomeBannerDocument> {
     }
 
     override async removeDocumentById(id: string) {
-        const entry = await this.homeBannerModel.findById(id)
-        if (!entry) {
-            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
-        }
+        const doc = await this.getDocumentById(id)
 
-        for (const url of entry.images) {
-            await this.imageService.removeConcreetImageFromDefaultCollection(url)
+        for (const image of doc.images) {
+            await this.imageService.removeDocumentById(image.toString())
         }
 
         return await super.removeDocumentById(id)
