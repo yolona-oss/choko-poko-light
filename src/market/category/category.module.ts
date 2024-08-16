@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ImageUploadModule } from './../../image-upload/image-upload.module';
 import { CategoryController } from './category.controller';
-import { CategorySchema } from './category.schema';
+import { CategorySchema } from './schemas/category.schema';
 import { CategoryService } from './category.service';
 import { SubCategoryController } from './sub-category.controller';
-import { SubCategorySchema } from './sub-category.schema';
+import { SubCategorySchema } from './schemas/sub-category.schema';
 import { SubCategoryService } from './sub-category.service';
 
 @Module({

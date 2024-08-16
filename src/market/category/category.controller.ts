@@ -9,14 +9,16 @@ import {
     Controller,
     Post,
 } from '@nestjs/common';
+import mongoose from 'mongoose';
 import { Response } from 'express'
-import { ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
 
-import { CategoryService } from './category.service';
 import { ParseObjectIdPipe } from './../../common/pipes/ParseObjectIdPipe.pipe';
-import { Public } from './../../common/decorators/public.decorotor';
+import { CategoryService } from './category.service';
+
 import { AppError } from './../../internal/error/AppError';
 import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
+
+import { Public } from './../../common/decorators/public.decorotor';
 
 @Controller('category')
 export class CategoryController {
@@ -24,22 +26,10 @@ export class CategoryController {
         private categoryService: CategoryService,
     ) {}
 
-    @Get('/filtred')
-    async getFiltredCategories(
-        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-        @Query('perPage', new DefaultValuePipe(8), ParseIntPipe) perPage: number,
-        @Res() response: Response
-    ) {
-        const result = await this.categoryService.getFiltredEntities(page, perPage)
-        response.status(200).json(result)
-    }
-
     @Get('/')
-    async getAllDocs(@Res() response: Response) {
-        const allDocs = await this.categoryService.getAllDocuments()
-        response.json({
-            categoryList: allDocs
-        })
+    async findSome(@Query() query: any, @Res() response: Response) {
+        const result = await this.categoryService.findFiltredWrapper(query)
+        response.status(200).json(result)
     }
 
     @Get('/id/:id')
@@ -93,14 +83,14 @@ export class CategoryController {
     @Put('/:id')
     async updateById(
         @Param('id', ParseObjectIdPipe) id: string,
-        @Body() body: {name: string, images: string[], color: string},
+        @Body() body: {name?: string, images?: string[], color?: string},
         @Res() response: Response
     ) {
         const updatedCat = await this.categoryService.updateDocumentById(
             id,
             {
                 name: body.name,
-                images: body.images,
+                images: body.images?.map(id => new mongoose.Schema.Types.ObjectId(id)),
                 color: body.color
             }
         )

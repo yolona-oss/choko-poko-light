@@ -10,8 +10,8 @@ import { AppErrorTypeEnum } from './../../internal/error/AppErrorTypeEnum';
 import { CreateProductDto } from './dto/create-product.dto';
 
 import { ProductDocument } from './schemas/products.schema';
-import { CategoryEntity } from './../category/category.schema';
-import { SubCategoryEntity } from '../category/sub-category.schema';
+import { CategoryEntity } from './../category/schemas/category.schema';
+import { SubCategoryEntity } from '../category/schemas/sub-category.schema';
 import { ProductEntity } from './schemas/products.schema';
 import { ImagesEntity } from './../../image-upload/image-upload.schema';
 
