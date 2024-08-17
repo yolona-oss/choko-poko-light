@@ -85,7 +85,7 @@ export abstract class CRUDService<T extends Document> {
         } catch (error: any) {
             if (error?.name === 'ValidationError') {
                 throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE, {
-                    errorMessage: Object.values(error.errors).join(' ')
+                    errorMessage: JSON.stringify(error.errors, null, 4)
                 })
             }
             throw error

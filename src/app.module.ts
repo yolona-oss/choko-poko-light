@@ -14,7 +14,6 @@ import { CommonModule } from './common/common.module';
 import { ConfigModule } from '@nestjs/config';
 import { ImageUploadModule } from './image-upload/image-upload.module';
 import { HomeBannerModule } from './home-banner/home-banner.module';
-import { SearchModule } from './search/search.module';
 import { JwtGuard } from './common/guards/jwt.guard';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { JwtModule } from '@nestjs/jwt';
@@ -27,8 +26,7 @@ import { JwtModule } from '@nestjs/jwt';
             cache: true
         }),
         ServeStaticModule.forRoot({
-            //rootPath: join(<string>process.env.npm_config_local_prefix, 'uploads'), // TODO: just configure it
-            rootPath: join(__dirname, '..', '..', 'uploads'), // TODO: just configure it
+            rootPath: join(__dirname, '..', '..', 'uploads'),
         }),
         ThrottlerModule.forRoot([{
             ttl: 15 * 60 * 1000,
@@ -39,7 +37,6 @@ import { JwtModule } from '@nestjs/jwt';
         MarketModule,
         ImageUploadModule,
         HomeBannerModule,
-        SearchModule,
         AuthModule,
         JwtModule
     ],

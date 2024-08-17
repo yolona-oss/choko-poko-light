@@ -10,11 +10,11 @@ import { SubCategoryService } from './sub-category.service';
 
 @Module({
     imports: [
+        ImageUploadModule,
         MongooseModule.forFeature([
             { name: 'Category', schema: CategorySchema },
-            { name: 'SubCategory', schema: SubCategorySchema }
+            { name: 'SubCategory', schema: SubCategorySchema },
         ]),
-        ImageUploadModule
     ],
     providers: [SubCategoryService, CategoryService],
     exports: [SubCategoryService, CategoryService],

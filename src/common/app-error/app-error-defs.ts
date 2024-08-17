@@ -122,5 +122,11 @@ export const ErrorsDefenition: Record<AppErrorTypeEnum, IErrorMessage> = {
         httpStatus: HttpStatus.SERVICE_UNAVAILABLE,
         errorMessage: 'Cloudinary error.',
         userMessage: 'Cloudinary error.'
+    },
+    [AppErrorTypeEnum.NO_PAYLOAD_PROVIDED]: {
+        type: AppErrorTypeEnum.NO_PAYLOAD_PROVIDED,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'No payload provided.',
+        userMessage: 'No payload provided.'
     }
 }

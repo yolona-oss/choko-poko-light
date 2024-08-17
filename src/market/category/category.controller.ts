@@ -57,8 +57,8 @@ export class CategoryController {
     ) {
         const category = await this.categoryService.createDocument({
             name: body.name,
+            //images: body.images.map(id => new mongoose.Types.ObjectId(id)),
             // @ts-ignore
-            //subCat: body.subCat,
             images: body.images,
             color: body.color
         });
@@ -89,7 +89,8 @@ export class CategoryController {
             id,
             {
                 name: body.name,
-                images: body.images?.map(id => new mongoose.Schema.Types.ObjectId(id)),
+                // @ts-ignore
+                images: body.images?.map(id => new mongoose.Types.ObjectId(id)),
                 color: body.color
             }
         )

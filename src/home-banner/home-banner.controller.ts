@@ -22,7 +22,8 @@ export class HomeBannerController {
     @Post('/create')
     async create(@Body() body: {ids: string[]}, @Res() response: Response) {
         await this.homeBannerService.createDocument({
-            images: body.ids.map(id => new mongoose.Schema.Types.ObjectId(id))
+            // @ts-ignore
+            images: body.ids.map(id => new mongoose.Types.ObjectId(id))
         })
         return response.status(200).json({success: true, message: "Images added"})
     }
@@ -40,7 +41,8 @@ export class HomeBannerController {
         @Res() response: Response
     ) {
         const updatedDoc = await this.homeBannerService.updateDocumentById(id, {
-            images: body.ids.map(id => new mongoose.Schema.Types.ObjectId(id))
+            // @ts-ignore
+            images: body.ids.map(id => new mongoose.Types.ObjectId(id))
         })
         return response.send(updatedDoc)
     }

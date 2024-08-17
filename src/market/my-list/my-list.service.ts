@@ -10,11 +10,12 @@ import { MyListDocument } from './schemas/my-list.schema';
 
 import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
+
 @Injectable()
 export class MyListService {
     constructor(
         @InjectModel('MyList')
-        private readonly myListModel: Model<MyListDocument>
+        private readonly myListModel: Model<MyListDocument>,
     ) {}
 
     async findById(id: string) {
@@ -74,7 +75,8 @@ export class MyListService {
     async addToUser(opts: AddToListQuery) {
         const updated = await this.myListModel.findOneAndUpdate({ user: opts.userId }, {
             $addToSet: {
-                products: new mongoose.Schema.Types.ObjectId(opts.productId)
+                // @ts-ignore
+                products: new mongoose.Types.ObjectId(opts.productId)
             }
         }, { new: true })
 
@@ -88,7 +90,8 @@ export class MyListService {
     async removeFromUser(opts: RemoveFromListQuery) {
         const updated = await this.myListModel.findOneAndUpdate({ user: opts.userId }, {
             $pull: {
-                products: new mongoose.Schema.Types.ObjectId(opts.productId)
+                // @ts-ignore
+                products: new mongoose.Types.ObjectId(opts.productId)
             }
         }, { new: true })
 

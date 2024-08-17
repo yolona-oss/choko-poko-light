@@ -12,7 +12,7 @@ export class CategoryEntity {
     @Prop({type: String, required: true})
     name: string;
 
-    @Prop({type: [mongoose.Schema.Types.ObjectId], required: true})
+    @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'Images', required: true})
     images: mongoose.Schema.Types.ObjectId[];
 
     @Prop({type: String, required: true})

@@ -9,13 +9,16 @@ import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
 import { FilteringSubCategoryOptions } from './interfaces/filtring-sub-category-options.interface';
 import { FiltredSubCategoryList } from './interfaces/filtred-sub-category.interface';
+import { CategoryDocument } from './schemas/category.schema';
 
 
 @Injectable()
 export class SubCategoryService extends CRUDService<SubCategoryDocument> {
     constructor(
         @InjectModel('SubCategory')
-        readonly subCategoryModel: Model<SubCategoryDocument>
+        readonly subCategoryModel: Model<SubCategoryDocument>,
+        @InjectModel('Category')
+        private readonly categoryModel: Model<CategoryDocument>,
     ) {
         super(subCategoryModel)
     }
@@ -44,7 +47,13 @@ export class SubCategoryService extends CRUDService<SubCategoryDocument> {
 
         const docs = await this.subCategoryModel.find(query, null,
                                                       { skip: (page - 1) * (perPage || 0), limit: perPage }
-                                                     ).populate('category').exec()
+                                                     ).populate({
+                                                         path: 'category',
+                                                         model: this.categoryModel,
+                                                         populate: {
+                                                             path: 'images'
+                                                         }
+                                                     }).exec()
 
         if (!docs) {
             new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)

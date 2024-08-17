@@ -18,8 +18,6 @@ import { OPQBuilder } from './../../common/misc/opq-builder';
 import { FilteringOptions } from './interfaces/filtering-options.interface';
 import { FiltredProducts } from './interfaces/filtred-products.interface';
 
-//import { CRUDService } from './../../internal/crud-service';
-
 import { DeepPartial } from './../../common/types/deep-partial.type';
 
 @Injectable()
@@ -102,11 +100,6 @@ export class ProductsService {
 
     async productsCount() {
         return await this.model.countDocuments()
-    }
-
-    async search(query: any) {
-        query
-        return null
     }
 
     async create(newProduct: CreateProductDto) {
