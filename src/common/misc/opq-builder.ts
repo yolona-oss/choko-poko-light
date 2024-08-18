@@ -7,7 +7,7 @@ type TransformFn = (value: any) => any
 type ValidateFn = (value: any) => boolean
 
 const defaultValidator: ValidateFn = (v) => {
-    if (v !== undefined || v !== null) {
+    if (v !== undefined && v !== null) {
         return true
     }
     return false
@@ -85,20 +85,22 @@ export class OPQBuilder implements IBuilder<Record<string, any>> {
 
         for (const validate of mappedValidators || [dummyValidator]) {
             if (!validate(value)) {
-                throw new AppError(AppErrorTypeEnum.DB_VALIDATION_ERROR, {
-                    errorMessage: `Invalid value for \'${key}\': ${value}`,
-                    userMessage: `Invalid value for \'${key}\': ${value}`
-                })
+                return this
+                //throw new AppError(AppErrorTypeEnum.DB_VALIDATION_ERROR, {
+                //    errorMessage: `Invalid value for \'${key}\': ${value}`,
+                //    userMessage: `Invalid value for \'${key}\': ${value}`
+                //})
             }
         }
 
-        if (this.useGlobalValidationForMapped) {
+        if (this.useGlobalValidationForMapped || !mappedValidators) {
             for (const globalValidator of this.globalValidators) {
                 if (!globalValidator(value)) {
-                    throw new AppError(AppErrorTypeEnum.DB_VALIDATION_ERROR, {
-                        errorMessage: `Invalid value for \'${key}\': ${value}`,
-                        userMessage: `Invalid value for \'${key}\': ${value}`
-                    })
+                    return this
+                    //throw new AppError(AppErrorTypeEnum.DB_VALIDATION_ERROR, {
+                    //    errorMessage: `Invalid value for \'${key}\': ${value}`,
+                    //    userMessage: `Invalid value for \'${key}\': ${value}`
+                    //})
                 }
             }
         }

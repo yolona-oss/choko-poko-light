@@ -33,7 +33,7 @@ export class ProductsController {
     @Public()
     @Get('/')
     async findSome(@Query() query: any, @Res() response: Response) {
-        const execRes = await this.productsService.findFiltredWrapper(query)
+        const execRes = await this.productsService.findFiltred(query)
         response.json(execRes)
     }
 
@@ -54,7 +54,7 @@ export class ProductsController {
     }
 
     @Public()
-    @Get('/id/:id')
+    @Get('/:id')
     async productById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const doc = await this.productsService.findById(id)
         response.status(200).send(doc)

@@ -31,15 +31,16 @@ export class ProductsService {
 
     async findAll() {
         return (await this.model.find()
-                .populate<CategoryEntity>("category")
-                .populate<SubCategoryEntity>("subCategory").exec()) || []
+                .populate('images')
+                .populate("category")
+                .populate("subCategory").exec()) || []
     }
 
     async findById(id: string) {
         const doc = await this.model.findById(id)
-        .populate<{ category: CategoryEntity }>("category")
-        .populate<{ subCategory: SubCategoryEntity }>("subCategory")
-        .populate<{ images: ImagesEntity[] }>("images")
+        .populate("category")
+        .populate("subCategory")
+        .populate("images")
         .exec()
         if (!doc) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
@@ -49,12 +50,13 @@ export class ProductsService {
 
     async findOne(query: Partial<Record<keyof ProductDocument, unknown>>) {
         return (await this.model.find(query as FilterQuery<ProductDocument>)
-                .populate<CategoryEntity>("category")
-                .populate<SubCategoryEntity>("subCategory")
+                .populate('images')
+                .populate("category")
+                .populate("subCategory")
                 .exec())
     }
 
-    async findFiltredWrapper(opts: FilteringOptions): Promise<FiltredProducts> {
+    async findFiltred(opts: FilteringOptions): Promise<FiltredProducts> {
         const page: number = opts.page ? parseInt(opts.page) : 1
         const perPage = opts.perPage ? parseInt(opts.perPage) : undefined
 
@@ -86,9 +88,11 @@ export class ProductsService {
             .addToQuery("isFeatured", opts.isFeatured)
             .build()
 
-        const docs = await this.model.find(query, null, { skip: (page - 1) * (perPage || 0), limit: perPage }).
-            populate<{ category: CategoryEntity }>('category').
-            populate<{ subCategory: SubCategoryEntity }>('subCategory').exec()
+        console.log("Builded " + JSON.stringify(query, null, 4))
+        const docs = await this.model.find(query, null, { skip: (page - 1) * (perPage || 0), limit: perPage })
+            .populate('images')
+            .populate('category')
+            .populate('subCategory').exec()
 
         return {
             products: docs,
@@ -151,6 +155,9 @@ export class ProductsService {
 
     async update(id: string, newData: DeepPartial<ProductEntity>) {
         const doc = await this.model.findByIdAndUpdate(id, newData, { new: true })
+            .populate('images')
+            .populate('category')
+            .populate('subCategory')
         if (!doc) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }
