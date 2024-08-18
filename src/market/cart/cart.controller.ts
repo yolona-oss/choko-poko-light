@@ -1,18 +1,16 @@
 import {
     Put,
-    Delete,
     Param,
     Query,
-    Body,
     Get,
     Res,
     Controller,
-    Post,
-    BadRequestException,
-    NotFoundException
+    ParseIntPipe,
+    DefaultValuePipe,
 } from '@nestjs/common';
 import { Response } from 'express'
-import { CartEntity } from './schemas/cart.schema';
+import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+
 import { CartService } from './cart.service';
 
 @Controller('cart')
@@ -21,55 +19,72 @@ export class CartController {
         private cartService: CartService
     ) {}
 
-    @Get()
+    @Get('/')
     async getAllCarts(@Res() response: Response) {
-        const execRes = await this.cartService.getAllDocuments()
-        if (execRes) {
-            response.status(200).json(execRes)
-        }
-        throw new NotFoundException("Cannot retrive orders")
+        const docs = await this.cartService.findAll()
+        response.json(docs)
     }
 
-    @Get(':id')
-    async getCartById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.cartService.getDocumentById(id)
-        if (execRes) {
-            response.status(200).json(execRes)
-        }
-        throw new NotFoundException('The cart with the given ID was not found.')
+    @Get('/:userId')
+    async getUserCart(
+        @Param('userId') userId: string,
+        @Res() response: Response
+    ) {
+        const cart = await this.cartService.findByUser(userId)
+        response.json(cart)
     }
 
-    @Get('/get/count')
-    async getCartsCount(@Res() response: Response) {
-        const execRes = await this.cartService.getDocumentsCount()
-        if (execRes) {
-            response.status(200).json({
-                orderCount: execRes // TODO: serialize
-            })
-        }
-        throw new NotFoundException("Cannot retrive carts count")
+    @Get('/:userId/total')
+    async totalCartPrice(
+        @Param('userId') userId: string,
+        @Res() response: Response
+    ) {
+        const total = await this.cartService.totalCartPrice(userId)
+        response.json(total)
     }
 
-    @Post('/create')
-    async createNewCart(@Body() data: CartEntity, @Res() response: Response) {
-        const execRes = await this.cartService.createDocument(data)
-        if (execRes) {
-            response.status(200).json(execRes)
+    @Put('/:userId/add')
+    async addToCart(
+        @Param('userId') userId: string,
+        @Query('productId', ParseObjectIdPipe) productId: string,
+        @Query('quantity', ParseIntPipe, new DefaultValuePipe(1)) quantity: number,
+        @Res() response: Response
+    ) {
+        const cartProduct = {
+            product: productId,
+            quantity: quantity
         }
-        throw new BadRequestException("New cart dont created")
+        const cart = await this.cartService.addToCart(userId, cartProduct)
+        response.json(cart)
     }
 
-    @Delete(':id')
-    async removeCartById(@Param('id') id: string, @Res() response: Response) {
-        const execRes = await this.cartService.removeDocumentById(id)
-        if (execRes) {
-            response.status(200).json({ success: true, message: "Cart deleted" })
-        }
-        throw new NotFoundException("Cart not found")
+    @Put('/:userId/remove')
+    async removeFromCart(
+        @Param('userId') userId: string,
+        @Query('productId', ParseObjectIdPipe) productId: string,
+        @Res() response: Response
+    ) {
+        const cart = await this.cartService.removeFromCart(userId, productId)
+        response.json(cart)
     }
 
-    @Put(':id')
-    async updateOrderById(@Param('id') id: string, @Body() data: Partial<CartEntity>) { // TODO: create dto for orders 
-        const execRes = await this.cartService.updateDocumentById(id, data)
+    @Put('/:userId/quantity')
+    async updateProductQuantity(
+        @Param('userId') userId: string,
+        @Query('productId', ParseObjectIdPipe) productId: string,
+        @Query('quantity') quantity: number,
+        @Res() response: Response
+    ) {
+        const cart = await this.cartService.changeProductQuantity(userId, productId, quantity)
+        response.json(cart)
+    }
+
+    @Put('/:userId/clear')
+    async clearCart(
+        @Param('userId') userId: string,
+        @Res() response: Response
+    ) {
+        const cart = await this.cartService.clearCart(userId)
+        response.json(cart)
     }
 }

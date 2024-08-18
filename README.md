@@ -14,8 +14,10 @@ If dependencies errors, try run `npm install --legacy-peer-deps` or `npm install
 
 - [x] fix non relaite images in product
 - [-] mail service
+- [-] add reset password capability
 - [-] events to order creation(update data of product quantity)
 - [-] event to admin product editing
 - [-] caching for some routes
 - [x] move code from internal to common
 - [-] append users shcmea to remove my-list entry on deleting
+- [-] create cloudinary image removal on update schemas if image not included in new image set

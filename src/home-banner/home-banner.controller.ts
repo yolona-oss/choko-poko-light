@@ -2,48 +2,58 @@ import mongoose from 'mongoose';
 import { Param, Res, Get, Post, Delete, Put, Body, Controller } from '@nestjs/common';
 import { Response } from 'express'
 import { HomeBannerService } from './home-banner.service';
+import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+import { CreateHomeBannerDto } from './dto/create-home-banner.dto';
+import { UpdateHomeBannerDto } from './dto/update-home-banner.dto';
 
 @Controller('home-banner')
 export class HomeBannerController {
     constructor(private homeBannerService: HomeBannerService) {}
 
-    @Get()
+    @Get('/')
     async all(@Res() response: Response) {
-        const entries = await this.homeBannerService.getAllDocuments()
+        const entries = await this.homeBannerService.findAll()
         return response.status(200).json(entries)
     }
 
     @Get('/id/:id')
-    async get(@Param('id') id: string, @Res() response: Response) {
-        const doc = await this.homeBannerService.getDocumentById(id)
+    async get(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Res() response: Response
+    ) {
+        const doc = await this.homeBannerService.findById(id)
         return response.status(200).send(doc)
     }
 
     @Post('/create')
-    async create(@Body() body: {ids: string[]}, @Res() response: Response) {
-        await this.homeBannerService.createDocument({
-            // @ts-ignore
-            images: body.ids.map(id => new mongoose.Types.ObjectId(id))
+    async create(
+        @Body() body: CreateHomeBannerDto,
+        @Res() response: Response
+    ) {
+        await this.homeBannerService.createBanner({
+            images: body.images
         })
-        return response.status(200).json({success: true, message: "Images added"})
+        response.json({})
     }
 
     @Delete(':id')
-    async remove(@Param('id') id: string, @Res() response: Response) {
-        await this.homeBannerService.removeDocumentById(id)
+    async remove(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Res() response: Response
+    ) {
+        await this.homeBannerService.removeById(id)
         return response.json({success: true, message: "Slide deleted"})
     }
 
     @Put(':id')
     async update(
-        @Param('id') id: string,
-        @Body() body: {ids: string[]},
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Body() body: UpdateHomeBannerDto,
         @Res() response: Response
     ) {
-        const updatedDoc = await this.homeBannerService.updateDocumentById(id, {
-            // @ts-ignore
-            images: body.ids.map(id => new mongoose.Types.ObjectId(id))
+        const updatedDoc = await this.homeBannerService.updateById(id, {
+            images: body.images
         })
-        return response.send(updatedDoc)
+        return response.json(updatedDoc)
     }
 }

@@ -74,17 +74,16 @@ export class ProductsService {
         }
 
         const query = new OPQBuilder()
-            .addToQuery("price", opts.minPrice, (v) => {
-                return { $gte: parseInt(v) }
-            })
-            .addToQuery("price", opts.maxPrice, (v) => {
-                return { $lte: parseInt(v) }
-            })
+            .addCheckOptionForKey("category", (v) => isValidObjectId(v))
+            .addCheckOptionForKey("subCategory", (v) => isValidObjectId(v))
+            .addCheckOptionForKey("isFeatured", (v) => typeof v === 'boolean')
+            .addToQuery("price", opts.minPrice, (v) => { return { $gte: parseInt(v) } })
+            .addToQuery("price", opts.maxPrice, (v) => { return { $lte: parseInt(v) } })
             .addToQuery("rating", opts.rating)
-            .addToQuery("category", opts.category, null, (v) => isValidObjectId(v))
-            .addToQuery("subCategory", opts.subCategory, null, (v) => isValidObjectId(v))
+            .addToQuery("category", opts.category)
+            .addToQuery("subCategory", opts.subCategory)
             .addToQuery("location", opts.location)
-            .addToQuery("isFeatured", opts.isFeatured, null, (v) => typeof v === 'boolean')
+            .addToQuery("isFeatured", opts.isFeatured)
             .build()
 
         const docs = await this.model.find(query, null, { skip: (page - 1) * (perPage || 0), limit: perPage }).

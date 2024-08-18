@@ -1,9 +1,17 @@
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UsersController } from './users.controller';
-import { UserSchema } from './schemas/user.schema';
+
+import { WishlistModule } from './../market/wishlist/wishlist.module';
+import { CartModule } from './../market/cart/cart.module';
+
 import { UsersService } from './users.service';
+
+import { UserSchema } from './schemas/user.schema';
+import { ProductReviewsSchema } from './../market/products/product-reviews/schemas/product-reviews.schema';
+
+import { UsersController } from './users.controller';
+import { OrdersModule } from 'src/market/orders/orders.module';
 
 @Module({
     controllers: [UsersController],
@@ -11,7 +19,11 @@ import { UsersService } from './users.service';
     imports: [
         MongooseModule.forFeature([
             { name: 'User', schema: UserSchema },
-        ])
+            { name: 'ProductReviews', schema: ProductReviewsSchema }
+        ]),
+        WishlistModule,
+        OrdersModule,
+        CartModule
     ],
     exports: [UsersService]
 })

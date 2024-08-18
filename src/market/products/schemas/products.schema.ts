@@ -54,7 +54,7 @@ export class ProductEntity {
     size?: string[];
 
     @Prop({type: [String], default: null})
-    weight?: string;
+    weight?: string[];
 
     @Prop({type: String, required: false})
     location?: string;

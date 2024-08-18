@@ -128,5 +128,17 @@ export const ErrorsDefenition: Record<AppErrorTypeEnum, IErrorMessage> = {
         httpStatus: HttpStatus.BAD_REQUEST,
         errorMessage: 'No payload provided.',
         userMessage: 'No payload provided.'
-    }
+    },
+    [AppErrorTypeEnum.INSUFFICIENT_USER_PASSWORD_ENTROPY]: {
+        type: AppErrorTypeEnum.INSUFFICIENT_USER_PASSWORD_ENTROPY,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Insufficient user password entropy.',
+        userMessage: 'Insufficient user password entropy.'
+    },
+    [AppErrorTypeEnum.INVALID_ORDER_STATUS]: {
+        type: AppErrorTypeEnum.INVALID_ORDER_STATUS,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Invalid order status.',
+        userMessage: 'Invalid order status.'
+    },
 }

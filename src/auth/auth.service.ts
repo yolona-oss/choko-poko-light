@@ -5,7 +5,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 
 import { Crypto } from './../common/misc/utils';
-
 import { AppError, AppErrorTypeEnum } from './../common/app-error';
 
 import { AuthJwtTokens } from './interfaces/auth-jwt-tokens.interface';
@@ -77,7 +76,7 @@ export class AuthService {
     }
 
     async validateUser(email: string, pass: string) {
-        const user = await this.usersService.getEntityByEmail(email);
+        const user = await this.usersService.findByEmail(email);
         if (!user || !Crypto.comparePasswords(pass, user.password)) {
             throw new AppError(AppErrorTypeEnum.INVALID_CREDENTIALS_EXCEPTION)
         }

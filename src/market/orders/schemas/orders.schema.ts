@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
+import { OrderStatus } from './../../../common/enums/order-status.enum';
+
 export type OrdersDocument = OrdersEntity & Document;
 
 @Schema({
@@ -9,54 +11,29 @@ export type OrdersDocument = OrdersEntity & Document;
     }
 })
 export class OrdersEntity {
-    @Prop({type: String, required: true})
-    name: string;
-
-    @Prop({type: String, required: true})
-    phoneNumber: string;
-
-    @Prop({type: String, required: true})
-    address: string;
-
-    @Prop({type: String, required: true})
-    pincode: string;
-
-    @Prop({type: String, required: true})
-    amount: string;
-
-    @Prop({type: String, required: true})
-    paymentId: string;
-
-    @Prop({type: String, required: true})
-    email: string;
-
-    @Prop({type: String, required: true})
-    userid: string;
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true})
+    user: mongoose.Schema.Types.ObjectId;
 
     @Prop({type: [{
-        productId: {type: String},
-        productTitle: {type: String},
-        quantity: {type: Number},
-        price: {type: Number},
-        image: {type: mongoose.Schema.Types.ObjectId, ref: 'Images'},
-        subTotal: {type: Number},
-    }] })
-    products: [
-        {
-            productId: string
-            productTitle: string
-            quantity: number
-            price: number
-            image: mongoose.Schema.Types.ObjectId
-            subTotal: number
-        }
-    ]
+        product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true},
+        quantity: {type: Number, default: 1}
+    }], required: true})
+    products: {
+        product: mongoose.Schema.Types.ObjectId,
+        quantity: number
+    }[];
 
-    @Prop({type: String, default: "pending"})
-    status: string; // TODO: maybe enum?
+    @Prop({type: String, default: OrderStatus.Pending})
+    status?: string;
+
+    @Prop({type: String, required: false})
+    paymentId?: string;
 
     @Prop({type: Date, default: Date.now})
-    date: Date;
+    creationData: Date;
+
+    @Prop({type: Date, required: false})
+    closingData?: Date;
 }
 const OrdersSchema = SchemaFactory.createForClass(OrdersEntity);
 

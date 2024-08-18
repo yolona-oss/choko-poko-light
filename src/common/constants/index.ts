@@ -11,3 +11,4 @@ export const DEFAULT_USER_PROFILE_IMAGE = 'uploads/assets/profile.jpg'
 
 export const MAX_USER_PASSWORD_LENGTH = 64
 export const MIN_USER_PASSWORD_LENGTH = 8
+export const MIN_USER_PASSWORD_ENTROPY = 72

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 import { Role } from './../../common/enums/role.enum';
 
@@ -35,6 +35,18 @@ export class UserEntity {
 
     @Prop({type: [String], required: true, default: Role.User})
     roles: string[];
+
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Cart', required: false})
+    cart?: mongoose.Schema.Types.ObjectId;
+
+    @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'Orders', required: false})
+    orders: mongoose.Schema.Types.ObjectId[];
+
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Wishlist', required: false})
+    wishlist?: mongoose.Schema.Types.ObjectId;
+
+    @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'ProductReviews', required: false})
+    reviews?: mongoose.Schema.Types.ObjectId[];
 
     @Prop({ type: [ { token: {type: String, required: true } } ], required: false })
     tokens?: { token: string }[];

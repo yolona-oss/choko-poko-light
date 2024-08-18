@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type ProductReviewsDocument = ProductReviewsEntity & Document;
 
@@ -9,14 +9,11 @@ export type ProductReviewsDocument = ProductReviewsEntity & Document;
     }
 })
 export class ProductReviewsEntity {
-    @Prop({type: String, required: true})
-    productId: string;
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Products', required: true})
+    product: mongoose.Schema.Types.ObjectId;
 
-    @Prop({type: String, required: true})
-    customerName: string;
-
-    @Prop({type: String, required: true})
-    customerId: string;
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true})
+    user: mongoose.Schema.Types.ObjectId;
 
     @Prop({type: String, required: true, default: ""})
     review: string;

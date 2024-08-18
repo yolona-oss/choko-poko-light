@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type CartDocument = CartEntity & Document;
 
@@ -9,35 +9,17 @@ export type CartDocument = CartEntity & Document;
     }
 })
 export class CartEntity {
-    @Prop({type: String, required: true})
-    productTitle: string;
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true})
+    user: mongoose.Schema.Types.ObjectId;
 
-    @Prop({type: String, required: true})
-    image: string;
-
-    @Prop({type: Number, required: true})
-    rating: number;
-
-    @Prop({type: Number, required: true})
-    price: number;
-
-    @Prop({type: Number, required: true})
-    quantity: number;
-
-    @Prop({type: Number, required: true})
-    subTotal: number;
-
-    @Prop({type: String, required: true})
-    productId: string;
-
-    //@Prop({type: String, required: true})
-    //productId: string;
-
-    @Prop({type: Number, required: true})
-    countInStock: number;
-
-    @Prop({type: String, required: true})
-    userId: string
+    @Prop({type: [{
+        product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true},
+        quantity: {type: Number, default: 1}
+    }], required: true})
+    products: {
+        product: mongoose.Schema.Types.ObjectId,
+        quantity: number
+    }[];
 }
 const CartSchema = SchemaFactory.createForClass(CartEntity);
 

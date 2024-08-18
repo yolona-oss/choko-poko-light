@@ -8,21 +8,27 @@ import {
     Res,
     Controller,
     Post,
-    NotImplementedException,
 } from '@nestjs/common';
 import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 import { Response } from 'express'
-import { ProductEntity } from './schemas/products.schema';
+
+import { ProductReviewsService } from './product-reviews/product-reviews.service';
 import { ProductsService } from './products.service';
+
 import { CreateProductDto } from './dto/create-product.dto';
+import { ProductEntity } from './schemas/products.schema';
 
 import { Public } from './../../common/decorators/public.decorotor';
 import { Roles } from './../../common/decorators/role.decorator';
 import { Role } from './../../common/enums/role.enum';
+import { CreateProductReviewDto } from './product-reviews/dto/create-review.dto';
 
 @Controller()
 export class ProductsController {
-    constructor(private productsService: ProductsService) {}
+    constructor(
+        private readonly productsService: ProductsService,
+        private readonly reviewsService: ProductReviewsService
+    ) {}
 
     @Public()
     @Get('/')
@@ -55,29 +61,34 @@ export class ProductsController {
     }
 
     @Public()
-    @Get('/id/:id/reviews')
-    async productReviews(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        throw new NotImplementedException()
-        id
-        response.json()
+    @Get('/:id/reviews')
+    async productReviews(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Res() response: Response
+    ) {
+        const doc = await this.reviewsService.findByProductId(id)
+        response.json(doc)
     }
 
     @Roles(Role.User)
-    @Post('/id/:id/reviews')
-    async createProductReviews(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        throw new NotImplementedException()
-        id
-        response.json()
+    @Post('/:id/reviews')
+    async createProductReviews(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Body() data: CreateProductReviewDto,
+        @Res() response: Response
+    ) {
+        if (id != data.prodcut) {
+            return response.status(400)
+        }
+        const execRes = await this.reviewsService.createReview(data)
+        return response.status(200).json(execRes)
     }
 
     @Roles(Role.Admin)
     @Delete('/:id')
     async removeProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const deleted = await this.productsService.remove(id)
-        response.status(200).json({
-            success: true,
-            message: "Product deleted"
-        })
+        response.status(200).json(deleted)
     }
 
     @Roles(Role.Admin)
