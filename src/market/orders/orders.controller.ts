@@ -31,6 +31,12 @@ export class OrdersController {
         response.json(ordersDocs)
     }
 
+    @Get('/count')
+    async getCount(@Res() response: Response) {
+        const count = await this.ordersService.findCount()
+        response.json(count)
+    }
+
     @Get('/:id')
     async getById(
         @Param('id', ParseObjectIdPipe) id: string,
@@ -38,12 +44,6 @@ export class OrdersController {
     ) {
         const orderDoc = await this.ordersService.findById(id)
         response.json(orderDoc)
-    }
-
-    @Get('/count')
-    async getCount(@Res() response: Response) {
-        const count = await this.ordersService.findCount()
-        response.json(count)
     }
 
     @Post('/user/:userId/create-order')

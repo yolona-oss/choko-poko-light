@@ -9,10 +9,7 @@ import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 import { CreateProductDto } from './dto/create-product.dto';
 
 import { ProductDocument } from './schemas/products.schema';
-import { CategoryEntity } from './../category/schemas/category.schema';
-import { SubCategoryEntity } from '../category/schemas/sub-category.schema';
 import { ProductEntity } from './schemas/products.schema';
-import { ImagesEntity } from './../../image-upload/schemas/image-upload.schema';
 
 import { OPQBuilder } from './../../common/misc/opq-builder';
 import { FilteringOptions } from './interfaces/filtering-options.interface';
