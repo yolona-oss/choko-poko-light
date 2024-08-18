@@ -1,5 +1,5 @@
 import { UserObjectResponseDto } from "src/users/dto/user-object-response.dto"
-import { UserDocument } from "./../../users/schemas/user.schema"
+import { UserEntity } from "./../../users/schemas/user.schema"
 
 export interface AuthResponseDto {
     readonly access_token: string
@@ -7,7 +7,7 @@ export interface AuthResponseDto {
     readonly user: UserObjectResponseDto
 }
 
-export function AuthResponseUserTransform(user: UserDocument) {
+export function AuthResponseUserTransform(user: any) {
     return {
         id: user.id,
         name: user.name,

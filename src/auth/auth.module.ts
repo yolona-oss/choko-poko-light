@@ -9,6 +9,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './pasport/jwt.strategy';
 
+import { REQUSET_USER_KEY } from './../common/constants';
+
 @Module({
     controllers: [AuthController],
     providers: [
@@ -17,8 +19,9 @@ import { JwtStrategy } from './pasport/jwt.strategy';
     ],
     imports: [
         PassportModule.register({
-            property: 'user',
-            defaultStrategy: 'strategy-jwt'
+            property: REQUSET_USER_KEY,
+            defaultStrategy: 'strategy-jwt',
+            session: false
         }),
         JwtModule.registerAsync({
             useFactory: async (configService: ConfigService) => {

@@ -21,12 +21,6 @@ import { ProductsService } from './products.service';
             {
                 path: 'products',
                 module: ProductsModule,
-                children: [
-                    {
-                        path: 'reviews',
-                        module: ProductReviewsModule
-                    },
-                ]
             }
         ]),
         ProductReviewsModule,

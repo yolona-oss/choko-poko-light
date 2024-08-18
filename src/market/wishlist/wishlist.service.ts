@@ -19,7 +19,7 @@ export class WishlistService {
     ) {}
 
     async findById(id: string) {
-        const doc = await this.wishlistModel.findById(id).populate('products').populate('user').exec()
+        const doc = await this.wishlistModel.findById(id).populate('products').exec()
         if (!doc) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }
@@ -27,7 +27,7 @@ export class WishlistService {
     }
 
     async findAll(): Promise<WishlistDocument[]> {
-        const docs = await this.wishlistModel.find().populate('products').populate('user').exec()
+        const docs = await this.wishlistModel.find().populate('products').exec()
         if (!docs) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }
@@ -47,6 +47,14 @@ export class WishlistService {
         return await userList.populate('products')
     }
 
+    async isContainsProduct(userId: string, productId: string) {
+        const doc = await this.wishlistModel.find({ user: userId, products: { $in: [productId]} }).populate('products').exec()
+        if (!doc) {
+            return false
+        }
+        return true
+    }
+
     async findFiltredWrapper(query: FindInListQuery): Promise<WishlistDocument[]> {
         const dbQuery = new OPQBuilder()
             .from({})
@@ -54,7 +62,7 @@ export class WishlistService {
             .addToQuery('products', query.product)
             .build()
 
-        const docs = await this.wishlistModel.find(dbQuery).populate('products').populate('user').exec()
+        const docs = await this.wishlistModel.find(dbQuery).populate('products').exec()
         if (!docs) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
         }

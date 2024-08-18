@@ -37,13 +37,13 @@ export class UserEntity {
     roles: string[];
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Cart', required: false})
-    cart?: mongoose.Schema.Types.ObjectId;
+    cart: mongoose.Schema.Types.ObjectId;
 
     @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'Orders', required: false})
     orders: mongoose.Schema.Types.ObjectId[];
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Wishlist', required: false})
-    wishlist?: mongoose.Schema.Types.ObjectId;
+    wishlist: mongoose.Schema.Types.ObjectId;
 
     @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'ProductReviews', required: false})
     reviews?: mongoose.Schema.Types.ObjectId[];

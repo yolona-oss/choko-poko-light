@@ -24,10 +24,22 @@ export class OrdersEntity {
     }[];
 
     @Prop({type: String, default: OrderStatus.Pending})
-    status?: string;
+    status: string;
 
-    @Prop({type: String, required: false})
-    paymentId?: string;
+    // --- --- --- --- --- --- --- --- --- --- --- //
+
+    // TODO create delivery and payment schema
+
+    @Prop({type: String, required: true})
+    address: string;
+
+    @Prop({type: String, required: true})
+    pincode: string;
+
+    @Prop({type: String, required: true})
+    paymentId: string;
+
+    // --- --- --- --- --- --- --- --- --- --- --- //
 
     @Prop({type: Date, default: Date.now})
     creationData: Date;

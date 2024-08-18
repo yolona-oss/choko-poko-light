@@ -14,8 +14,9 @@ import { Roles } from './../common/decorators/role.decorator';
 //import { User } from './../common/decorators/user.decorator'
 import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
 import { Role } from 'src/common/enums/role.enum';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
-@Controller('users')
+@Controller()
 export class UsersController {
 
     constructor(
@@ -23,53 +24,61 @@ export class UsersController {
     ) {}
 
     @Roles(Role.Admin)
-    @Get()
+    @Get('/')
     async getAllUsers(@Res() response: Response) {
-        this.usersService.getAllDocuments()
-            .then((users) => response.json(users))
+        const docs = await this.usersService.findAll()
+        response.json(docs)
     }
 
     @Roles(Role.Admin)
     @Get('/count')
     async getUsersCount(@Res() response: Response) {
-        this.usersService.getDocumentsCount()
-            .then((count) => response.json({userCount: count}))
+        const count = await this.usersService.count()
+        response.json({
+            usersCount: count
+        })
     }
 
     @Roles(Role.Admin)
-    @Get(':id')
-    async getUserById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        this.usersService.getDocumentById(id)
-            .then((user) => response.json(user))
+    @Delete('/:id/delete')
+    async deleteUserById(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Res() response: Response
+    ) {
+        const doc = await this.usersService.remove(id)
+        response.json(doc)
     }
 
     @Roles(Role.User)
-    @Delete(':id')
-    async deleteUserById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        this.usersService.removeUserById(id)
-            .then(() => response.json({success: true}))
-    }
-
-    @Roles(Role.User)
-    @Put(':id')
+    @Put('/:id/update')
     async updateUserById(
         @Param('id', ParseObjectIdPipe) id: string,
         @Body() data: Partial<UserEntity>,
         @Res() response: Response
     ) {
-        this.usersService.updateDocumentByIdSafe(id, data, data.password)
-            .then(() => response.json({success: true}))
+        const doc = await this.usersService.updateSafe(id, data, data.password)
+        response.json(doc)
     }
 
     @Roles(Role.User)
-    @Put('/changePassword/:id')
+    @Put('/:id/change-password')
     async changePassword(
         @Param('id', ParseObjectIdPipe) id: string,
-        @Body() data: {email: string, password: string} & {newPass: string},
+        @Body() data: ChangePasswordDto,
         @Res() response: Response
     ) {
-        const { password, newPass } = data
-        const updatedUser = await this.usersService.changePassword(id, password, newPass)
-        response.send(updatedUser)
+        const { newPassword, oldPassword } = data
+        const updatedUser = await this.usersService.changePassword(id, oldPassword, newPassword)
+        response.json(updatedUser)
+    }
+
+    @Roles(Role.User)
+    @Get('/user/:id')
+    async getUserById(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Res() response: Response
+    ) {
+        const doc = await this.usersService.findById(id)
+        response.json(doc)
     }
 }

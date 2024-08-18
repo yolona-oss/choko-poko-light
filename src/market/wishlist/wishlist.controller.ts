@@ -3,7 +3,7 @@ import { WishlistService } from './wishlist.service';
 import { Response } from 'express';
 import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
 
-@Controller('wishlist')
+@Controller()
 export class WishlistController {
     constructor(
         private readonly wishlistService: WishlistService
@@ -21,6 +21,16 @@ export class WishlistController {
         @Res() response: Response
     ) {
         const doc = await this.wishlistService.findByUser(userId)
+        response.json(doc)
+    }
+
+    @Get('/:userId/is-contains')
+    async isContainsProduct(
+        @Param('userId', ParseObjectIdPipe) userId: string,
+        @Query('productId', ParseObjectIdPipe) productId: string,
+        @Res() response: Response
+    ) {
+        const doc = await this.wishlistService.isContainsProduct(userId, productId)
         response.json(doc)
     }
 

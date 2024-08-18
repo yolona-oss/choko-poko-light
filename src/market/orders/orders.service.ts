@@ -12,6 +12,7 @@ import { OrderStatus } from './../../common/enums/order-status.enum';
 import { ProductEntity } from '../products/schemas/products.schema';
 import { PopulateProductInterface } from './interfaces/populate-product.interface';
 import { OPQBuilder } from 'src/common/misc/opq-builder';
+import { PaymentDetailsDto } from './dto/payment-details.dto';
 
 @Injectable()
 export class OrdersService {
@@ -84,9 +85,16 @@ export class OrdersService {
         return count
     }
 
-    async createOrder(userId: string, products: CartProducts) {
+    async createOrder(userId: string, products: CartProducts, paymentDetails: PaymentDetailsDto) {
         try {
-            const created = await this.ordersModel.create({user: userId, products: products})
+            const created = await this.ordersModel.create({
+                user: userId,
+                products: products,
+                status: OrderStatus.Pending,
+                address: paymentDetails.address,
+                paymentId: paymentDetails.paymentId,
+                pincode: paymentDetails.pincode
+            })
             if (!created) {
                 throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
             }
@@ -151,11 +159,12 @@ export class OrdersService {
     }
 
     /***
-     * Transforms user cart to order. Also clears current user cart
-     *
-     * @param userId - user id's
+     * Transforms user cart to pending order. Also clears current user cart
      */
-    async transfromCart(userId: string) {
+    async transfromCart(
+        userId: string,
+        paymentDetails: PaymentDetailsDto
+    ) {
         const cart = await this.cartService.findByUser(userId)
 
         if (!cart) {
@@ -168,7 +177,7 @@ export class OrdersService {
                 quantity: item.quantity
             }
         })
-        const created = await this.createOrder(userId, cartProducts)
+        const created = await this.createOrder(userId, cartProducts, paymentDetails)
         await this.cartService.clearCart(userId)
         return created
     }

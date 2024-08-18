@@ -13,7 +13,7 @@ import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
 
 import { CartService } from './cart.service';
 
-@Controller('cart')
+@Controller()
 export class CartController {
     constructor(
         private cartService: CartService

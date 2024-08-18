@@ -5,12 +5,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity, UserDocument } from './schemas/user.schema';
 
-import { CRUDService } from './../common/misc/crud-service';
 import { AppError, AppErrorTypeEnum } from './../common/app-error';
+import { DeepPartial } from './../common/types/deep-partial.type';
 import { Crypto } from './../common/misc/utils'
 
 import {
-    DEFAULT_USER_PROFILE_IMAGE,
     MIN_USER_PASSWORD_LENGTH,
     MAX_USER_PASSWORD_LENGTH,
     MIN_USER_PASSWORD_ENTROPY
@@ -20,66 +19,100 @@ import { Role } from './../common/enums/role.enum';
 import { WishlistService } from '../market/wishlist/wishlist.service';
 import { CartService } from '../market/cart/cart.service';
 import { OrdersService } from '../market/orders/orders.service';
+import { ImageUploadService } from 'src/image-upload/image-upload.service';
+import { ImagesEntity } from 'src/image-upload/schemas/image-upload.schema';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Writeable } from './../common/types/writable.type';
 
 @Injectable()
-export class UsersService extends CRUDService<UserDocument> {
+export class UsersService {
     constructor(
         @InjectModel('User')
         private readonly usersModel: Model<UserDocument>,
         private readonly wishlistService: WishlistService,
         private readonly cartService: CartService,
-        private readonly ordersService: OrdersService
-    ) {
-        super(usersModel)
-    }
+        private readonly ordersService: OrdersService,
+        private readonly imagesService: ImageUploadService
+    ) { }
 
     async findByPhone(phone: string) {
-        return await super.findOne({ phone: phone })
+        const userDoc = await this.usersModel.findOne({ phone: phone })
+        if (!userDoc) {
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        }
+        return userDoc
     }
 
     async findByEmail(email: string) {
-        return await super.findOne({ email: email })
+        const userDoc = await this.usersModel.findOne({ email: email })
+        if (!userDoc) {
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        }
+
+        return userDoc
     }
 
-    override async createDocument(userData: CreateUserDto) {
+    async findById(id: string) {
+        const userDoc = await this.usersModel.findById(id)
+        if (!userDoc) {
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        }
+        return userDoc
+    }
+
+    async findAll() {
+        return await this.usersModel.find()
+    }
+
+    async count() {
+        const count = await this.usersModel.countDocuments()
+        return count
+    }
+
+    async create(userData: CreateUserDto) {
         const isDuplicate = await this.findByEmail(userData.email)
         const isPhoneDuplicate = await this.findByPhone(userData.phone)
         if (isDuplicate || isPhoneDuplicate) {
             throw new AppError(AppErrorTypeEnum.DB_ENTITY_EXISTS,
-                               {errorMessage: "User exists", userMessage: "User exists"})
+                {errorMessage: "User exists", userMessage: "User exists"})
         }
 
         this.checkPasswordStrenth(userData.password)
 
         const passwordHash = Crypto.createPasswordHash(userData.password)
-        const initUser = await super.createDocument(
+        const initUser = await this.usersModel.create(
             {
                 ...userData,
                 password: passwordHash,
                 roles: <string[]>([Role.User]),
-                images: userData.images || [DEFAULT_USER_PROFILE_IMAGE],
+                images: userData.images || [ (await this.imagesService.findBlank("User")).id ],
                 orders: []
             }
         )
 
         const pre = await this.preCreate(initUser.id)
 
-        await this.usersModel.findByIdAndUpdate(initUser.id, {
+        const res = await this.usersModel.findByIdAndUpdate(initUser.id, {
             $set: {
                 wishlist: pre.wishlist,
                 cart: pre.cart
             }
-        }, {new: true})
+        }, {new: true}).populate<{images: ImagesEntity[]}>('images')
 
-        return initUser
+        if (!res) {
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
+        }
+
+        return res
     }
 
-    async removeUserById(id: string) {
+    async remove(id: string) {
         await this.preRemove(id)
-        return await super.removeDocumentById(id)
+        return await this.usersModel.findByIdAndDelete(id)
     }
 
-    async updateDocumentByIdSafe(id: string, newUserInfo: Partial<UserEntity>, currentPassword?: string) {
+    async updateSafe(id: string, _newUserInfo: DeepPartial<UpdateUserDto>, currentPassword?: string) {
+        let newUserInfo: DeepPartial<Writeable<UpdateUserDto>> = _newUserInfo
         if (Object.keys(newUserInfo).length == 0) {
             throw new AppError(AppErrorTypeEnum.DB_NOTHING_TO_UPDATE)
         }
@@ -88,7 +121,7 @@ export class UsersService extends CRUDService<UserDocument> {
             throw new UnauthorizedException("Cannot update admin status.")
         }
 
-        const existsUser = await this.getDocumentById(id)
+        const existsUser = await this.findById(id)
 
         if (currentPassword) {
             if (!Crypto.comparePasswords(currentPassword, existsUser.password)) {
@@ -106,40 +139,40 @@ export class UsersService extends CRUDService<UserDocument> {
             })
         }
 
-        return await super.updateDocumentById(id, newUserInfo)
+        const updated = await this.usersModel.findByIdAndUpdate(id, newUserInfo, {new: true})
+
+        if (!updated) {
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
+        }
+
+        return updated
     }
 
     async changePassword(id: string, currentPassword: string, newPassword: string): Promise<UserEntity> {
-        return await this.updateDocumentByIdSafe(id, { password: newPassword }, currentPassword)
+        return await this.updateSafe(id,
+            { password: newPassword },
+            currentPassword)
     }
 
     async addRole(id: string, role: Role) {
-        const currentRoles = (await this.getDocumentById(id)).roles
+        const currentRoles = (await this.findById(id)).roles
 
         if (currentRoles.includes(role)) {
             throw new AppError(AppErrorTypeEnum.ROLE_ALREADY_PROVIDED)
         }
 
-        return await this.updateDocumentByIdSafe(
+        return await this.updateSafe(
             id,
             { roles: [...currentRoles, role] }
         )
     }
 
     async removeRole(id: string, role: Role) {
-        const currentRoles = (await this.getDocumentById(id)).roles
+        const currentRoles = (await this.findById(id)).roles
 
         if (!currentRoles.includes(role)) {
             throw new AppError(AppErrorTypeEnum.ROLE_NOT_PROVIDED)
         }
-    }
-
-    /***
-     * @deprecated Use UsersService::updateDocumentByIdSafe instead
-     */
-    async updateDocumentById(id: string, newData: Partial<UserDocument>) {
-        throw new Error("Use UsersService::updateDocumentByIdSafe instead")
-        return super.updateDocumentById(id, newData)
     }
 
     async __createDefaultAdmin(user: CreateUserDto) {

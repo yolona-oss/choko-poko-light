@@ -71,7 +71,7 @@ export class ProductsController {
     }
 
     @Roles(Role.User)
-    @Post('/:id/reviews')
+    @Post('/:id/reviews/create')
     async createProductReviews(
         @Param('id', ParseObjectIdPipe) id: string,
         @Body() data: CreateProductReviewDto,
@@ -85,14 +85,14 @@ export class ProductsController {
     }
 
     @Roles(Role.Admin)
-    @Delete('/:id')
+    @Delete('/:id/delete')
     async removeProductById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const deleted = await this.productsService.remove(id)
         response.status(200).json(deleted)
     }
 
     @Roles(Role.Admin)
-    @Put('/:id')
+    @Put('/:id/update')
     async updateProductById(
         @Param('id', ParseObjectIdPipe) id: string,
         @Body() newData: Partial<ProductEntity>,

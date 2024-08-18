@@ -8,7 +8,7 @@ export class ParseObjectIdPipe implements PipeTransform<any, string> {
         const validObjectId = Types.ObjectId.isValid(value);
 
         if (!validObjectId) {
-            throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID)
+            throw new AppError(AppErrorTypeEnum.INVALID_OBJECT_ID)
         }
 
         //return Types.ObjectId.createFromHexString(value);

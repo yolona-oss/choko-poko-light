@@ -43,6 +43,10 @@ export interface ConfigSchema {
         email: string,
         phone: string,
         password: string
+    },
+    blank_images: {
+        user: string,
+        product: string
     }
 }
 
@@ -79,5 +83,9 @@ export default (): ConfigSchema => ({
         email: <string>process.env.DEFAULT_USER_EMAIL,
         phone: <string>process.env.DEFAULT_USER_PHONE,
         password: <string>process.env.DEFAULT_USER_PASSWORD
+    },
+    blank_images: {
+        user: <string>process.env.PATH_IMAGE_BLANK_USER,
+        product: <string>process.env.PATH_IMAGE_BLANK_PRODUCT
     }
 })

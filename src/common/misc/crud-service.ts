@@ -67,11 +67,11 @@ export abstract class CRUDService<T extends Document> {
             return entity
         } catch (error: any) {
             if (error?.name === 'CastError') {
-                throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID, {
+                throw new AppError(AppErrorTypeEnum.INVALID_OBJECT_ID, {
                     errorMessage: error
                 })
             } else if (error?.code === 11000) {
-                throw new AppError(AppErrorTypeEnum.DB_DUPLICATE_KEY, {
+                throw new AppError(AppErrorTypeEnum.DUPLICATE_KEY, {
                     errorMessage: error
                 })
             }

@@ -69,23 +69,22 @@ export class ProductsService {
         }
 
         if (page > totalPages) {
-            throw new AppError(AppErrorTypeEnum.DB_INVALID_RANGE)
+            throw new AppError(AppErrorTypeEnum.INVALID_RANGE)
         }
 
         const query = new OPQBuilder()
-            .addCheckOptionForKey("category", (v) => isValidObjectId(v))
-            .addCheckOptionForKey("subCategory", (v) => isValidObjectId(v))
-            .addCheckOptionForKey("isFeatured", (v) => typeof v === 'boolean')
+            .addValidatorForKey("category", (v) => isValidObjectId(v))
+            .addValidatorForKey("subCategory", (v) => isValidObjectId(v))
+            .addValidatorForKey("isFeatured", (v) => (v === 'true' || v === 'false'))
             .addToQuery("price", opts.minPrice, (v) => { return { $gte: parseInt(v) } })
             .addToQuery("price", opts.maxPrice, (v) => { return { $lte: parseInt(v) } })
             .addToQuery("rating", opts.rating)
             .addToQuery("category", opts.category)
             .addToQuery("subCategory", opts.subCategory)
-            .addToQuery("location", opts.location)
-            .addToQuery("isFeatured", opts.isFeatured)
+            .addToQuery("location", opts.location, (v) => { return v === "All" ? "" : v })
+            .addToQuery("isFeatured", opts.isFeatured, (v) => Boolean(v))
             .build()
 
-        console.log("Builded " + JSON.stringify(query, null, 4))
         const docs = await this.model.find(query, null, { skip: (page - 1) * (perPage || 0), limit: perPage })
             .populate('images')
             .populate('category')
@@ -118,7 +117,7 @@ export class ProductsService {
             return await this.model.create(newProduct)
         } catch (error) {
             if (error instanceof mongoose.Error.ValidationError) {
-                throw new AppError(AppErrorTypeEnum.DB_VALIDATION_ERROR, {
+                throw new AppError(AppErrorTypeEnum.VALIDATION_ERROR, {
                     errorMessage: 'Cannot create product: invalid data submitted: ' + error.message,
                     userMessage: 'Cannot create product: invalid data submitted: ' + error.message
                 })

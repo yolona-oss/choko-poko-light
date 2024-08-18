@@ -13,7 +13,7 @@ export class SubCategoryEntity {
     category: mongoose.Schema.Types.ObjectId;
 
     @Prop({type: String, required: true})
-    subCat: string;
+    name: string;
 }
 const SubCategorySchema = SchemaFactory.createForClass(SubCategoryEntity);
 

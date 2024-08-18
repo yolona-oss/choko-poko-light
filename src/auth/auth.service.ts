@@ -39,7 +39,7 @@ export class AuthService {
 
     async signup(userInfo: SignUpDto): Promise<AuthResponseDto> {
         // verification of fields is done in users service
-        const newUser = await this.usersService.createDocument(userInfo)
+        const newUser = await this.usersService.create(userInfo)
 
         const tokens = this.generateTokens(newUser.id, newUser.email, [Role.User])
 

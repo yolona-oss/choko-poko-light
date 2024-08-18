@@ -11,6 +11,13 @@ export type ImagesDocument = ImagesEntity & Document;
 export class ImagesEntity {
     id: string
 
+    /***
+    * Using for accosiate with pre uploaded images.
+    * Like default profile image for user or default image for product.
+    */
+    @Prop({type: String, required: false, unique: true})
+    blankType?: string;
+
     @Prop({type: String, default: "common image"})
     name?: string;
 

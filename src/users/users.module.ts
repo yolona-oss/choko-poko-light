@@ -12,6 +12,7 @@ import { ProductReviewsSchema } from './../market/products/product-reviews/schem
 
 import { UsersController } from './users.controller';
 import { OrdersModule } from 'src/market/orders/orders.module';
+import { ImageUploadModule } from 'src/image-upload/image-upload.module';
 
 @Module({
     controllers: [UsersController],
@@ -23,7 +24,8 @@ import { OrdersModule } from 'src/market/orders/orders.module';
         ]),
         WishlistModule,
         OrdersModule,
-        CartModule
+        CartModule,
+        ImageUploadModule
     ],
     exports: [UsersService]
 })

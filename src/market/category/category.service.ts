@@ -43,7 +43,7 @@ export class CategoryService extends CRUDService<CategoryDocument> {
         }
 
         if (page > totalPages) {
-            throw new AppError(AppErrorTypeEnum.DB_INVALID_RANGE)
+            throw new AppError(AppErrorTypeEnum.INVALID_RANGE)
         }
 
         const query = new OPQBuilder()

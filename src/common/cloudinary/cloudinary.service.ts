@@ -5,45 +5,45 @@ import { CloudinaryResponse } from './types/cloudinary-response.type';
 
 @Injectable()
 export class CloudinaryService {
-    async uploadFile(file_path: string, options: UploadApiOptions): Promise<CloudinaryResponse> {
-        const promise = new Promise((res, rej) => {
-            cloudinary.uploader.upload(
-                file_path,
-                options,
-                (error, result) => {
-                    if (error) {
-                        rej(error)
+    async uploadFile(file_path: string, options: UploadApiOptions): Promise<CloudinaryResponse|any> {
+        try {
+            const promise = new Promise((res, rej) => {
+                cloudinary.uploader.upload(
+                    file_path,
+                    options,
+                    (error, result) => {
+                        if (error) {
+                            rej(error)
+                        }
+                        res(<CloudinaryResponse>result)
                     }
-                    res(<CloudinaryResponse>result)
-                }
-            );
-        })
-
-        return await promise.then((result) => {
-            return <CloudinaryResponse>result
-        }).catch((error) => {
-            throw new AppError(AppErrorTypeEnum.CLOUDINARY_ERROR, {
-                errorMessage: "Cloudinary upload error: " + error.message
+                );
             })
-        })
+
+            return <CloudinaryResponse>await promise
+        } catch(error: any) {
+            throw new AppError(AppErrorTypeEnum.CLOUDINARY_ERROR, {
+                errorMessage: "Cloudinary upload error: " + error.message,
+                userMessage: "Cloudinary upload error"
+            })
+        }
     }
 
     async destroyFile(public_id: string): Promise<unknown> {
-        const promise = new Promise((res, rej) => {
-            cloudinary.uploader.destroy(public_id, (error, result) => {
-                if (error) {
-                    rej(error)
-                }
-                res(result)
+        try {
+            const promise = new Promise((res, rej) => {
+                cloudinary.uploader.destroy(public_id, (error, result) => {
+                    if (error) {
+                        rej(error)
+                    }
+                    res(result)
+                })
             })
-        })
-
-        return await promise.then((result) => {
-            return result
-        }).catch((error) => {
+            return await promise
+        } catch(error: any) {
             throw new AppError(AppErrorTypeEnum.CLOUDINARY_ERROR, {
                 errorMessage: "Cloudinary destroy error: " + error.message
             })
-        })
+        }
     }
 }

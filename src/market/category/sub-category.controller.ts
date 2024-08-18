@@ -46,7 +46,7 @@ export class SubCategoryController {
     async create(@Body() body: {category: string, subCat: string}, @Res() response: Response) {
         console.log(body)
         if (!mongoose.isValidObjectId(body.category)) {
-            throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID)
+            throw new AppError(AppErrorTypeEnum.INVALID_OBJECT_ID)
         }
 
         try {
@@ -85,7 +85,7 @@ export class SubCategoryController {
         @Res() response: Response
     ) {
         if (!mongoose.isValidObjectId(body.category)) {
-            throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID)
+            throw new AppError(AppErrorTypeEnum.INVALID_OBJECT_ID)
         }
 
         const subCat = await this.subCategoryService.updateDocumentById(

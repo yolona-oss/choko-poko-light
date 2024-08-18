@@ -51,8 +51,8 @@ export const ErrorsDefenition: Record<AppErrorTypeEnum, IErrorMessage> = {
         errorMessage: 'Invalid credentials.',
         userMessage: 'Invalid credentials.'
     },
-    [AppErrorTypeEnum.DB_INVALID_OBJECT_ID]: {
-        type: AppErrorTypeEnum.DB_INVALID_OBJECT_ID,
+    [AppErrorTypeEnum.INVALID_OBJECT_ID]: {
+        type: AppErrorTypeEnum.INVALID_OBJECT_ID,
         httpStatus: HttpStatus.NOT_ACCEPTABLE,
         errorMessage: 'Invalid ObjectId passed.',
         userMessage: 'Invalid ObjectId passed.'
@@ -63,8 +63,8 @@ export const ErrorsDefenition: Record<AppErrorTypeEnum, IErrorMessage> = {
         errorMessage: 'Cannot upload image.',
         userMessage: 'Cannot upload image.'
     },
-    [AppErrorTypeEnum.DB_INVALID_RANGE]: {
-        type: AppErrorTypeEnum.DB_INVALID_RANGE,
+    [AppErrorTypeEnum.INVALID_RANGE]: {
+        type: AppErrorTypeEnum.INVALID_RANGE,
         httpStatus: HttpStatus.BAD_REQUEST, // TODO change
         errorMessage: 'Not in ranger.',
         userMessage: 'Selected range is invalid.'
@@ -87,14 +87,14 @@ export const ErrorsDefenition: Record<AppErrorTypeEnum, IErrorMessage> = {
         errorMessage: 'Cannot delete selected entity.',
         userMessage: 'Cannot delete selected entity.'
     },
-    [AppErrorTypeEnum.DB_DUPLICATE_KEY]: {
-        type: AppErrorTypeEnum.DB_DUPLICATE_KEY,
+    [AppErrorTypeEnum.DUPLICATE_KEY]: {
+        type: AppErrorTypeEnum.DUPLICATE_KEY,
         httpStatus: HttpStatus.UNPROCESSABLE_ENTITY,
         errorMessage: 'Duplicate key.',
         userMessage: 'Duplicate key.'
     },
-    [AppErrorTypeEnum.DB_VALIDATION_ERROR]: {
-        type: AppErrorTypeEnum.DB_VALIDATION_ERROR,
+    [AppErrorTypeEnum.VALIDATION_ERROR]: {
+        type: AppErrorTypeEnum.VALIDATION_ERROR,
         httpStatus: HttpStatus.BAD_REQUEST,
         errorMessage: 'Validation error.',
         userMessage: 'Validation error.'
@@ -141,4 +141,10 @@ export const ErrorsDefenition: Record<AppErrorTypeEnum, IErrorMessage> = {
         errorMessage: 'Invalid order status.',
         userMessage: 'Invalid order status.'
     },
+    [AppErrorTypeEnum.INVALID_DATA]: {
+        type: AppErrorTypeEnum.INVALID_DATA,
+        httpStatus: HttpStatus.BAD_REQUEST,
+        errorMessage: 'Invalid data.',
+        userMessage: 'Invalid data.'
+    }
 }

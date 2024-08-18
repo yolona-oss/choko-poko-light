@@ -10,6 +10,8 @@ import { ImagesDocument } from './schemas/image-upload.schema';
 import { CRUDService } from './../common/misc/crud-service';
 import { AppError, AppErrorTypeEnum } from './../common/app-error';
 import { extractFileName } from './../common/misc/utils';
+import { DefaultImages, DefaultImagesType } from './../common/enums/default-images.enum';
+import { BlankImagesPath } from './interfaces/blank-images-path.dto';
 
 @Injectable()
 export class ImageUploadService extends CRUDService<ImagesDocument> {
@@ -21,7 +23,10 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
         super(imagesModel)
     }
 
-    async uploadImages(files: Array<Express.Multer.File>) {
+    /***
+     * Upload images to cloudinary and save them to db
+     */
+    async uploadImages(files: {path: string, filename: string}[], blankType?: DefaultImagesType) {
         const cloudinaryUploadedUrls = new Array<string>;
         const imageDocs = new Array<ImagesDocument>;
 
@@ -35,13 +40,29 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
             try {
                 const uploadedFile = await this.cloudinaryService.uploadFile(file.path, cloudinaryUploadOptions);
                 cloudinaryUploadedUrls.push(uploadedFile.secure_url)
-                imageDocs.push(await super.createDocument({imageUrl: <string>uploadedFile.secure_url}))
+                imageDocs.push(await super.createDocument({imageUrl: uploadedFile.secure_url, blankType: blankType}))
             } finally {
-                fs.unlinkSync(`uploads/${file.filename}`)
+                if (!blankType) {
+                    fs.unlinkSync(file.path)
+                }
             }
         }
 
         return imageDocs
+    }
+
+    async findBlank(type: DefaultImagesType): Promise<ImagesDocument> {
+        try {
+            const doc = await this.imagesModel.findOne({blankType: DefaultImages[type]})
+            if (!doc) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+
+            return doc
+        } catch (error) {
+            // TODO handle error and recreate blank images
+            throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+        }
     }
 
     override async removeDocumentById(id: string) {
@@ -54,7 +75,7 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     async removeMany(ids: string[]) {
         ids.forEach(id => {
             if (!mongoose.Types.ObjectId.isValid(id)) {
-                throw new AppError(AppErrorTypeEnum.DB_INVALID_OBJECT_ID)
+                throw new AppError(AppErrorTypeEnum.INVALID_OBJECT_ID)
             }
         })
 
@@ -91,5 +112,23 @@ export class ImageUploadService extends CRUDService<ImagesDocument> {
     override async createDocument(data: Omit<ImagesDocument, keyof Document>) {
         throw new Error("Use ImageUploadService::uploadImages instead")
         return super.createDocument(data)
+    }
+
+    async __createDefaultBlankImages(localPaths: BlankImagesPath[]): Promise<void> {
+        for (const type in DefaultImages) {
+            const isBlankExists = await this.imagesModel.find({ blankType: type })
+            if (isBlankExists.length > 0) {
+                continue
+            }
+
+            const fileToUpload = localPaths.filter(path => path.type == type)
+                .map(path => {
+                    return {
+                        path: path.path,
+                        filename: extractFileName(path.path, false)
+                    }
+                })
+            await this.uploadImages(fileToUpload, type as DefaultImagesType)
+        }
     }
 }

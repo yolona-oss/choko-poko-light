@@ -15,7 +15,7 @@ const defaultValidator: ValidateFn = (v) => {
 }
 
 const dummyTransfomr: TransformFn = (v) => v
-const dummyValidator: ValidateFn = (v: any) => {v;return true}
+//const dummyValidator: ValidateFn = (v: any) => {v;return true}
 
 /***
  * addToQuery workflow
@@ -128,17 +128,19 @@ export class OPQBuilder implements IBuilder<Record<string, any>> {
         value: any,
         transform: TransformFn = dummyTransfomr
     ) {
+        // check
+
         const mappedChecks = this.checks.get(key) || []
         const globalChecks = this.globalChecks
 
-        const _checks = []
+        const checkers = []
 
-        _checks.push(...mappedChecks)
+        checkers.push(...mappedChecks)
         if (this.useGlobalCheckForMapped || !mappedChecks.length) {
-            _checks.push(...globalChecks)
+            checkers.push(...globalChecks)
         }
 
-        for (const check of _checks) {
+        for (const check of checkers) {
             if (!check(value)) {
                 return this
             }
@@ -149,16 +151,16 @@ export class OPQBuilder implements IBuilder<Record<string, any>> {
         const mappedValidators = this.validators.get(key) || []
         const globalValidators = this.globalValidators
 
-        const _validators = []
+        const validators = []
 
-        _validators.push(...mappedValidators)
+        validators.push(...mappedValidators)
         if (this.useGlobalValidationForMapped || !mappedValidators) {
-            _validators.push(...globalValidators)
+            validators.push(...globalValidators)
         }
 
-        for (const validate of _validators) {
+        for (const validate of validators) {
             if (!validate(value)) {
-                throw new AppError(AppErrorTypeEnum.DB_VALIDATION_ERROR, {
+                throw new AppError(AppErrorTypeEnum.VALIDATION_ERROR, {
                     errorMessage: `Invalid value for \'${key}\': ${value}`,
                     userMessage: `Invalid value for \'${key}\': ${value}`
                 })

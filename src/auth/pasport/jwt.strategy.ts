@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'strategy-jwt') {
 
     async validate(payload: JwtPayload) {
         console.log("Jwt payload: " + JSON.stringify(payload,null,'\n'))
-        const user = await this.usersService.getDocumentById(payload.id);
+        const user = await this.usersService.findById(payload.id);
         if (!user) {
             throw new AppError(AppErrorTypeEnum.INVALID_CREDENTIALS_EXCEPTION)
         }

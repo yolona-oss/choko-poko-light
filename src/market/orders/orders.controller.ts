@@ -1,5 +1,6 @@
 import {
     Put,
+    Body,
     Query,
     Param,
     Get,
@@ -18,8 +19,11 @@ import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
 import { OrderStatus } from './../../common/enums/order-status.enum';
 import { AuthUser } from 'src/common/decorators/user.decorator';
 import { ParseOrderStatusPipe } from 'src/common/pipes/parse-order-status.pipe';
+import { ParseAddressPipe } from 'src/common/pipes/parse-address.pipe';
+import { ParsePincodePipe } from 'src/common/pipes/parse-pincode.pipe';
+import { ParsePaymentIdPipe } from 'src/common/pipes/parse-payment-id.pipe';
 
-@Controller('orders')
+@Controller()
 export class OrdersController {
     constructor(
         private ordersService: OrdersService
@@ -37,25 +41,44 @@ export class OrdersController {
         response.json(count)
     }
 
-    @Get('/:id')
+    // shipped service must set order status by events
+    // but now we not have one
+    @Post('/admin/:orderId/update-status')
+    async udpateOrderStatus(
+        @Param('orderId', ParseObjectIdPipe) orderId: string,
+        @Query('status', ParseOrderStatusPipe) status: OrderStatus,
+        @Res() response: Response
+    ) {
+        const updated = await this.ordersService.setOrderStatus(orderId, status)
+        response.json(updated)
+    }
+
+    @Get('/admin/:orderId')
     async getById(
-        @Param('id', ParseObjectIdPipe) id: string,
+        @Param('orderId', ParseObjectIdPipe) id: string,
         @Res() response: Response
     ) {
         const orderDoc = await this.ordersService.findById(id)
         response.json(orderDoc)
     }
 
-    @Post('/user/:userId/create-order')
+    @Post('/:userId/create')
     async createOrder(
         @Param('userId', ParseObjectIdPipe) userId: string,
+        @Body('address', ParseAddressPipe) address: string,
+        @Body('pincode', ParsePincodePipe) pincode: string,
+        @Body('paymentId', ParsePaymentIdPipe) paymentId: string,
         @Res() response: Response
     ) {
-        const created = await this.ordersService.transfromCart(userId)
+        const created = await this.ordersService.transfromCart(userId, {
+            address,
+            pincode,
+            paymentId
+        })
         response.json(created)
     }
 
-    @Get('/user/:userId')
+    @Get('/:userId')
     async getAllUserOrders(
         @Param('userId', ParseObjectIdPipe) userId: string,
         @Query('status') orderStatus: any,
@@ -65,24 +88,12 @@ export class OrdersController {
         response.json(orders)
     }
 
-    @Get('/user/:userId/count')
+    @Get('/:userId/count')
     async countUserOrders(
         @Param('userId', ParseObjectIdPipe) userId: string,
         @Res() response: Response
     ) {
         const count = await this.ordersService.findCount(userId)
         response.json(count)
-    }
-
-    // shipped service must set order status by events
-    // but now we not have one
-    @Post('/:orderId/update-status')
-    async udpateOrderStatus(
-        @Param('orderId', ParseObjectIdPipe) orderId: string,
-        @Query('status', ParseOrderStatusPipe) status: OrderStatus,
-        @Res() response: Response
-    ) {
-        const updated = await this.ordersService.setOrderStatus(orderId, status)
-        response.json(updated)
     }
 }
