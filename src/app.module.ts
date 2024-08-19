@@ -70,10 +70,10 @@ import { CartModule } from './market/cart/cart.module';
         ]),
     ],
     providers: [
-        {
-            provide: APP_GUARD,
-            useClass: ThrottlerGuard
-        },
+        //{
+        //    provide: APP_GUARD,
+        //    useClass: ThrottlerGuard
+        //},
         {
             provide: APP_GUARD,
             useClass: JwtGuard,

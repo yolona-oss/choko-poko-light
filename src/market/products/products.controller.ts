@@ -34,7 +34,7 @@ export class ProductsController {
     @Get('/')
     async findSome(@Query() query: any, @Res() response: Response) {
         const execRes = await this.productsService.findFiltred(query)
-        response.json(execRes)
+        return response.json(execRes)
     }
 
     @Public()
@@ -71,7 +71,7 @@ export class ProductsController {
     }
 
     @Roles(Role.User)
-    @Post('/:id/reviews/create')
+    @Post('/:id/reviews/add')
     async createProductReviews(
         @Param('id', ParseObjectIdPipe) id: string,
         @Body() data: CreateProductReviewDto,

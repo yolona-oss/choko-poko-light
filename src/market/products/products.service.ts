@@ -85,6 +85,8 @@ export class ProductsService {
             .addToQuery("isFeatured", opts.isFeatured, (v) => Boolean(v))
             .build()
 
+        console.log("Builded Query: " + JSON.stringify(query, null, 4))
+
         const docs = await this.model.find(query, null, { skip: (page - 1) * (perPage || 0), limit: perPage })
             .populate('images')
             .populate('category')
