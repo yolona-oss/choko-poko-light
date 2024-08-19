@@ -3,6 +3,8 @@ import { assignToCustomPath } from "./helpers"
 
 import { IBuilder } from "./../types/builder.type"
 
+type OPQBuilderType = Record<string, any>
+
 type TransformFn = (value: any) => any
 type ValidateFn = (value: any) => boolean
 type ValidateFnArray = Array<ValidateFn>
@@ -14,6 +16,9 @@ const defaultValidator: ValidateFn = (v) => {
     return false
 }
 
+const defaultValidationFailCb: () => OPQBuilder = function(this: OPQBuilder) {
+    return this
+}
 const dummyTransfomr: TransformFn = (v) => v
 //const dummyValidator: ValidateFn = (v: any) => {v;return true}
 
@@ -34,7 +39,7 @@ const dummyTransfomr: TransformFn = (v) => v
  *
  * TODO: create generic capab version to add keys by generic keyof or directly from type
  */
-export class OPQBuilder implements IBuilder<Record<string, any>> {
+export class OPQBuilder implements IBuilder<OPQBuilderType> {
     private options: Record<string, any>
 
     private globalValidators: ValidateFnArray
