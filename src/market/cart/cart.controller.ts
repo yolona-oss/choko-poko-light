@@ -9,7 +9,7 @@ import {
     DefaultValuePipe,
 } from '@nestjs/common';
 import { Response } from 'express'
-import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 
 import { CartService } from './cart.service';
 

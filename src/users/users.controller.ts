@@ -13,7 +13,7 @@ import { UserEntity } from './schemas/user.schema';
 import { Roles } from './../common/decorators/role.decorator';
 //import { User } from './../common/decorators/user.decorator'
 import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from './../common/enums/role.enum';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller()

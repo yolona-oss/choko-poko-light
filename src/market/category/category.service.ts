@@ -13,7 +13,7 @@ import { FiltredCategoryList } from './interfaces/filtred-category-list.interfac
 import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 
 import { OPQBuilder } from './../../common/misc/opq-builder';
-import { DeepPartial } from 'src/common/types/deep-partial.type';
+import { DeepPartial } from './../../common/types/deep-partial.type';
 
 @Injectable()
 export class CategoryService extends CRUDService<CategoryDocument> {

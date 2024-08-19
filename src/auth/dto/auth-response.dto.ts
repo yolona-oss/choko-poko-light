@@ -1,5 +1,4 @@
-import { UserObjectResponseDto } from "src/users/dto/user-object-response.dto"
-import { UserEntity } from "./../../users/schemas/user.schema"
+import { UserObjectResponseDto } from "./../../users/dto/user-object-response.dto"
 
 export interface AuthResponseDto {
     readonly access_token: string

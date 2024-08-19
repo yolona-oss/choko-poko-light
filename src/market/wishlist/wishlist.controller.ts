@@ -1,7 +1,8 @@
 import { Controller, Param, Get, Put, Query, Res } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { Response } from 'express';
-import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+
+import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 
 @Controller()
 export class WishlistController {

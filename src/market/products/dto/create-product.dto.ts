@@ -6,18 +6,15 @@ export interface CreateProductDto {
     readonly price: number
     readonly oldPrice?: number
     readonly brand?: string
-    readonly subCatId?: string
-    readonly catId?: string
-    readonly catName?: string
+    readonly subCategory?: string
     readonly category: string
-    readonly subCat: string
     readonly countInStock: number
     readonly rating?: number
     readonly isFeatured?: boolean
     readonly discount?: number
-    readonly productRam?: string[]
+    readonly rams?: string[]
     readonly size?: string[]
-    readonly productWeight?: string[]
+    readonly weight?: string[]
     readonly location?: string
     readonly images: string[]
 }

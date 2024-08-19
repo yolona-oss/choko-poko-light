@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { Param, Res, Get, Post, Delete, Put, Body, Controller } from '@nestjs/common';
 import { Response } from 'express'
 import { HomeBannerService } from './home-banner.service';
-import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
 import { CreateHomeBannerDto } from './dto/create-home-banner.dto';
 import { UpdateHomeBannerDto } from './dto/update-home-banner.dto';
 

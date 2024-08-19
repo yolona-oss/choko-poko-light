@@ -12,16 +12,18 @@ import { Response } from 'express'
 
 import { OrdersService } from './orders.service';
 
+import { OrderStatus } from './../../common/enums/order-status.enum';
+
 import { Public } from './../../common/decorators/public.decorotor';
 import { Roles } from './../../common/decorators/role.decorator';
 import { Role } from './../../common/enums/role.enum';
-import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
-import { OrderStatus } from './../../common/enums/order-status.enum';
-import { AuthUser } from 'src/common/decorators/user.decorator';
-import { ParseOrderStatusPipe } from 'src/common/pipes/parse-order-status.pipe';
-import { ParseAddressPipe } from 'src/common/pipes/parse-address.pipe';
-import { ParsePincodePipe } from 'src/common/pipes/parse-pincode.pipe';
-import { ParsePaymentIdPipe } from 'src/common/pipes/parse-payment-id.pipe';
+import { AuthUser } from './../../common/decorators/user.decorator';
+
+import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
+import { ParseOrderStatusPipe } from './../../common/pipes/parse-order-status.pipe';
+import { ParseAddressPipe } from './../../common/pipes/parse-address.pipe';
+import { ParsePincodePipe } from './../../common/pipes/parse-pincode.pipe';
+import { ParsePaymentIdPipe } from './../../common/pipes/parse-payment-id.pipe';
 
 @Controller()
 export class OrdersController {

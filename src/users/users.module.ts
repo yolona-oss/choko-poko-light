@@ -11,8 +11,8 @@ import { UserSchema } from './schemas/user.schema';
 import { ProductReviewsSchema } from './../market/products/product-reviews/schemas/product-reviews.schema';
 
 import { UsersController } from './users.controller';
-import { OrdersModule } from 'src/market/orders/orders.module';
-import { ImageUploadModule } from 'src/image-upload/image-upload.module';
+import { OrdersModule } from './../market/orders/orders.module';
+import { ImageUploadModule } from './../image-upload/image-upload.module';
 
 @Module({
     controllers: [UsersController],

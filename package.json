@@ -1,9 +1,9 @@
 {
   "packageManager": "npm@10.8.2",
   "name": "spice-server",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "Nestjs backend for kislovodsk spice princess",
+  "author": "yolona-oss",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

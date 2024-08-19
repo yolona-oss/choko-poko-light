@@ -6,12 +6,12 @@ import { CartService } from '../cart/cart.service';
 
 import { OrdersDocument } from './schemas/orders.schema';
 
-import { AppError, AppErrorTypeEnum } from 'src/common/app-error';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 import { CartProducts } from '../cart/dto/cart-product.dto';
 import { OrderStatus } from './../../common/enums/order-status.enum';
 import { ProductEntity } from '../products/schemas/products.schema';
 import { PopulateProductInterface } from './interfaces/populate-product.interface';
-import { OPQBuilder } from 'src/common/misc/opq-builder';
+import { OPQBuilder } from './../../common/misc/opq-builder';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 
 @Injectable()

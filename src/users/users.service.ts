@@ -19,8 +19,8 @@ import { Role } from './../common/enums/role.enum';
 import { WishlistService } from '../market/wishlist/wishlist.service';
 import { CartService } from '../market/cart/cart.service';
 import { OrdersService } from '../market/orders/orders.service';
-import { ImageUploadService } from 'src/image-upload/image-upload.service';
-import { ImagesEntity } from 'src/image-upload/schemas/image-upload.schema';
+import { ImageUploadService } from './../image-upload/image-upload.service';
+import { ImagesEntity } from './../image-upload/schemas/image-upload.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Writeable } from './../common/types/writable.type';
 

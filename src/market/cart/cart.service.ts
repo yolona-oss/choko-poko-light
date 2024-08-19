@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { CartDocument } from './schemas/cart.schema';
 import { CartProduct, CartProducts } from './dto/cart-product.dto';
-import { AppError, AppErrorTypeEnum } from 'src/common/app-error';
+import { AppError, AppErrorTypeEnum } from './../../common/app-error';
 import { ProductEntity } from '../products/schemas/products.schema';
 
 @Injectable()
