@@ -34,9 +34,7 @@ export class UsersController {
     @Get('/count')
     async getUsersCount(@Res() response: Response) {
         const count = await this.usersService.count()
-        response.json({
-            usersCount: count
-        })
+        response.status(200).json(count)
     }
 
     @Roles(Role.Admin)
@@ -46,7 +44,7 @@ export class UsersController {
         @Res() response: Response
     ) {
         const doc = await this.usersService.remove(id)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 
     @Roles(Role.User)
@@ -57,7 +55,7 @@ export class UsersController {
         @Res() response: Response
     ) {
         const doc = await this.usersService.updateSafe(id, data, data.password)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 
     @Roles(Role.User)
@@ -69,7 +67,7 @@ export class UsersController {
     ) {
         const { newPassword, oldPassword } = data
         const updatedUser = await this.usersService.changePassword(id, oldPassword, newPassword)
-        response.json(updatedUser)
+        response.status(200).json(updatedUser)
     }
 
     @Roles(Role.User)
@@ -79,6 +77,6 @@ export class UsersController {
         @Res() response: Response
     ) {
         const doc = await this.usersService.findById(id)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 }

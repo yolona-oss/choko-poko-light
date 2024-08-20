@@ -33,7 +33,7 @@ export class HomeBannerController {
         await this.homeBannerService.createBanner({
             images: body.images
         })
-        response.json({})
+        response.status(200).json({})
     }
 
     @Delete(':id')
@@ -42,7 +42,7 @@ export class HomeBannerController {
         @Res() response: Response
     ) {
         await this.homeBannerService.removeById(id)
-        return response.json({success: true, message: "Slide deleted"})
+        return response.status(200).json({success: true, message: "Slide deleted"})
     }
 
     @Put(':id')
@@ -54,6 +54,6 @@ export class HomeBannerController {
         const updatedDoc = await this.homeBannerService.updateById(id, {
             images: body.images
         })
-        return response.json(updatedDoc)
+        return response.status(200).json(updatedDoc)
     }
 }

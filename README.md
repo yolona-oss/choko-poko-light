@@ -23,3 +23,4 @@ If dependencies errors, try run `npm install --legacy-peer-deps` or `npm install
 - [-] append users shcmea to remove my-list entry on deleting
 - [-] create cloudinary image removal on update schemas if image not included in new image set
 - [-] add cvs import to products schema
+- [-] refuce usage of CRUDService generic

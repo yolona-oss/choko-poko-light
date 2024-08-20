@@ -33,13 +33,13 @@ export class SubCategoryController {
     @Get('/id/:id')
     async getById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const subCategory = await this.subCategoryService.getDocumentById(id)
-        response.json(subCategory)
+        response.status(200).json(subCategory)
     }
 
     @Get('/count')
     async count(@Res() response: Response) {
         const subCatCount = await this.subCategoryService.getDocumentsCount()
-        response.json({subCatCount: subCatCount})
+        response.status(200).json({subCatCount: subCatCount})
     }
 
     @Post('/create')
@@ -60,7 +60,7 @@ export class SubCategoryController {
                 throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
             }
 
-            response.json(subCat);
+            response.status(200).json(subCat);
         } catch (e) {
             if (e instanceof AppError) {
                 throw e
@@ -101,6 +101,6 @@ export class SubCategoryController {
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE)
         }
 
-        response.json(subCat);
+        response.status(200).json(subCat);
     }
 }

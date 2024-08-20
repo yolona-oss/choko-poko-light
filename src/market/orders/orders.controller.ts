@@ -34,13 +34,13 @@ export class OrdersController {
     @Get('/')
     async getAll(@Res() response: Response) {
         const ordersDocs = await this.ordersService.findAll()
-        response.json(ordersDocs)
+        response.status(200).json(ordersDocs)
     }
 
     @Get('/count')
     async getCount(@Res() response: Response) {
         const count = await this.ordersService.findCount()
-        response.json(count)
+        response.status(200).json(count)
     }
 
     // shipped service must set order status by events
@@ -52,7 +52,7 @@ export class OrdersController {
         @Res() response: Response
     ) {
         const updated = await this.ordersService.setOrderStatus(orderId, status)
-        response.json(updated)
+        response.status(200).json(updated)
     }
 
     @Get('/admin/:orderId')
@@ -61,7 +61,7 @@ export class OrdersController {
         @Res() response: Response
     ) {
         const orderDoc = await this.ordersService.findById(id)
-        response.json(orderDoc)
+        response.status(200).json(orderDoc)
     }
 
     @Post('/:userId/create')
@@ -77,7 +77,7 @@ export class OrdersController {
             pincode,
             paymentId
         })
-        response.json(created)
+        response.status(200).json(created)
     }
 
     @Get('/:userId')
@@ -87,7 +87,7 @@ export class OrdersController {
         @Res() response: Response
     ) {
         const orders = await this.ordersService.findUserOrdersWrapper(userId, orderStatus)
-        response.json(orders)
+        response.status(200).json(orders)
     }
 
     @Get('/:userId/count')
@@ -96,6 +96,6 @@ export class OrdersController {
         @Res() response: Response
     ) {
         const count = await this.ordersService.findCount(userId)
-        response.json(count)
+        response.status(200).json(count)
     }
 }

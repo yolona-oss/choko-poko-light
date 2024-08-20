@@ -13,7 +13,7 @@ export class WishlistController {
     @Get('/')
     async get(@Query() query: any, @Res() response: Response) {
         const docs = await this.wishlistService.findFiltredWrapper(query)
-        response.json(docs)
+        response.status(200).json(docs)
     }
 
     @Get('/:userId')
@@ -22,7 +22,7 @@ export class WishlistController {
         @Res() response: Response
     ) {
         const doc = await this.wishlistService.findByUser(userId)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 
     @Get('/:userId/is-contains')
@@ -32,7 +32,7 @@ export class WishlistController {
         @Res() response: Response
     ) {
         const doc = await this.wishlistService.isContainsProduct(userId, productId)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 
     @Put('/:userId/add')
@@ -42,7 +42,7 @@ export class WishlistController {
         @Res() response: Response
     ) {
         const doc = await this.wishlistService.addToWishlist(userId, productId)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 
     @Put('/:userId/remove')
@@ -52,7 +52,7 @@ export class WishlistController {
         @Res() response: Response
     ) {
         const doc = await this.wishlistService.removeFromWishlist(userId, productId)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 
     @Put('/:userId/clear')
@@ -61,6 +61,6 @@ export class WishlistController {
         @Res() response: Response
     ) {
         const doc = await this.wishlistService.clearWishlist(query)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 }

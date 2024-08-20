@@ -34,13 +34,13 @@ export class CategoryController {
     @Get('/id/:id')
     async getCategoryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
         const category = await this.categoryService.getDocumentById(id)
-        response.json(category)
+        response.status(200).json(category)
     }
 
     @Get('/count')
     async getCategoryEntriesCount(@Res() response: Response) {
         const catCount = await this.categoryService.getDocumentsCount()
-        response.json({
+        response.status(200).json({
             categoryCount: catCount
         })
     }
@@ -67,7 +67,7 @@ export class CategoryController {
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
         }
 
-        response.json(category);
+        response.status(200).json(category);
     }
 
     @Delete('/:id')
@@ -95,7 +95,7 @@ export class CategoryController {
             }
         )
 
-        response.json(updatedCat);
+        response.status(200).json(updatedCat);
     }
 }
 

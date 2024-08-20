@@ -22,7 +22,7 @@ export class CartController {
     @Get('/')
     async getAllCarts(@Res() response: Response) {
         const docs = await this.cartService.findAll()
-        response.json(docs)
+        response.status(200).json(docs)
     }
 
     @Get('/:userId')
@@ -31,7 +31,7 @@ export class CartController {
         @Res() response: Response
     ) {
         const cart = await this.cartService.findByUser(userId)
-        response.json(cart)
+        response.status(200).json(cart)
     }
 
     @Get('/:userId/total')
@@ -40,7 +40,7 @@ export class CartController {
         @Res() response: Response
     ) {
         const total = await this.cartService.totalCartPrice(userId)
-        response.json(total)
+        response.status(200).json(total)
     }
 
     @Put('/:userId/add')
@@ -55,7 +55,7 @@ export class CartController {
             quantity: quantity
         }
         const cart = await this.cartService.addToCart(userId, cartProduct)
-        response.json(cart)
+        response.status(200).json(cart)
     }
 
     @Put('/:userId/remove')
@@ -65,7 +65,7 @@ export class CartController {
         @Res() response: Response
     ) {
         const cart = await this.cartService.removeFromCart(userId, productId)
-        response.json(cart)
+        response.status(200).json(cart)
     }
 
     @Put('/:userId/quantity')
@@ -76,7 +76,7 @@ export class CartController {
         @Res() response: Response
     ) {
         const cart = await this.cartService.changeProductQuantity(userId, productId, quantity)
-        response.json(cart)
+        response.status(200).json(cart)
     }
 
     @Put('/:userId/clear')
@@ -85,6 +85,6 @@ export class CartController {
         @Res() response: Response
     ) {
         const cart = await this.cartService.clearCart(userId)
-        response.json(cart)
+        response.status(200).json(cart)
     }
 }

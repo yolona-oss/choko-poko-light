@@ -34,7 +34,7 @@ export class ProductsController {
     @Get('/')
     async findSome(@Query() query: any, @Res() response: Response) {
         const execRes = await this.productsService.findFiltred(query)
-        return response.json(execRes)
+        return response.status(200).json(execRes)
     }
 
     @Public()
@@ -67,7 +67,7 @@ export class ProductsController {
         @Res() response: Response
     ) {
         const doc = await this.reviewsService.findByProductId(id)
-        response.json(doc)
+        response.status(200).json(doc)
     }
 
     @Roles(Role.User)
