@@ -9,7 +9,7 @@ import compression from 'compression';
 
 import { AllExeptionFilter } from './common/filters/all-exception.filter';
 
-import { corsOptions } from './common/config/cros';
+//import { corsOptions } from './common/config/cros';
 
 async function bootstrap() {
 
@@ -27,7 +27,7 @@ async function bootstrap() {
     app.use(compression())
     app.setGlobalPrefix('api')
     app.useGlobalFilters(new AllExeptionFilter())
-    app.enableCors(corsOptions)
+    app.enableCors()
 
     const config = new DocumentBuilder()
         .setTitle('Spice API')

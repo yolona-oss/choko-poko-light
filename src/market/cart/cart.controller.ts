@@ -9,9 +9,13 @@ import {
     DefaultValuePipe,
 } from '@nestjs/common';
 import { Response } from 'express'
+
+import { IJwtPayload } from 'auth/interfaces/jwt-payload.interface';
 import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 
 import { CartService } from './cart.service';
+
+import { AuthUser } from './../../common/decorators/user.decorator';
 
 @Controller()
 export class CartController {
@@ -19,33 +23,33 @@ export class CartController {
         private cartService: CartService
     ) {}
 
-    @Get('/')
+    @Get('/all')
     async getAllCarts(@Res() response: Response) {
         const docs = await this.cartService.findAll()
         response.status(200).json(docs)
     }
 
-    @Get('/:userId')
+    @Get('/')
     async getUserCart(
-        @Param('userId') userId: string,
+        @AuthUser() user: IJwtPayload,
         @Res() response: Response
     ) {
-        const cart = await this.cartService.findByUser(userId)
+        const cart = await this.cartService.findByUser(user.id)
         response.status(200).json(cart)
     }
 
-    @Get('/:userId/total')
+    @Get('/total')
     async totalCartPrice(
-        @Param('userId') userId: string,
+        @AuthUser() user: IJwtPayload,
         @Res() response: Response
     ) {
-        const total = await this.cartService.totalCartPrice(userId)
+        const total = await this.cartService.totalCartPrice(user.id)
         response.status(200).json(total)
     }
 
-    @Put('/:userId/add')
+    @Put('/add')
     async addToCart(
-        @Param('userId') userId: string,
+        @AuthUser() user: IJwtPayload,
         @Query('productId', ParseObjectIdPipe) productId: string,
         @Query('quantity', ParseIntPipe, new DefaultValuePipe(1)) quantity: number,
         @Res() response: Response
@@ -54,37 +58,37 @@ export class CartController {
             product: productId,
             quantity: quantity
         }
-        const cart = await this.cartService.addToCart(userId, cartProduct)
+        const cart = await this.cartService.addToCart(user.id, cartProduct)
         response.status(200).json(cart)
     }
 
-    @Put('/:userId/remove')
+    @Put('/remove')
     async removeFromCart(
-        @Param('userId') userId: string,
+        @AuthUser() user: IJwtPayload,
         @Query('productId', ParseObjectIdPipe) productId: string,
         @Res() response: Response
     ) {
-        const cart = await this.cartService.removeFromCart(userId, productId)
+        const cart = await this.cartService.removeFromCart(user.id, productId)
         response.status(200).json(cart)
     }
 
-    @Put('/:userId/quantity')
+    @Put('/set-quantity')
     async updateProductQuantity(
-        @Param('userId') userId: string,
+        @AuthUser() user: IJwtPayload,
         @Query('productId', ParseObjectIdPipe) productId: string,
-        @Query('quantity') quantity: number,
+        @Query('quantity', ParseIntPipe, new DefaultValuePipe(1)) quantity: number,
         @Res() response: Response
     ) {
-        const cart = await this.cartService.changeProductQuantity(userId, productId, quantity)
+        const cart = await this.cartService.changeProductQuantity(user.id, productId, quantity)
         response.status(200).json(cart)
     }
 
-    @Put('/:userId/clear')
+    @Put('/clear')
     async clearCart(
-        @Param('userId') userId: string,
+        @AuthUser() user: IJwtPayload,
         @Res() response: Response
     ) {
-        const cart = await this.cartService.clearCart(userId)
+        const cart = await this.cartService.clearCart(user.id)
         response.status(200).json(cart)
     }
 }

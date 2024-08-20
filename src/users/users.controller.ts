@@ -1,20 +1,26 @@
 import {
     Res,
-    Param,
+    Query,
     Body,
     Controller,
     Get,
     Delete,
     Put,
 } from '@nestjs/common';
-import { UsersService } from "./users.service";
 import { Response } from 'express'
-import { UserEntity } from './schemas/user.schema';
-import { Roles } from './../common/decorators/role.decorator';
-//import { User } from './../common/decorators/user.decorator'
+
 import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
+
+import { UsersService } from "./users.service";
+
+import { Roles } from './../common/decorators/role.decorator';
 import { Role } from './../common/enums/role.enum';
+import { AuthUser } from './../common/decorators/user.decorator';
+
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+import { IJwtPayload } from './../auth/interfaces/jwt-payload.interface';
 
 @Controller()
 export class UsersController {
@@ -38,9 +44,9 @@ export class UsersController {
     }
 
     @Roles(Role.Admin)
-    @Delete('/:id/delete')
+    @Delete('/delete')
     async deleteUserById(
-        @Param('id', ParseObjectIdPipe) id: string,
+        @Query('userId', ParseObjectIdPipe) id: string,
         @Res() response: Response
     ) {
         const doc = await this.usersService.remove(id)
@@ -48,35 +54,35 @@ export class UsersController {
     }
 
     @Roles(Role.User)
-    @Put('/:id/update')
+    @Put('/update')
     async updateUserById(
-        @Param('id', ParseObjectIdPipe) id: string,
-        @Body() data: Partial<UserEntity>,
+        @AuthUser() user: IJwtPayload,
+        @Body() data: Partial<UpdateUserDto>,
         @Res() response: Response
     ) {
-        const doc = await this.usersService.updateSafe(id, data, data.password)
+        const doc = await this.usersService.updateSafe(user.id, data, data.password)
         response.status(200).json(doc)
     }
 
     @Roles(Role.User)
-    @Put('/:id/change-password')
+    @Put('/update/password')
     async changePassword(
-        @Param('id', ParseObjectIdPipe) id: string,
+        @AuthUser() user: IJwtPayload,
         @Body() data: ChangePasswordDto,
         @Res() response: Response
     ) {
         const { newPassword, oldPassword } = data
-        const updatedUser = await this.usersService.changePassword(id, oldPassword, newPassword)
+        const updatedUser = await this.usersService.changePassword(user.id, oldPassword, newPassword)
         response.status(200).json(updatedUser)
     }
 
     @Roles(Role.User)
-    @Get('/user/:id')
+    @Get('/me')
     async getUserById(
-        @Param('id', ParseObjectIdPipe) id: string,
+        @AuthUser() user: IJwtPayload,
         @Res() response: Response
     ) {
-        const doc = await this.usersService.findById(id)
+        const doc = await this.usersService.findById(user.id)
         response.status(200).json(doc)
     }
 }

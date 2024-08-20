@@ -4,63 +4,68 @@ import { Response } from 'express';
 
 import { ParseObjectIdPipe } from './../../common/pipes/parse-object-id.pipe';
 
+import { AuthUser } from './../../common/decorators/user.decorator';
+import { IJwtPayload } from 'auth/interfaces/jwt-payload.interface';
+
 @Controller()
 export class WishlistController {
     constructor(
         private readonly wishlistService: WishlistService
     ) {}
 
-    @Get('/')
-    async get(@Query() query: any, @Res() response: Response) {
+    @Get('/all')
+    async get(
+        @Query() query: any, @Res() response: Response
+    ) {
         const docs = await this.wishlistService.findFiltredWrapper(query)
         response.status(200).json(docs)
     }
 
-    @Get('/:userId')
+    @Get('/')
     async getUserWishlist(
-        @Param('userId', ParseObjectIdPipe) userId: string,
+        @AuthUser() user: IJwtPayload,
         @Res() response: Response
     ) {
-        const doc = await this.wishlistService.findByUser(userId)
+        const doc = await this.wishlistService.findByUser(user.id)
         response.status(200).json(doc)
     }
 
-    @Get('/:userId/is-contains')
+    @Get('/is-added')
     async isContainsProduct(
-        @Param('userId', ParseObjectIdPipe) userId: string,
+        @AuthUser() user: IJwtPayload,
         @Query('productId', ParseObjectIdPipe) productId: string,
         @Res() response: Response
     ) {
-        const doc = await this.wishlistService.isContainsProduct(userId, productId)
+        const doc = await this.wishlistService.isContainsProduct(user.id, productId)
         response.status(200).json(doc)
     }
 
-    @Put('/:userId/add')
+    @Put('/add')
     async addToWishlist(
-        @Param('userId', ParseObjectIdPipe) userId: string,
+        @AuthUser() user: IJwtPayload,
         @Query('productId', ParseObjectIdPipe) productId: string,
         @Res() response: Response
     ) {
-        const doc = await this.wishlistService.addToWishlist(userId, productId)
+        const doc = await this.wishlistService.addToWishlist(user.id, productId)
         response.status(200).json(doc)
     }
 
-    @Put('/:userId/remove')
+    @Put('/remove')
     async removeFromWishlist(
-        @Param('userId', ParseObjectIdPipe) userId: string,
+        @AuthUser() user: IJwtPayload,
         @Query('productId', ParseObjectIdPipe) productId: string,
         @Res() response: Response
     ) {
-        const doc = await this.wishlistService.removeFromWishlist(userId, productId)
+        const doc = await this.wishlistService.removeFromWishlist(user.id, productId)
         response.status(200).json(doc)
     }
 
-    @Put('/:userId/clear')
+    @Put('/clear')
     async clearWishlist(
-        @Query() query: any,
+        @AuthUser() user: IJwtPayload,
         @Res() response: Response
     ) {
-        const doc = await this.wishlistService.clearWishlist(query)
+        const doc = await this.wishlistService.clearWishlist(user.id)
         response.status(200).json(doc)
     }
 }

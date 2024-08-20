@@ -45,7 +45,7 @@ export class AuthController {
         response.status(201).json(authResponse)
     }
 
-    @Post('/refresh')
+    @Post('/reauth')
     async refreshAccessToken(
         @Req() request: Request,
         @Res() response: Response,

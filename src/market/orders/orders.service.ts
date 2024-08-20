@@ -60,7 +60,7 @@ export class OrdersService {
         return orders
     }
 
-    async findUserOrdersByStatus(userId: string, status: OrderStatus) {
+    private async findUserOrdersByStatus(userId: string, status: OrderStatus) {
         const orders = await this.ordersModel.find({user: userId, status: status})
             .populate<{ products: { product: Document, quantity: number }[] }>({
                 path: 'products',
@@ -72,12 +72,11 @@ export class OrdersService {
         return orders
     }
 
-    async findUserOrdersWrapper(userId: string, status: any) {
-        if (typeof status === 'string') {
+    async findSome(userId: string, status: any) {
+        if (typeof status === 'string' && status != 'all') { // TODO enumerate
             return await this.findUserOrdersByStatus(userId, <any>status)
-        } else {
-            return await this.findUsersOrders(userId)
         }
+        return await this.findUsersOrders(userId)
     }
 
     async findUserOrdersCount(userId: string) {
@@ -85,7 +84,7 @@ export class OrdersService {
         return count
     }
 
-    async createOrder(userId: string, products: CartProducts, paymentDetails: PaymentDetailsDto) {
+    private async createOrder(userId: string, products: CartProducts, paymentDetails: PaymentDetailsDto) {
         try {
             const created = await this.ordersModel.create({
                 user: userId,

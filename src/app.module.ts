@@ -14,7 +14,7 @@ import { CommonModule } from './common/common.module';
 import { ConfigModule } from '@nestjs/config';
 import { ImageUploadModule } from './image-upload/image-upload.module';
 import { HomeBannerModule } from './home-banner/home-banner.module';
-import { JwtGuard } from './common/guards/jwt.guard';
+import { JwtGuard } from './auth/guards/jwt.guard';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { JwtModule } from '@nestjs/jwt';
 import { OrdersModule } from './market/orders/orders.module';

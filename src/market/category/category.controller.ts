@@ -31,18 +31,10 @@ export class CategoryController {
         response.status(200).json(result)
     }
 
-    @Get('/id/:id')
-    async getCategoryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const category = await this.categoryService.getDocumentById(id)
-        response.status(200).json(category)
-    }
-
     @Get('/count')
     async getCategoryEntriesCount(@Res() response: Response) {
-        const catCount = await this.categoryService.getDocumentsCount()
-        response.status(200).json({
-            categoryCount: catCount
-        })
+        const count = await this.categoryService.getDocumentsCount()
+        response.status(200).json(count)
     }
 
     @Post('/create')
@@ -68,6 +60,12 @@ export class CategoryController {
         }
 
         response.status(200).json(category);
+    }
+
+    @Get('/:id')
+    async getCategoryById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
+        const category = await this.categoryService.getDocumentById(id)
+        response.status(200).json(category)
     }
 
     @Delete('/:id')

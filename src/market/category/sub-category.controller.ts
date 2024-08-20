@@ -30,16 +30,10 @@ export class SubCategoryController {
         response.status(200).json(result)
     }
 
-    @Get('/id/:id')
-    async getById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
-        const subCategory = await this.subCategoryService.getDocumentById(id)
-        response.status(200).json(subCategory)
-    }
-
     @Get('/count')
     async count(@Res() response: Response) {
         const subCatCount = await this.subCategoryService.getDocumentsCount()
-        response.status(200).json({subCatCount: subCatCount})
+        response.status(200).json(subCatCount)
     }
 
     @Post('/create')
@@ -67,6 +61,12 @@ export class SubCategoryController {
             }
             throw new AppError(AppErrorTypeEnum.DB_CANNOT_CREATE)
         }
+    }
+
+    @Get('/:id')
+    async getById(@Param('id', ParseObjectIdPipe) id: string, @Res() response: Response) {
+        const subCategory = await this.subCategoryService.getDocumentById(id)
+        response.status(200).json(subCategory)
     }
 
     @Delete('/:id')

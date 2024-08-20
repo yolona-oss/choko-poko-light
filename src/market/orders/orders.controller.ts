@@ -24,6 +24,7 @@ import { ParseOrderStatusPipe } from './../../common/pipes/parse-order-status.pi
 import { ParseAddressPipe } from './../../common/pipes/parse-address.pipe';
 import { ParsePincodePipe } from './../../common/pipes/parse-pincode.pipe';
 import { ParsePaymentIdPipe } from './../../common/pipes/parse-payment-id.pipe';
+import { IJwtPayload } from 'auth/interfaces/jwt-payload.interface';
 
 @Controller()
 export class OrdersController {
@@ -31,13 +32,13 @@ export class OrdersController {
         private ordersService: OrdersService
     ) {}
 
-    @Get('/')
+    @Get('/admin/all')
     async getAll(@Res() response: Response) {
         const ordersDocs = await this.ordersService.findAll()
         response.status(200).json(ordersDocs)
     }
 
-    @Get('/count')
+    @Get('/admin/count')
     async getCount(@Res() response: Response) {
         const count = await this.ordersService.findCount()
         response.status(200).json(count)
@@ -45,7 +46,7 @@ export class OrdersController {
 
     // shipped service must set order status by events
     // but now we not have one
-    @Post('/admin/:orderId/update-status')
+    @Put('/admin/:orderId/update-status')
     async udpateOrderStatus(
         @Param('orderId', ParseObjectIdPipe) orderId: string,
         @Query('status', ParseOrderStatusPipe) status: OrderStatus,
@@ -64,15 +65,15 @@ export class OrdersController {
         response.status(200).json(orderDoc)
     }
 
-    @Post('/:userId/create')
+    @Post('/create')
     async createOrder(
-        @Param('userId', ParseObjectIdPipe) userId: string,
+        @AuthUser() user: IJwtPayload,
         @Body('address', ParseAddressPipe) address: string,
         @Body('pincode', ParsePincodePipe) pincode: string,
         @Body('paymentId', ParsePaymentIdPipe) paymentId: string,
         @Res() response: Response
     ) {
-        const created = await this.ordersService.transfromCart(userId, {
+        const created = await this.ordersService.transfromCart(user.id, {
             address,
             pincode,
             paymentId
@@ -80,22 +81,22 @@ export class OrdersController {
         response.status(200).json(created)
     }
 
-    @Get('/:userId')
+    @Get('/')
     async getAllUserOrders(
-        @Param('userId', ParseObjectIdPipe) userId: string,
+        @AuthUser() user: IJwtPayload,
         @Query('status') orderStatus: any,
         @Res() response: Response
     ) {
-        const orders = await this.ordersService.findUserOrdersWrapper(userId, orderStatus)
+        const orders = await this.ordersService.findSome(user.id, orderStatus)
         response.status(200).json(orders)
     }
 
-    @Get('/:userId/count')
+    @Get('/count')
     async countUserOrders(
-        @Param('userId', ParseObjectIdPipe) userId: string,
+        @AuthUser() user: IJwtPayload,
         @Res() response: Response
     ) {
-        const count = await this.ordersService.findCount(userId)
+        const count = await this.ordersService.findCount(user.id)
         response.status(200).json(count)
     }
 }

@@ -1,10 +1,12 @@
-import mongoose from 'mongoose';
 import { Param, Res, Get, Post, Delete, Put, Body, Controller } from '@nestjs/common';
 import { Response } from 'express'
+
 import { HomeBannerService } from './home-banner.service';
-import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
+
 import { CreateHomeBannerDto } from './dto/create-home-banner.dto';
 import { UpdateHomeBannerDto } from './dto/update-home-banner.dto';
+
+import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
 
 @Controller('home-banner')
 export class HomeBannerController {
@@ -16,15 +18,6 @@ export class HomeBannerController {
         return response.status(200).json(entries)
     }
 
-    @Get('/id/:id')
-    async get(
-        @Param('id', ParseObjectIdPipe) id: string,
-        @Res() response: Response
-    ) {
-        const doc = await this.homeBannerService.findById(id)
-        return response.status(200).send(doc)
-    }
-
     @Post('/create')
     async create(
         @Body() body: CreateHomeBannerDto,
@@ -34,6 +27,15 @@ export class HomeBannerController {
             images: body.images
         })
         response.status(200).json({})
+    }
+
+    @Get('/:id')
+    async get(
+        @Param('id', ParseObjectIdPipe) id: string,
+        @Res() response: Response
+    ) {
+        const doc = await this.homeBannerService.findById(id)
+        return response.status(200).send(doc)
     }
 
     @Delete(':id')

@@ -20,6 +20,7 @@ import { ProductEntity } from './schemas/products.schema';
 
 import { Public } from './../../common/decorators/public.decorotor';
 import { Roles } from './../../common/decorators/role.decorator';
+
 import { Role } from './../../common/enums/role.enum';
 import { CreateProductReviewDto } from './product-reviews/dto/create-review.dto';
 
@@ -61,7 +62,7 @@ export class ProductsController {
     }
 
     @Public()
-    @Get('/:id/reviews')
+    @Get('/reviews/:id')
     async productReviews(
         @Param('id', ParseObjectIdPipe) id: string,
         @Res() response: Response
@@ -71,7 +72,7 @@ export class ProductsController {
     }
 
     @Roles(Role.User)
-    @Post('/:id/reviews/add')
+    @Post('/reviews/:id/add')
     async createProductReviews(
         @Param('id', ParseObjectIdPipe) id: string,
         @Body() data: CreateProductReviewDto,
