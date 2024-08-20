@@ -1,6 +1,6 @@
 import { Role } from './../../common/enums/role.enum';
 
-export type JwtPayload = {
+export type IJwtPayload = {
     email: string
     id: string
     roles: Role[]

@@ -7,7 +7,7 @@ import { UserEntity, UserDocument } from './schemas/user.schema';
 
 import { AppError, AppErrorTypeEnum } from './../common/app-error';
 import { DeepPartial } from './../common/types/deep-partial.type';
-import { Crypto } from './../common/misc/utils'
+import Crypto from './../auth/crypto-service'
 
 import {
     MIN_USER_PASSWORD_LENGTH,
@@ -52,6 +52,27 @@ export class UsersService {
         return userDoc
     }
 
+    async findByAssignedToken(id: string, token: string) {
+        try {
+            const doc = await this.usersModel.findOne({
+                _id: id,
+                'tokens.token': token
+            })
+            if (!doc) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return doc
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                throw error
+            }
+            throw new AppError(AppErrorTypeEnum.VALIDATION_ERROR, {
+                errorMessage: error.message,
+                userMessage: 'Invalid token'
+            })
+        }
+    }
+
     async findById(id: string) {
         const userDoc = await this.usersModel.findById(id)
         if (!userDoc) {
@@ -67,6 +88,95 @@ export class UsersService {
     async count() {
         const count = await this.usersModel.countDocuments()
         return count
+    }
+
+    async addToken(userId: string, token: string) {
+        try {
+            const user = await this.usersModel.findByIdAndUpdate(userId, {
+                $addToSet: {
+                    tokens: {
+                        token
+                    }
+                }
+            })
+            if (!user) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return user
+        } catch(error: any) {
+            if (error instanceof AppError) {
+                throw error
+            }
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+                errorMessage: error.message,
+                userMessage: 'Cannot add token'
+            })
+        }
+    }
+
+    async removeToken(userId: string, token: string) {
+        try {
+            const user = await this.usersModel.findByIdAndUpdate(userId, {
+                $pull: {
+                    tokens: {
+                        token
+                    }
+                }
+            })
+            if (!user) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return user
+        } catch(error: any) {
+            if (error instanceof AppError) {
+                throw error
+            }
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+                errorMessage: error.message,
+                userMessage: 'Cannot remove token'
+            })
+        }
+    }
+
+    async addResetToken(userId: string, token: string) {
+        try {
+            const user = await this.usersModel.findByIdAndUpdate(userId, {
+                resetPasswordToken: token,
+                resetPasswordTokenExpiry: 5 * 60 * 1000 // TODO create constant or config key. Now 5 min exprisity
+            })
+            if (!user) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return user
+        } catch(error: any) {
+            if (error instanceof AppError) {
+                throw error
+            }
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+                errorMessage: error.message,
+                userMessage: 'Cannot add reset token'
+            })
+        }
+    }
+
+    async dropTokens(userId: string) {
+        try {
+            const user = await this.usersModel.findByIdAndUpdate(userId, {
+                tokens: []
+            })
+            if (!user) {
+                throw new AppError(AppErrorTypeEnum.DB_ENTITY_NOT_FOUND)
+            }
+            return user
+        } catch(error: any) {
+            if (error instanceof AppError) {
+                throw error
+            }
+            throw new AppError(AppErrorTypeEnum.DB_CANNOT_UPDATE, {
+                errorMessage: error.message,
+                userMessage: 'Cannot drop tokens'
+            })
+        }
     }
 
     async create(userData: CreateUserDto) {

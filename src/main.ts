@@ -1,29 +1,33 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { AllExeptionFilter } from './common/filters/all-exception.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import compression from 'compression';
 
-async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    const configService = app.get(ConfigService);
-    const port = configService.get<number>('port');
+import { AllExeptionFilter } from './common/filters/all-exception.filter';
 
-    //const corsOptions = {
-    //
-    //}
+import { corsOptions } from './common/config/cros';
+
+async function bootstrap() {
 
     const helmetOptions = {
         crossOriginEmbedderPolicy: false,
     }
 
+    const app = await NestFactory.create(AppModule);
+
+    const configService = app.get(ConfigService);
+    const port = configService.getOrThrow('port');
+
+    app.use(cookieParser())
     app.use(helmet(helmetOptions))
     app.use(compression())
     app.setGlobalPrefix('api')
     app.useGlobalFilters(new AllExeptionFilter())
-    app.enableCors()
+    app.enableCors(corsOptions)
 
     const config = new DocumentBuilder()
         .setTitle('Spice API')
@@ -33,7 +37,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('doc', app, document);
 
-    await app.listen(<number>port,
+    await app.listen(port,
                      () => {
                          console.log(`Server is running http://localhost:${port}`)
                      });

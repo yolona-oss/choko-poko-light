@@ -1,12 +1,11 @@
+import { AuthJwtTokens } from "auth/interfaces/auth-jwt-tokens.interface"
 import { UserObjectResponseDto } from "./../../users/dto/user-object-response.dto"
 
-export interface AuthResponseDto {
-    readonly access_token: string
-    readonly refresh_token: string
+export interface AuthResponseDto extends AuthJwtTokens {
     readonly user: UserObjectResponseDto
 }
 
-export function AuthResponseUserTransform(user: any) {
+export function TransformUser(user: any) {
     return {
         id: user.id,
         name: user.name,

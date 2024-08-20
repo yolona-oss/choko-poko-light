@@ -1,4 +1,6 @@
-export interface AuthJwtTokens {
-    access_token: string
-    refresh_token: string
-}
+import { IAccessToken } from "./access-token.interface";
+import { IRefreshToken } from "./refresh-token.interface";
+
+interface _AuthJwtTokens extends IAccessToken, IRefreshToken { }
+
+export type AuthJwtTokens = Readonly<_AuthJwtTokens>

@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { REQUSET_USER_KEY } from './../constants';
-import { JwtPayload } from './../../auth/interfaces/jwt-payload.interface';
+import { IJwtPayload } from './../../auth/interfaces/jwt-payload.interface';
 import { IS_PUBLIC_KEY } from './../../common/decorators/public.decorotor';
 import { ROLES_KEY } from './../../common/decorators/role.decorator';
 import { Role } from './../enums/role.enum';

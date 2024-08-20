@@ -48,6 +48,9 @@ export class UserEntity {
     @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'ProductReviews', required: false})
     reviews?: mongoose.Schema.Types.ObjectId[];
 
+    /***
+    * Refresh tokens store
+    */
     @Prop({ type: [ { token: {type: String, required: true } } ], required: false })
     tokens?: { token: string }[];
 
