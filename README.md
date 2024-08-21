@@ -25,3 +25,4 @@ If dependencies errors, try run `npm install --legacy-peer-deps` or `npm install
 - [-] add cvs import to products schema
 - [-] refuce usage of CRUDService generic
 - [-] create validators and remove validation inside services
+- [-] create by page interface for by page responses

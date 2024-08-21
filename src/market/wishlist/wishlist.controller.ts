@@ -36,8 +36,8 @@ export class WishlistController {
         @Query('productId', ParseObjectIdPipe) productId: string,
         @Res() response: Response
     ) {
-        const doc = await this.wishlistService.isContainsProduct(user.id, productId)
-        response.status(200).json(doc)
+        const isAdded = await this.wishlistService.isContainsProduct(user.id, productId)
+        response.status(200).json({isAdded: isAdded})
     }
 
     @Put('/add')

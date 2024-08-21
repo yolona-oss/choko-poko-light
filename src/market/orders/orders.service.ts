@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose';
+import { Document, isValidObjectId, Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -13,6 +13,9 @@ import { ProductEntity } from '../products/schemas/products.schema';
 import { PopulateProductInterface } from './interfaces/populate-product.interface';
 import { OPQBuilder } from './../../common/misc/opq-builder';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
+
+import { FilteringOptions } from './interfaces/filtering-options.interface';
+import { FiltredOrders } from './interfaces/filtered-orders.interface';
 
 @Injectable()
 export class OrdersService {
@@ -72,11 +75,48 @@ export class OrdersService {
         return orders
     }
 
-    async findSome(userId: string, status: any) {
-        if (typeof status === 'string' && status != 'all') { // TODO enumerate
-            return await this.findUserOrdersByStatus(userId, <any>status)
+    async findFiltred(opts: FilteringOptions): Promise<FiltredOrders> {
+        const page: number = opts.page ? parseInt(opts.page) : 1
+        const perPage = opts.perPage ? parseInt(opts.perPage) : undefined
+
+        const totalDocuments = await this.ordersModel.countDocuments()
+        const totalPages = +Math.ceil(totalDocuments / (perPage || 1))
+
+        if (totalDocuments === 0) {
+            return {
+                orders: [],
+                totalPages: 0,
+                page: 0
+            }
         }
-        return await this.findUsersOrders(userId)
+
+        if (page > totalPages) {
+            throw new AppError(AppErrorTypeEnum.INVALID_RANGE)
+        }
+
+        const query = new OPQBuilder()
+            .addMustHaveKey("user")
+            .addValidatorForKey("id", (v) => isValidObjectId(v))
+            .addValidatorForKey("user", (v) => isValidObjectId(v))
+            .addToQuery("id", opts.id)
+            .addToQuery("status", opts.status, (v) => v.toLowerCase() === 'all')
+            .addToQuery("user", opts.user)
+            .build()
+
+        const orders = await this.ordersModel.find(query, null, { skip: (page - 1) * (perPage || 0), limit: perPage })
+            .populate<{ products: { product: Document, quantity: number }[] }>({
+                path: 'products',
+                populate: {
+                    path: 'product',
+                }
+            })
+            .exec()
+
+        return {
+            orders,
+            totalPages,
+            page
+        }
     }
 
     async findUserOrdersCount(userId: string) {
@@ -111,9 +151,9 @@ export class OrdersService {
     async setOrderStatus(orderId: string, status: OrderStatus) {
         try {
             const updateData = new OPQBuilder()
-                .addToQuery("status", status)
-                .addToQuery("closingData", new Date())
-                .build()
+            .addToQuery("status", status)
+            .addToQuery("closingData", new Date())
+            .build()
 
             return await this.ordersModel.updateOne({_id: orderId}, updateData, {new: true})
                 .populate<PopulateProductInterface>({

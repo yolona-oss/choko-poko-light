@@ -1,9 +1,9 @@
 import { AppError, AppErrorTypeEnum } from "./../app-error"
-import { assignToCustomPath } from "./helpers"
+import { assignToCustomPath, extractValueFromObject } from "./helpers"
 
 import { IBuilder } from "./../types/builder.type"
 
-type OPQBuilderType = Record<string, any>
+type OPQBuilderFinalizeType = Record<string, any>
 
 type TransformFn = (value: any) => any
 type ValidateFn = (value: any) => boolean
@@ -39,7 +39,7 @@ const dummyTransfomr: TransformFn = (v) => v
  *
  * TODO: create generic capab version to add keys by generic keyof or directly from type
  */
-export class OPQBuilder implements IBuilder<OPQBuilderType> {
+export class OPQBuilder implements IBuilder<OPQBuilderFinalizeType> {
     private options: Record<string, any>
 
     private globalValidators: ValidateFnArray
@@ -51,12 +51,15 @@ export class OPQBuilder implements IBuilder<OPQBuilderType> {
     private useGlobalValidationForMapped: boolean = true
     private useGlobalCheckForMapped: boolean = true
 
+    private mustHaveKeys: Array<string>
+
     constructor() {
         this.globalValidators = new Array<ValidateFn>()
         this.globalChecks = new Array<ValidateFn>()
         this.validators = new Map<string, ValidateFnArray>()
         this.checks = new Map<string, ValidateFnArray>()
         this.options = new Object({})
+        this.mustHaveKeys = new Array<string>()
 
         this.createDefaultCheck()
     }
@@ -79,6 +82,18 @@ export class OPQBuilder implements IBuilder<OPQBuilderType> {
         return this
     }
 
+    /***
+     * Add key that must be added to query before build()
+     *
+     * Automaticaly skips already exist keys
+     */
+    addMustHaveKey(key: string) {
+        if (!this.mustHaveKeys.includes(key)) {
+            this.mustHaveKeys.push(key)
+        }
+        return this
+    }
+
     addCheckOptionForKey(key: string, fn: ValidateFn) {
         let exists = this.checks.get(key) || []
         this.checks.set(key, [...exists, fn])
@@ -98,26 +113,6 @@ export class OPQBuilder implements IBuilder<OPQBuilderType> {
 
     addGlobalValidator(fn: ValidateFn) {
         this.globalValidators.push(fn)
-        return this
-    }
-
-    clearGlobalChecks() {
-        this.globalChecks = new Array<ValidateFn>()
-        return this
-    }
-
-    clearGlobalValidators() {
-        this.globalValidators = new Array<ValidateFn>()
-        return this
-    }
-
-    clearMappedValidators() {
-        this.validators = new Map<string, Array<ValidateFn>>()
-        return this
-    }
-
-    clearOptions() {
-        this.options = new Object({})
         return this
     }
 
@@ -179,19 +174,61 @@ export class OPQBuilder implements IBuilder<OPQBuilderType> {
         return this
     }
 
-    build() {
+    clearGlobalChecks() {
+        this.globalChecks = new Array<ValidateFn>()
+        return this
+    }
+
+    clearGlobalValidators() {
+        this.globalValidators = new Array<ValidateFn>()
+        return this
+    }
+
+    clearMappedValidators() {
+        this.validators = new Map<string, Array<ValidateFn>>()
+        return this
+    }
+
+    clearOptions() {
+        this.options = new Object({})
+        return this
+    }
+
+    clearMustHaveKeys() {
+        this.mustHaveKeys = new Array<string>()
+        return this
+    }
+
+    /***
+    * Build final object
+    *
+    * @returns object - Finalize object
+    */
+    build(): OPQBuilderFinalizeType {
+        // check must have keys existance
+        for (const key of this.mustHaveKeys) {
+            if (extractValueFromObject(this.options, key) === undefined) {
+                throw new AppError(AppErrorTypeEnum.BAD_REQUEST, {
+                    errorMessage: `Missing required key: ${key}`,
+                    userMessage: `Missing required key: ${key}`
+                })
+            }
+        }
+
         const copy = this.options
         this.clearOptions()
-        this.clearGlobalValidators()
-        this.clearMappedValidators()
-        this.createDefaultCheck()
-        this.setUseGlobalValidationForMapped(true)
-        this.setUseGlobalCheckForMapped(true)
+            .clearGlobalValidators()
+            .clearMappedValidators()
+            .createDefaultCheck()
+            .setUseGlobalValidationForMapped(true)
+            .setUseGlobalCheckForMapped(true)
+            .clearMustHaveKeys()
         return copy
     }
 
     private createDefaultCheck() {
         this.clearGlobalChecks()
         this.addGlobalCheck(defaultValidator)
+        return this
     }
 }

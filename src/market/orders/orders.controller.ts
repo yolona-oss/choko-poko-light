@@ -85,9 +85,14 @@ export class OrdersController {
     async getAllUserOrders(
         @AuthUser() user: IJwtPayload,
         @Query('status') orderStatus: any,
+        @Query('userOrderId') userOrderId: any,
         @Res() response: Response
     ) {
-        const orders = await this.ordersService.findSome(user.id, orderStatus)
+        const orders = await this.ordersService.findFiltred({
+            user: user.id,
+            status: orderStatus,
+            id: userOrderId,
+        })
         response.status(200).json(orders)
     }
 
