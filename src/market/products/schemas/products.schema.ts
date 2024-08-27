@@ -47,13 +47,13 @@ export class ProductEntity {
     @Prop({type: Number, required: false})
     discount?: number;
 
-    @Prop({type: [String], default: null})
+    @Prop({type: [String], default: []})
     rams?: string[];
 
-    @Prop({type: [String], default: null})
+    @Prop({type: [String], default: []})
     size?: string[];
 
-    @Prop({type: [String], default: null})
+    @Prop({type: [String], default: []})
     weight?: string[];
 
     @Prop({type: String, required: false})

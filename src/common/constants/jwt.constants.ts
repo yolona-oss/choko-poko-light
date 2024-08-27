@@ -1,5 +1,5 @@
 export const REFRESH_TOKEN = {
-  secret: process.env.AUTH_REFRESH_TOKEN_SECRET,
+  //secret: process.env.AUTH_REFRESH_TOKEN_SECRET,
   cookie: {
     name: "refreshTkn",
     options: {

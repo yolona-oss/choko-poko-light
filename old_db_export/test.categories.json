@@ -1,0 +1,99 @@
+[{
+  "_id": {
+    "$oid": "6689b55655a058239de610dc"
+  },
+  "name": "Специи",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720300885/1720300883811_%D1%81%D0%BF%D0%B5%D1%86%D0%B8%D0%B8.png"
+  ],
+  "color": "rgb(254, 239, 234)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b5a855a058239de6110e"
+  },
+  "name": "Прочее",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720300968/1720300966958_%D1%81%D0%BC%D0%B5%D1%81%D0%B8.png"
+  ],
+  "color": "rgb(236, 255, 236)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b66755a058239de61174"
+  },
+  "name": "Урбечи",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720301158/1720301157244_%D1%83%D1%80%D0%B1%D0%B5%D1%87%D0%B8.png"
+  ],
+  "color": "rgb(254, 239, 234)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b7f755a058239de612be"
+  },
+  "name": "Соли",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720301557/1720301556281_%D1%81%D0%BE%D0%BB%D0%B8.png"
+  ],
+  "color": "rgb(255, 243, 255)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b84f55a058239de612e4"
+  },
+  "name": "Готовые наборы",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720301645/1720301644564_%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D1%8B%D0%B5_%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D1%8B.png"
+  ],
+  "color": "rgb(242, 252, 228)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b88e55a058239de6130a"
+  },
+  "name": "Чаи",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720301709/1720301708294_%D1%87%D0%B0%D0%B8.png"
+  ],
+  "color": "rgb(254, 239, 234)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b8c755a058239de61330"
+  },
+  "name": "Авторские смеси",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720301761/1720301759890_%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D1%81%D0%BA%D0%B8%D0%B5_%D1%81%D0%BC%D0%B5%D1%81%D0%B8.png"
+  ],
+  "color": "rgb(255, 252, 235)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b8e955a058239de61342"
+  },
+  "name": "ОПТ",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720301801/1720301799655_%D0%BE%D0%BF%D1%82.png"
+  ],
+  "color": "rgb(254, 239, 234)",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6689b91c55a058239de61368"
+  },
+  "name": "Прочее",
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1720301851/1720301850141_%D0%BF%D1%80%D0%BE%D1%87%D0%B5%D0%B5.png"
+  ],
+  "color": "black",
+  "__v": 0
+}]

@@ -1,0 +1,18 @@
+[{
+  "_id": {
+    "$oid": "66ce18bdc1c2122969edccee"
+  },
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1724782778/2picyp6er5g_6_1_1_2.png"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ce1938c1c2122969edcd01"
+  },
+  "images": [
+    "https://res.cloudinary.com/dpt0lnov9/image/upload/v1724782899/305oyt5yj7p_5_2_1.png"
+  ],
+  "__v": 0
+}]

@@ -63,7 +63,7 @@ export class AuthService {
         const refresToken = cookies[REFRESH_TOKEN.cookie.name]
 
         const rTknHash = crypto
-            .createHmac("sha256", <string>REFRESH_TOKEN.secret)
+            .createHmac("sha256", <string>this.configService.getOrThrow<string>('jwt.refresh_token.secret'))
             .update(refresToken)
             .digest("hex");
 
@@ -96,7 +96,7 @@ export class AuthService {
             }
         )
         const rTknHash = crypto
-            .createHmac("sha256", <string>REFRESH_TOKEN.secret)
+            .createHmac("sha256", <string>this.configService.getOrThrow<string>('jwt.refresh_token.secret'))
             .update(refresh_token)
             .digest("hex");
 
@@ -144,9 +144,9 @@ export class AuthService {
                 throw new UnauthorizedException('Refresh token not found')
             }
 
-            const decodedRefreshTkn = this.jwtService.verify(refreshToken, {secret: REFRESH_TOKEN.secret});
+            const decodedRefreshTkn = this.jwtService.verify(refreshToken, {secret: this.configService.getOrThrow<string>('jwt.refresh_token.secret')});
             const rTknHash = crypto
-                .createHmac("sha256", <string>REFRESH_TOKEN.secret)
+                .createHmac("sha256", <string>this.configService.getOrThrow<string>('jwt.refresh_token.secret'))
                 .update(refreshToken)
                 .digest("hex");
 

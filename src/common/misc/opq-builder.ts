@@ -1,5 +1,5 @@
 import { AppError, AppErrorTypeEnum } from "./../app-error"
-import { assignToCustomPath, extractValueFromObject } from "./helpers"
+import { assignToCustomPath, extractValueFromObject } from "./utils"
 
 import { IBuilder } from "./../types/builder.type"
 
@@ -20,7 +20,7 @@ const defaultValidationFailCb: () => OPQBuilder = function(this: OPQBuilder) {
     return this
 }
 const dummyTransfomr: TransformFn = (v) => v
-//const dummyValidator: ValidateFn = (v: any) => {v;return true}
+const dummyValidator: ValidateFn = (v: any) => {v;return true}
 
 /***
  * addToQuery workflow

@@ -10,7 +10,9 @@ import { ParseObjectIdPipe } from './../common/pipes/parse-object-id.pipe';
 
 @Controller('home-banner')
 export class HomeBannerController {
-    constructor(private homeBannerService: HomeBannerService) {}
+    constructor(
+        private homeBannerService: HomeBannerService
+    ) {}
 
     @Get('/')
     async all(@Res() response: Response) {
